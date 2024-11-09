@@ -33,7 +33,9 @@ class RPMMode:
         self._record_data = False
         # do something with wow and flutter
         self._rpm_data = [d for d in self._rpm_data if d > 29]
-        print(self.flutter(RPM_33))
+        # print(self.flutter(RPM_33))
+        if self._rpm_data == []:
+            return 0, 0, 0, 0
         return (sum(self._rpm_data) / len(self._rpm_data)), min(self._rpm_data), max(self._rpm_data), self.wow(RPM_33)
 
     def wow(self, nominal_rpm: float) -> float:
