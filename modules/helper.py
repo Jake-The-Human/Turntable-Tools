@@ -1,7 +1,5 @@
 """Constants used through out the program"""
 
-from enum import Enum, StrEnum
-
 import terminalio
 
 # SH1107 is vertically oriented 64x128
@@ -25,7 +23,7 @@ RPM_TEST_START_UP_TIME: float = 10
 RPM_TEST_LEN: float = 30
 
 
-class Mode(Enum):
+class Mode:
     """These constants are used to describe what Mode the device is in"""
 
     DEBUG = -1
@@ -35,7 +33,7 @@ class Mode(Enum):
     RUMBLE = 3
 
 
-class STRINGS(StrEnum):
+class STRINGS:
     """String used through out device"""
 
     TITLE = "Turntable Tool"
