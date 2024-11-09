@@ -48,6 +48,8 @@ tool_mode = Mode.MAIN_MENU
 
 timer: float = 0
 
+# TODO REMOVE SLEEPS just check time or something
+
 while True:
     sensor.update()
 
@@ -103,7 +105,7 @@ while True:
         if btn_a:
             tool_mode = Mode.MAIN_MENU
             main_screen.show_screen(screen)
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         if btn_b:
             pass
@@ -119,7 +121,7 @@ while True:
         if btn_a:
             tool_mode = Mode.MAIN_MENU
             main_screen.show_screen(screen)
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         if btn_b:
             pass
