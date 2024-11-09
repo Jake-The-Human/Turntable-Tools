@@ -1,9 +1,9 @@
 class Leveling:
     def __init__(self) -> None:
         self._buffer_index: int = 0
-        self._buffer_len: int = 5
-        self._buffer_x: list[float] = [0 for _ in range(self._buffer_len)]
-        self._buffer_y: list[float] = [0 for _ in range(self._buffer_len)]
+        self._buffer_x: list[float] = [0, 0, 0]
+        self._buffer_y: list[float] = [0, 0, 0]
+        self._buffer_len = len(self._buffer_x)
 
     def _get_buffer_index(self) -> int:
         self._buffer_index = (self._buffer_index + 1) % self._buffer_len

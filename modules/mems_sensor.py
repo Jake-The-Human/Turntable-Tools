@@ -1,54 +1,49 @@
 from math import pi
 from adafruit_lsm6ds.lsm6ds3 import LSM6DS3
 
-def _low_pass_filter(previous_value:float, current_value:float, alpha:float=0.5):
-    """
-    Simple low-pass filter
-    :param previous_value: The last filtered value
-    :param current_value: The current sensor reading
-    :param alpha: Smoothing factor (0 < alpha < 1)
-    :return: Filtered value
-    """
-    return alpha * current_value + (1 - alpha) * previous_value
 
 class MemsSensor:
     def __init__(self, i2c):
         self._sensor = LSM6DS3(i2c)
-        self._prev_acceleration = (0, 0, 0)
-        self._prev_gyro = (0, 0, 0)
+
+        self._acceleration: tuple[float, float, float] = self._sensor.acceleration
+        self._gyro: tuple[float, float, float] = self._sensor.gyro
+        self.sensor_temp: float = self._sensor.temperature
+
         self._acceleration_offset: tuple[float, float, float] = (0, 0, 0)
         self._gyro_offest: tuple[float, float, float] = (0, 0, 0)
-    
-    def _low_pass_tuple(self, prev_data: tuple, cur_data: tuple):
-        return (_low_pass_filter(prev_data[0], cur_data[0]),
-                _low_pass_filter(prev_data[1], cur_data[1]),
-                _low_pass_filter(prev_data[2], cur_data[2]))
 
-    def getAcceleration(self) -> tuple:
-        self._prev_acceleration = self._low_pass_tuple(
-            prev_data=self._prev_acceleration,
-            cur_data=(self._sensor.acceleration[0] - self._acceleration_offset[0],
-            self._sensor.acceleration[1] - self._acceleration_offset[1],
-            self._sensor.acceleration[2] - self._acceleration_offset[2])
-        )
-        return self._prev_acceleration
+    def update(self) -> None:
+        """Update the sensor position"""
+        self._acceleration = self._sensor.acceleration
+        self._gyro = self._sensor.gyro
+        self.sensor_temp = self._sensor.temperature
 
-    def getGyro(self) -> tuple:
-        self._prev_gyro = self._low_pass_tuple(
-            prev_data=self._prev_acceleration,
-            cur_data=(self._sensor.gyro[0] - self._gyro_offest[0],
-            self._sensor.gyro[1] - self._gyro_offest[1],
-            self._sensor.gyro[2] - self._gyro_offest[2])
-        )
-        return self._prev_gyro
-    
-    def getRPM(self) -> float:
-        return abs(self.getGyro()[2] * 60.0 / (2.0 * pi))
-    
-    def getDegrees(self) -> float:
-        return self.getGyro()[2] * (180.0 / pi)
-    
-    def setOffset(self) -> None:
+    def get_acceleration(self) -> tuple[float, float, float]:
+        """Gets the acceleration data"""
+        acc_x, acc_y, acc_z = self._acceleration
+        offset_x, offset_y, offset_z = self._acceleration_offset
+        return (acc_x - offset_x, acc_y - offset_y, acc_z - offset_z)
+
+    def get_gyro(self) -> tuple[float, float, float]:
+        """Gets the gyro data"""
+        gyro_x, gyro_y, gyro_z = self._gyro
+        offset_x, offset_y, offset_z = self._gyro_offest
+
+        return (gyro_x - offset_x, gyro_y - offset_y, gyro_z - offset_z)
+
+    def get_rpm(self) -> float:
+        _, _, gyro_z = self.get_gyro()
+        return abs(gyro_z * 60.0 / (2.0 * pi))
+
+    def get_degrees(self) -> float:
+        _, _, gyro_z = self.get_gyro()
+        return gyro_z * (180.0 / pi)
+
+    def set_offset(self) -> None:
         self._acceleration_offset = self._sensor.acceleration
         self._gyro_offest = self._sensor.gyro
-    
+
+    def reset_offset(self) -> None:
+        self._acceleration_offset = (0, 0, 0)
+        self._gyro_offest = (0, 0, 0)

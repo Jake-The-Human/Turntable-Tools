@@ -1,0 +1,2 @@
+class RumbleScreen:
+    pass
