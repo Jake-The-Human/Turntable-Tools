@@ -18,6 +18,7 @@ from modules.level_mode import Leveling
 from modules.main_screen import MainScreen
 from modules.rpm_screen import RPMScreen
 from modules.level_screen import LevelScreen
+from modules.rumble_screen import RumbleScreen
 
 # Connect to the card and mount the filesystem.
 # cs = digitalio.DigitalInOut(board.SD_CS)
@@ -36,9 +37,10 @@ level_mode = Leveling()
 sensor = MemsSensor(i2c)
 screen = Display(board.I2C())
 
-main_screen = MainScreen(screen.width())
+main_screen = MainScreen()
 rpm_screen = RPMScreen()
 level_screen = LevelScreen()
+rumble_screen = RumbleScreen()
 
 main_screen.show_screen(screen)
 
@@ -65,6 +67,7 @@ while True:
 
         if btn_c:
             tool_mode = Mode.RUMBLE
+            rumble_screen.show_screen(screen)
             time.sleep(2)
             sensor.set_offset()
         pixel.fill((0, 0, 0))
@@ -73,7 +76,7 @@ while True:
         if btn_a:
             tool_mode = Mode.MAIN_MENU
             main_screen.show_screen(screen)
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         if btn_b:
             # Start recording data for wow and flutter
@@ -89,8 +92,7 @@ while True:
             pass
 
         if rpm_mode.is_recording_data() and (time.time() - timer) >= RPM_TEST_LEN:
-            avg, rpm_min, rpm_max, wow = rpm_mode.stop()
-            rpm_screen.stop_recording_data(avg, rpm_min, rpm_max, wow)
+            rpm_screen.stop_recording_data(rpm_mode.stop())
             pixel.fill((255, 0, 0))
             sensor.reset_offset()
 
@@ -118,5 +120,11 @@ while True:
             tool_mode = Mode.MAIN_MENU
             main_screen.show_screen(screen)
             time.sleep(0.1)
+
+        if btn_b:
+            pass
+
+        if btn_c:
+            sensor.set_offset()
 
     time.sleep(0.016)

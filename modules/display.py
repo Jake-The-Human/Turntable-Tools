@@ -1,6 +1,5 @@
 """This file wraps the screen logic"""
 
-import os
 import board
 import displayio
 import digitalio
@@ -11,6 +10,8 @@ except ImportError:
     from displayio import I2CDisplay as I2CDisplayBus
 
 from adafruit_displayio_sh1107 import SH1107
+
+from .helper import CIRCUITPY_DISPLAY_WIDTH, CIRCUITPY_DISPLAY_HEIGHT
 
 
 DEVICE_ADDRESS = 0x3C
@@ -27,26 +28,17 @@ class Display:
 
         displayio.release_displays()
 
-        # SH1107 is vertically oriented 64x128
-        self._width = int(os.getenv("CIRCUITPY_DISPLAY_WIDTH", "128"))
-        self._height = int(os.getenv("CIRCUITPY_DISPLAY_HEIGHT", "64"))
+        self._width: int = CIRCUITPY_DISPLAY_WIDTH
+        self._height: int = CIRCUITPY_DISPLAY_HEIGHT
 
         display_bus = I2CDisplayBus(i2c, device_address=DEVICE_ADDRESS)
-
         self.display = SH1107(display_bus, width=self._width, height=self._height)
 
-    def width(self) -> int:
-        """Return the width of the screen"""
-        return self._width
-
-    def height(self) -> int:
-        """Returns the height of the screen"""
-        return self._height
-
     def check_buttons(self) -> tuple[bool, bool, bool]:
-        """checkes which button is pushed on the screen"""
+        """checks which button is pushed on the screen"""
         return not self.button_a.value, not self.button_b.value, not self.button_c.value
 
     def set_display(self, group: displayio.Group) -> None:
+        """This function tells the display which group to show"""
         if group != self.display.root_group:
             self.display.root_group = group

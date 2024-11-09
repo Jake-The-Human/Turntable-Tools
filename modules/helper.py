@@ -1,5 +1,12 @@
 """Constants used through out the program"""
+
+from enum import Enum, StrEnum
+
 import terminalio
+
+# SH1107 is vertically oriented 64x128
+CIRCUITPY_DISPLAY_WIDTH: int = 128
+CIRCUITPY_DISPLAY_HEIGHT: int = 64
 
 # Display colors
 WHITE: int = 0xFFFFFF
@@ -17,27 +24,30 @@ RPM_78: float = 78.0
 RPM_TEST_START_UP_TIME: float = 10
 RPM_TEST_LEN: float = 30
 
-class Mode:
+
+class Mode(Enum):
     """These constants are used to describe what Mode the device is in"""
 
-    DEBUG: int = -1
-    MAIN_MENU: int = 0
-    RPM: int = 1
-    LEVEL: int = 2
-    RUMBLE: int = 3
+    DEBUG = -1
+    MAIN_MENU = 0
+    RPM = 1
+    LEVEL = 2
+    RUMBLE = 3
 
-class STRINGS:
+
+class STRINGS(StrEnum):
     """String used through out device"""
-    TITLE: str = "Turntable Tool"
-    RPM_WOW: str = "RPM & Wow"
-    RPM: str = "RPM"
-    LEVEL: str = "Level"
-    RUMBLE: str = "Rumble"
 
-    START_TURNTABLE: str = "Starting"
-    MEASURING: str = "Measuring"
+    TITLE = "Turntable Tool"
+    RPM_WOW = "RPM & Wow"
+    RPM = "RPM"
+    LEVEL = "Level"
+    RUMBLE = "Rumble"
 
-    AVG: str = "Avg"
-    MIN: str = "Min"
-    MAX: str = "Max"
-    WOW: str = "Wow"
+    START_TURNTABLE = "Starting"
+    MEASURING = "Measuring"
+
+    AVG = "Avg"
+    MIN = "Min"
+    MAX = "Max"
+    WOW = "Wow"

@@ -25,21 +25,28 @@ class RPMScreen:
         self.rpm_group.append(self._text_wow)
 
     def show_screen(self, screen: Display) -> None:
+        """This will make the display show the RPM tool"""
         screen.set_display(self.rpm_group)
 
     def update(self, rpm: float) -> None:
+        """Update the RPM number on screen"""
         self._text_rpm.text = f"{rpm:.2f}"
 
     def start_recording_data(self, start_up_time: float) -> None:
+        """This function is called when you want to start recording RPM"""
         self._text_rpm.text = f"{0:.2f}"
         self._text_progress.text = STRINGS.START_TURNTABLE
         time.sleep(start_up_time)  # sleep for 5 sec to let turntable get up to speed
         self._text_progress.text = STRINGS.MEASURING
 
     def stop_recording_data(
-        self, avg_rpm: float, min: float, max: float, wow: float
+        self, rpm_results: tuple[float, float, float, float]
     ) -> None:
+        """Prints the results to the screen from the record data"""
+        avg_rpm, min_rpm, max_rpm, wow = rpm_results
         self._text_progress.hidden = True
         self._text_avg.text = f"{STRINGS.AVG}: {avg_rpm:.2f}"
-        self._text_min_max.text = f"{STRINGS.MIN}: {min:.2f} {STRINGS.MAX}: {max:.2f}"
+        self._text_min_max.text = (
+            f"{STRINGS.MIN}: {min_rpm:.2f} {STRINGS.MAX}: {max_rpm:.2f}"
+        )
         self._text_wow.text = f"{STRINGS.WOW}: {wow:.2f}%"
