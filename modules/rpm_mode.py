@@ -1,55 +1,84 @@
-from .helper import RPM_33, RPM_45, RPM_78
+import time
+from neopixel import NeoPixel
+from .helper import RPM_33, RPM_45, RPM_78, RPM_TEST_START_UP_TIME, RPM_TEST_LEN, PixelColor
 
+MOVING_AVG_SIZE: int = 10
+TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
 
 class RPMMode:
-    def __init__(self) -> None:
+    def __init__(self, pixel: NeoPixel) -> None:
+        self._pixel = pixel
         self._buffer_index: int = 0
-        self._buffer_len: int = 5
+        self._buffer_len: int = MOVING_AVG_SIZE
         self._buffer: list[float] = [0 for _ in range(self._buffer_len)]
         self._rpm_data: list[float] = []
         self._record_data: bool = False
+        self._start_up: bool = False
+        self._time: float = 0
+        self._result: tuple = (0, 0, 0, 0, 0)
 
     def _get_buffer_index(self) -> int:
         """This is for the moving average index so it does not go out of bounds"""
         self._buffer_index = (self._buffer_index + 1) % self._buffer_len
         return self._buffer_index
 
+    def get_results(self) -> tuple[float, float, float, float, float]:
+        return self._result
+
     def update(self, rpm: float) -> float:
         """This returns normalized rpm data"""
         self._buffer[self._get_buffer_index()] = rpm
         new_rpm: float = sum(self._buffer) / self._buffer_len
-        if self._record_data:
+
+        current_time = time.time() - self._time
+        if current_time > RPM_TEST_START_UP_TIME and current_time <= TOTAL_TEST_LEN:
+            self._pixel.fill(PixelColor.GREEN)
+            self._record_data = True
+            self._start_up = False
             self._rpm_data.append(new_rpm)
+        elif self._record_data:
+            self.stop()
+
         return new_rpm
 
     def is_recording_data(self) -> bool:
         """Is used to check if we are capturing rpm data"""
         return self._record_data
 
+    def is_starting_data(self) -> bool:
+        """Is used to check if we are letting the turntable get upto speed"""
+        return self._start_up
+
     def start(self) -> None:
         """Start recording data for the wow and flutter calc"""
-        self._record_data = True
+        self._pixel.fill(PixelColor.YELLOW)
+        self._start_up = True
+        self._time = time.time()
+        self._rpm_data.clear()
 
-    def stop(self) -> tuple[float, float, float, float]:
+    def stop(self) -> None:
         """Stop recording data for the wow and flutter calc"""
+        self._pixel.fill(PixelColor.RED)
         self._record_data = False
+        self._time = 0
 
         # remove any noise or low rpms from the list
         self._rpm_data = [d for d in self._rpm_data if d > 29]
         if self._rpm_data == []:
-            return 0, 0, 0, 0
+            self._result = 0, 0, 0, 0, 0
+            return
 
         rpm_avg: float = sum(self._rpm_data) / len(self._rpm_data)
         nominal_rpm: float = min(
             [RPM_33, RPM_45, RPM_78], key=lambda x: abs(x - rpm_avg)
         )
-        # print(self.flutter(nominal_rpm))
 
-        return (
+        self._result = (
             rpm_avg,
             min(self._rpm_data),
             max(self._rpm_data),
             self.wow(nominal_rpm),
+            self.flutter(nominal_rpm),
         )
 
     def wow(self, nominal_rpm: float) -> float:

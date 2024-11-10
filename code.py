@@ -10,11 +10,12 @@ import neopixel
 # import storage
 # import adafruit_sdcard
 
-from modules.helper import Mode, RPM_TEST_LEN, RPM_TEST_START_UP_TIME
+from modules.helper import Mode, PixelColor
 from modules.display import Display
 from modules.mems_sensor import MemsSensor
 from modules.rpm_mode import RPMMode
-from modules.level_mode import Leveling
+from modules.level_mode import LevelMode
+from modules.rumble_mode import RumbleMode
 from modules.main_screen import MainScreen
 from modules.rpm_screen import RPMScreen
 from modules.level_screen import LevelScreen
@@ -27,106 +28,100 @@ from modules.rumble_screen import RumbleScreen
 # vfs = storage.VfsFat(sdcard)
 # storage.mount(vfs, "/sd")
 
+# Setup Feather board
 i2c = board.STEMMA_I2C()
 pixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
 pixel.brightness = 1.0
-
-rpm_mode = RPMMode()
-level_mode = Leveling()
-
 sensor = MemsSensor(i2c)
 screen = Display(board.I2C())
 
+# Setup the different tools
+rpm_mode = RPMMode(pixel)
+level_mode = LevelMode(pixel)
+rumble_mode = RumbleMode()
+
+# Setup the display logic for the different tools
 main_screen = MainScreen()
 rpm_screen = RPMScreen()
 level_screen = LevelScreen()
 rumble_screen = RumbleScreen()
 
+# Init start up state
 main_screen.show_screen(screen)
-
-tool_mode = Mode.MAIN_MENU
-
+mode = Mode.MAIN_MENU
 timer: float = 0
 
-# TODO REMOVE SLEEPS just check time or something
 
+def update_gui(current_mode: int, new_mode: int) -> int:
+    """This function handles update the gui's mode"""
+    if new_mode == current_mode:
+        return current_mode
+
+    if new_mode == Mode.MAIN_MENU:
+        main_screen.show_screen(screen)
+    elif new_mode == Mode.RPM:
+        rpm_screen.show_screen(screen)
+    elif new_mode == Mode.LEVEL:
+        level_screen.show_screen(screen)
+    elif new_mode == Mode.RUMBLE:
+        rumble_screen.show_screen(screen)
+
+    time.sleep(0.2)
+    return new_mode
+
+
+# Main logic loop
 while True:
     sensor.update()
 
     btn_a, btn_b, btn_c = screen.check_buttons()
 
-    if tool_mode == Mode.MAIN_MENU:
+    if mode == Mode.MAIN_MENU:
         if btn_a:
-            tool_mode = Mode.RPM
-            rpm_screen.show_screen(screen)
-            time.sleep(2)
+            mode = update_gui(current_mode=mode, new_mode=Mode.RPM)
+            sensor.set_offset()
+        elif btn_b:
+            mode = update_gui(current_mode=mode, new_mode=Mode.LEVEL)
+        elif btn_c:
+            mode = update_gui(current_mode=mode, new_mode=Mode.RUMBLE)
             sensor.set_offset()
 
-        if btn_b:
-            tool_mode = Mode.LEVEL
-            level_screen.show_screen(screen)
-            time.sleep(1)
+        pixel.fill(PixelColor.OFF)
 
-        if btn_c:
-            tool_mode = Mode.RUMBLE
-            rumble_screen.show_screen(screen)
-            time.sleep(2)
-            sensor.set_offset()
-        pixel.fill((0, 0, 0))
-
-    elif tool_mode == Mode.RPM:
+    elif mode == Mode.RPM:
         if btn_a:
-            tool_mode = Mode.MAIN_MENU
-            main_screen.show_screen(screen)
-            time.sleep(0.2)
-
-        if btn_b:
-            # Start recording data for wow and flutter
-            pixel.fill((255, 255, 0))
-            sensor.set_offset()
+            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+        elif btn_b:
+            # Start recording rpm data
             rpm_mode.start()
-            rpm_screen.start_recording_data(RPM_TEST_START_UP_TIME)
-            timer = time.time()
-            pixel.fill((0, 255, 0))
 
-        if btn_c:
-            # set rpm
-            pass
-
-        if rpm_mode.is_recording_data() and (time.time() - timer) >= RPM_TEST_LEN:
-            rpm_screen.stop_recording_data(rpm_mode.stop())
-            pixel.fill((255, 0, 0))
-            sensor.reset_offset()
+        elif btn_c:
+            # This sleep is used to avoided capturing the button press
+            time.sleep(0.7)
+            sensor.set_offset()
 
         new_rpm = rpm_mode.update(sensor.get_rpm())
-        rpm_screen.update(new_rpm)
+        rpm_screen.update(rpm_mode, new_rpm)
 
-    elif tool_mode == Mode.LEVEL:
+    elif mode == Mode.LEVEL:
         if btn_a:
-            tool_mode = Mode.MAIN_MENU
-            main_screen.show_screen(screen)
-            time.sleep(0.2)
-
-        if btn_b:
+            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+        elif btn_b:
             pass
-
-        if btn_c:
+        elif btn_c:
             sensor.set_offset()
 
-        x, y, _ = sensor.get_acceleration()
-        new_x, new_y = level_mode.update(x, y)
+        new_x, new_y = level_mode.update(sensor.get_acceleration())
         level_screen.update(new_x, new_y)
 
-    elif tool_mode == Mode.RUMBLE:
+    elif mode == Mode.RUMBLE:
         if btn_a:
-            tool_mode = Mode.MAIN_MENU
-            main_screen.show_screen(screen)
-            time.sleep(0.2)
-
-        if btn_b:
+            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+        elif btn_b:
             pass
-
-        if btn_c:
+        elif btn_c:
             sensor.set_offset()
+
+        rumble_mode.update()
 
     time.sleep(0.016)

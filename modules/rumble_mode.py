@@ -1,4 +1,4 @@
-class Rumble:
+class RumbleMode:
     def __init__(self) -> None:
         pass
 

@@ -1,19 +1,21 @@
+"""This is file describes how the debug the sensor info is displayed"""
+
 import displayio
 from adafruit_display_text import label
 
 from .display import Display
 from .mems_sensor import MemsSensor
-from .helper import WHITE, FONT
+from .helper import DisplayColor, FONT
 
 
 class DebugScreen:
     def __init__(self) -> None:
         self.debug_group = displayio.Group()
 
-        self.text_accel = label.Label(FONT, color=WHITE, x=8, y=8)
-        self.text_gyro = label.Label(FONT, color=WHITE, x=8, y=18)
-        self.text_rpm = label.Label(FONT, color=WHITE, x=8, y=26)
-        self.text_degree = label.Label(FONT, color=WHITE, x=8, y=34)
+        self.text_accel = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=8)
+        self.text_gyro = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=18)
+        self.text_rpm = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=26)
+        self.text_degree = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=34)
 
         self.debug_group.append(self.text_accel)
         self.debug_group.append(self.text_gyro)

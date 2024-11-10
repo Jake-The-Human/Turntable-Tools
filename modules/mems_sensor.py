@@ -8,7 +8,7 @@ class MemsSensor:
 
         self._acceleration: tuple[float, float, float] = self._sensor.acceleration
         self._gyro: tuple[float, float, float] = self._sensor.gyro
-        self.sensor_temp: float = self._sensor.temperature
+        self._sensor_temp: float = self._sensor.temperature
 
         self._acceleration_offset: tuple[float, float, float] = (0, 0, 0)
         self._gyro_offset: tuple[float, float, float] = (0, 0, 0)
@@ -17,7 +17,7 @@ class MemsSensor:
         """Update the sensor position"""
         self._acceleration = self._sensor.acceleration
         self._gyro = self._sensor.gyro
-        self.sensor_temp = self._sensor.temperature
+        self._sensor_temp = self._sensor.temperature
 
     def get_acceleration(self) -> tuple[float, float, float]:
         """Gets the acceleration data"""

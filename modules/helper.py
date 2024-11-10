@@ -6,10 +6,6 @@ import terminalio
 CIRCUITPY_DISPLAY_WIDTH: int = 128
 CIRCUITPY_DISPLAY_HEIGHT: int = 64
 
-# Display colors
-WHITE: int = 0xFFFFFF
-BLACK: int = 0x000000
-
 # Font...
 FONT = terminalio.FONT
 
@@ -21,6 +17,22 @@ RPM_78: float = 78.0
 # These are for when capturing rpm data
 RPM_TEST_START_UP_TIME: float = 10
 RPM_TEST_LEN: float = 30
+
+
+class DisplayColor:
+    """Colors for the display"""
+
+    WHITE: int = 0xFFFFFF
+    BLACK: int = 0x000000
+
+
+class PixelColor:
+    """Colors for NeoPixel"""
+
+    OFF: tuple = (0, 0, 0)
+    GREEN: tuple = (0, 255, 0)
+    YELLOW: tuple = (255, 255, 0)
+    RED: tuple = (255, 0, 0)
 
 
 class Mode:
@@ -49,3 +61,5 @@ class STRINGS:
     MIN = "Min"
     MAX = "Max"
     WOW = "Wow"
+    FLUTTER = "Flutter"
+    WOW_AND_FLUTTER = "W&F"

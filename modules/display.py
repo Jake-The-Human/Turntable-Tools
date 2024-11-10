@@ -19,12 +19,12 @@ DEVICE_ADDRESS = 0x3C
 
 class Display:
     def __init__(self, i2c) -> None:
-        self.button_c = digitalio.DigitalInOut(board.D5)
-        self.button_c.switch_to_input(pull=digitalio.Pull.UP)
-        self.button_b = digitalio.DigitalInOut(board.D6)
-        self.button_b.switch_to_input(pull=digitalio.Pull.UP)
-        self.button_a = digitalio.DigitalInOut(board.D9)
-        self.button_a.switch_to_input(pull=digitalio.Pull.UP)
+        self._button_c = digitalio.DigitalInOut(board.D5)
+        self._button_c.switch_to_input(pull=digitalio.Pull.UP)
+        self._button_b = digitalio.DigitalInOut(board.D6)
+        self._button_b.switch_to_input(pull=digitalio.Pull.UP)
+        self._button_a = digitalio.DigitalInOut(board.D9)
+        self._button_a.switch_to_input(pull=digitalio.Pull.UP)
 
         displayio.release_displays()
 
@@ -32,13 +32,13 @@ class Display:
         self._height: int = CIRCUITPY_DISPLAY_HEIGHT
 
         display_bus = I2CDisplayBus(i2c, device_address=DEVICE_ADDRESS)
-        self.display = SH1107(display_bus, width=self._width, height=self._height)
+        self._display = SH1107(display_bus, width=self._width, height=self._height)
 
     def check_buttons(self) -> tuple[bool, bool, bool]:
         """checks which button is pushed on the screen"""
-        return not self.button_a.value, not self.button_b.value, not self.button_c.value
+        return not self._button_a.value, not self._button_b.value, not self._button_c.value
 
     def set_display(self, group: displayio.Group) -> None:
         """This function tells the display which group to show"""
-        if group != self.display.root_group:
-            self.display.root_group = group
+        if group != self._display.root_group:
+            self._display.root_group = group
