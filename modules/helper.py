@@ -14,9 +14,11 @@ RPM_33: float = 33.3333333333
 RPM_45: float = 45.0
 RPM_78: float = 78.0
 
-# These are for when capturing rpm data
+# These are for when capturing data
 RPM_TEST_START_UP_TIME: float = 10
 RPM_TEST_LEN: float = 30
+RUMBLE_TEST_START_UP_TIME: float = 10
+RUMBLE_TEST_LEN: float = 30
 
 
 class DisplayColor:

@@ -103,8 +103,9 @@ class LevelScreen:
         """This will make the display show the leveling tool"""
         screen.set_display(self._level_group)
 
-    def update(self, x: float, y: float) -> None:
+    def update(self, sensor_data: tuple[float, float]) -> None:
         """This update the x and y values on the display"""
+        x, y = sensor_data
         self._text_level_x_y.text = f"X: {x:.2f} Y: {y:.2f}"
 
         self._north_triangle.hidden = y >= 0

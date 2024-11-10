@@ -1,9 +1,17 @@
 import time
 from neopixel import NeoPixel
-from .helper import RPM_33, RPM_45, RPM_78, RPM_TEST_START_UP_TIME, RPM_TEST_LEN, PixelColor
+from .helper import (
+    RPM_33,
+    RPM_45,
+    RPM_78,
+    RPM_TEST_START_UP_TIME,
+    RPM_TEST_LEN,
+    PixelColor,
+)
 
 MOVING_AVG_SIZE: int = 10
 TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
+
 
 class RPMMode:
     def __init__(self, pixel: NeoPixel) -> None:
@@ -38,6 +46,22 @@ class RPMMode:
             self._rpm_data.append(new_rpm)
         elif self._record_data:
             self.stop()
+            # remove any noise or low rpms from the list
+            self._rpm_data = [d for d in self._rpm_data if d > 29]
+            if self._rpm_data != []:
+                rpm_avg: float = sum(self._rpm_data) / len(self._rpm_data)
+                nominal_rpm: float = min(
+                    [RPM_33, RPM_45, RPM_78], key=lambda x: abs(x - rpm_avg)
+                )
+
+                self._result = (
+                    rpm_avg,
+                    min(self._rpm_data),
+                    max(self._rpm_data),
+                    self.wow(nominal_rpm),
+                    self.flutter(nominal_rpm),
+                )
+                self._rpm_data.clear()
 
         return new_rpm
 
@@ -54,32 +78,12 @@ class RPMMode:
         self._pixel.fill(PixelColor.YELLOW)
         self._start_up = True
         self._time = time.time()
-        self._rpm_data.clear()
 
     def stop(self) -> None:
         """Stop recording data for the wow and flutter calc"""
         self._pixel.fill(PixelColor.RED)
         self._record_data = False
         self._time = 0
-
-        # remove any noise or low rpms from the list
-        self._rpm_data = [d for d in self._rpm_data if d > 29]
-        if self._rpm_data == []:
-            self._result = 0, 0, 0, 0, 0
-            return
-
-        rpm_avg: float = sum(self._rpm_data) / len(self._rpm_data)
-        nominal_rpm: float = min(
-            [RPM_33, RPM_45, RPM_78], key=lambda x: abs(x - rpm_avg)
-        )
-
-        self._result = (
-            rpm_avg,
-            min(self._rpm_data),
-            max(self._rpm_data),
-            self.wow(nominal_rpm),
-            self.flutter(nominal_rpm),
-        )
 
     def wow(self, nominal_rpm: float) -> float:
         """This calculates the wow supposedly..."""

@@ -38,7 +38,7 @@ screen = Display(board.I2C())
 # Setup the different tools
 rpm_mode = RPMMode(pixel)
 level_mode = LevelMode(pixel)
-rumble_mode = RumbleMode()
+rumble_mode = RumbleMode(pixel)
 
 # Setup the display logic for the different tools
 main_screen = MainScreen()
@@ -111,17 +111,17 @@ while True:
         elif btn_c:
             sensor.set_offset()
 
-        new_x, new_y = level_mode.update(sensor.get_acceleration())
-        level_screen.update(new_x, new_y)
+        level_data = level_mode.update(sensor.get_acceleration())
+        level_screen.update(level_data)
 
     elif mode == Mode.RUMBLE:
         if btn_a:
             mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
         elif btn_b:
-            pass
+            rumble_mode.start()
         elif btn_c:
             sensor.set_offset()
-
-        rumble_mode.update()
+        rumble_data = rumble_mode.update(sensor.get_acceleration())
+        rumble_screen.update(rumble_mode)
 
     time.sleep(0.016)
