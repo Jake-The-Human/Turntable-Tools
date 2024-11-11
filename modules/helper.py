@@ -6,6 +6,8 @@ import terminalio
 CIRCUITPY_DISPLAY_WIDTH: int = 128
 CIRCUITPY_DISPLAY_HEIGHT: int = 64
 
+HAS_SD_CARD: bool = True
+
 # Font...
 FONT = terminalio.FONT
 
@@ -40,11 +42,15 @@ class PixelColor:
 class Mode:
     """These constants are used to describe what Mode the device is in"""
 
-    DEBUG = -1
-    MAIN_MENU = 0
-    RPM = 1
-    LEVEL = 2
-    RUMBLE = 3
+    DEBUG = -2
+    MAIN_MENU = -1
+    RPM = 0
+    LEVEL = 1
+    RUMBLE = 2
+    AZIMUTH = 3
+
+    # Total number of selectable modes
+    SELECTABLE_MODES = 4
 
 
 class STRINGS:
@@ -55,6 +61,7 @@ class STRINGS:
     RPM = "RPM"
     LEVEL = "Level"
     RUMBLE = "Rumble"
+    AZIMUTH = "Azimuth (coming soon)"
 
     START_TURNTABLE = "Starting"
     MEASURING = "Measuring"

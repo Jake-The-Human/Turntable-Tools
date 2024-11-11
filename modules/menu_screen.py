@@ -2,11 +2,12 @@ import displayio
 from adafruit_display_text import label
 
 from .display import Display
-from .helper import DisplayColor, FONT, STRINGS, CIRCUITPY_DISPLAY_WIDTH
+from .helper import DisplayColor, STRINGS, Mode, FONT, CIRCUITPY_DISPLAY_WIDTH
 
 
-class MainScreen:
+class MenuScreen:
     def __init__(self) -> None:
+        self._prev_index = Mode.SELECTABLE_MODES - 1
         # Make the display context
         self._main_group = displayio.Group()
 
@@ -42,10 +43,14 @@ class MainScreen:
             FONT, text=STRINGS.AZIMUTH, color=DisplayColor.WHITE, x=menu_x, y=menu_y
         )
 
-        menu_group.append(text_menu_rmp)
-        menu_group.append(text_menu_level)
-        menu_group.append(text_menu_rumble)
-        menu_group.append(text_menu_azimuth)
+        self._menu_options = [
+            text_menu_rmp,
+            text_menu_level,
+            text_menu_rumble,
+            text_menu_azimuth,
+        ]
+        for entry in self._menu_options:
+            menu_group.append(entry)
 
         self._main_group.append(title_group)
         self._main_group.append(menu_group)
@@ -53,3 +58,11 @@ class MainScreen:
     def show_screen(self, screen: Display) -> None:
         """This will make the display show main menu"""
         screen.set_display(self._main_group)
+
+    def update(self, menu_index: int) -> None:
+        self._menu_options[menu_index].background_color = DisplayColor.WHITE
+        self._menu_options[menu_index].color = DisplayColor.BLACK
+
+        self._menu_options[self._prev_index].background_color = DisplayColor.BLACK
+        self._menu_options[self._prev_index].color = DisplayColor.WHITE
+        self._prev_index = menu_index

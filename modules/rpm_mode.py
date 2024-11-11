@@ -6,6 +6,7 @@ from .helper import (
     RPM_78,
     RPM_TEST_START_UP_TIME,
     RPM_TEST_LEN,
+    HAS_SD_CARD,
     PixelColor,
 )
 
@@ -48,6 +49,7 @@ class RPMMode:
             self.stop()
             # remove any noise or low rpms from the list
             self._rpm_data = [d for d in self._rpm_data if d > 29]
+
             if self._rpm_data != []:
                 rpm_avg: float = sum(self._rpm_data) / len(self._rpm_data)
                 nominal_rpm: float = min(
@@ -62,6 +64,12 @@ class RPMMode:
                     self.flutter(nominal_rpm),
                 )
                 self._rpm_data.clear()
+                if HAS_SD_CARD:
+                    with open("/sd/rpm.txt", mode="a", encoding="ascii") as rpm_result:
+                        avg_rpm, min_rpm, max_rpm, wow, flutter = self._result
+                        rpm_result.write(
+                            f"Avg:{avg_rpm}, Min:{min_rpm}, Max:{max_rpm}, Wow:{wow}%, Flutter:{flutter}%\n"
+                        )
 
         return new_rpm
 
