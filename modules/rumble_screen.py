@@ -9,9 +9,9 @@ from .helper import FONT, DisplayColor, STRINGS
 
 class RumbleScreen:
     def __init__(self) -> None:
-        self._rumble_group = displayio.Group()
+        self._rumble_group = displayio.Group(y=8)
         text_rumble = label.Label(
-            FONT, color=DisplayColor.WHITE, text=STRINGS.RUMBLE, scale=2, y=8
+            FONT, color=DisplayColor.WHITE, text=STRINGS.RUMBLE, scale=2, padding_top=2
         )
 
         self._text_progress = label.Label(
