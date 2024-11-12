@@ -1,2 +1,0 @@
-class Rumble:
-    pass

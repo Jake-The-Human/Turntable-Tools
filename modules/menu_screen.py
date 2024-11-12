@@ -15,32 +15,56 @@ class MenuScreen:
         color_palette[0] = DisplayColor.WHITE
 
         # Temp Main Menu elements
-        title_group = displayio.Group(x=2, y=0)
+        title_group = displayio.Group()
         text_title = label.Label(
-            FONT, text=STRINGS.TITLE, color=DisplayColor.WHITE, x=2, y=8
+            FONT, text=STRINGS.TITLE, color=DisplayColor.WHITE, x=0, y=8, padding_left=2
         )
         sm_bitmap = displayio.Bitmap(CIRCUITPY_DISPLAY_WIDTH, 1, 1)
         separator = displayio.TileGrid(sm_bitmap, pixel_shader=color_palette, x=0, y=14)
         title_group.append(text_title)
         title_group.append(separator)
 
-        menu_group = displayio.Group(x=2, y=14)
-        menu_x, menu_y = (2, 8)
-        text_offset = 12
+        menu_group = displayio.Group(x=1, y=14)
+        menu_y = 8
+        text_y_offset = 12
         text_menu_rmp = label.Label(
-            FONT, text=STRINGS.RPM_WOW, color=DisplayColor.WHITE, x=menu_x, y=menu_y
+            FONT,
+            text=STRINGS.RPM_WOW,
+            color=DisplayColor.WHITE,
+            x=0,
+            y=menu_y,
+            padding_left=1,
+            padding_right=CIRCUITPY_DISPLAY_WIDTH,
         )
-        menu_y += text_offset
+        menu_y += text_y_offset
         text_menu_level = label.Label(
-            FONT, text=STRINGS.LEVEL, color=DisplayColor.WHITE, x=menu_x, y=menu_y
+            FONT,
+            text=STRINGS.LEVEL,
+            color=DisplayColor.WHITE,
+            x=0,
+            y=menu_y,
+            padding_left=1,
+            padding_right=CIRCUITPY_DISPLAY_WIDTH,
         )
-        menu_y += text_offset
+        menu_y += text_y_offset
         text_menu_rumble = label.Label(
-            FONT, text=STRINGS.RUMBLE, color=DisplayColor.WHITE, x=menu_x, y=menu_y
+            FONT,
+            text=STRINGS.RUMBLE,
+            color=DisplayColor.WHITE,
+            x=0,
+            y=menu_y,
+            padding_left=1,
+            padding_right=CIRCUITPY_DISPLAY_WIDTH,
         )
-        menu_y += text_offset
+        menu_y += text_y_offset
         text_menu_azimuth = label.Label(
-            FONT, text=STRINGS.AZIMUTH, color=DisplayColor.WHITE, x=menu_x, y=menu_y
+            FONT,
+            text=STRINGS.AZIMUTH,
+            color=DisplayColor.WHITE,
+            x=0,
+            y=menu_y,
+            padding_left=1,
+            padding_right=CIRCUITPY_DISPLAY_WIDTH,
         )
 
         self._menu_options = [

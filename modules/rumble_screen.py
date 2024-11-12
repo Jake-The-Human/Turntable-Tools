@@ -51,11 +51,17 @@ class RumbleScreen:
             self._text_progress.hidden = True
             self._result_group.hidden = False
             avg_x, avg_y, avg_z, rumble_intensity = rumble_mode.get_results()
-            self._text_rumble_intensity.text = f"Intensity: {self._acceleration_to_db(rumble_intensity):.2f}dB"
-            self._text_avg_x.text = f"Avg: X: {self._acceleration_to_db(avg_x):.2f}dB"
-            self._text_avg_y.text = f"Avg: Y: {self._acceleration_to_db(avg_y):.2f}dB"
-            self._text_avg_z.text = f"Avg: Z: {self._acceleration_to_db(avg_z):.2f}db"
+            self._text_rumble_intensity.text = (
+                f"Intensity: {self._acceleration_to_db(rumble_intensity):.2f}dB"
+            )
+            self._text_avg_x.text = f"Avg X: {self._acceleration_to_db(avg_x):.2f}dB"
+            self._text_avg_y.text = f"Avg Y: {self._acceleration_to_db(avg_y):.2f}dB"
+            self._text_avg_z.text = f"Avg Z: {self._acceleration_to_db(avg_z):.2f}db"
 
-    def _acceleration_to_db(self, accel_value: float, A_ref: float=9.81) -> float:
-        """Convert acceleration to decibels (relative to A_ref)."""
-        return 20.0 * log(abs(accel_value) / A_ref, 10) if accel_value != 0 else -float('inf')
+    def _acceleration_to_db(self, accel_value: float, a_ref: float = 9.81) -> float:
+        """Convert acceleration to decibels (relative to a_ref)."""
+        return (
+            20.0 * log(abs(accel_value) / a_ref, 10)
+            if accel_value != 0
+            else -float("inf")
+        )
