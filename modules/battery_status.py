@@ -19,8 +19,11 @@ class BatteryStatus:
             battery_body_bitmap, pixel_shader=color_palette, x=x, y=y
         )
 
-        temp = displayio.Palette(1)
-        temp[0] = DisplayColor.BLACK
+        self._battery_group.append(battery_terminal)
+        self._battery_group.append(battery_body)
+
+        charge_palette = displayio.Palette(1)
+        charge_palette[0] = DisplayColor.BLACK
 
         segment_width = int(21 / 4) - 1
         battery_block_bitmap = displayio.Bitmap(segment_width, 6, 1)
@@ -30,16 +33,12 @@ class BatteryStatus:
             self._battery_blocks.append(
                 displayio.TileGrid(
                     battery_block_bitmap,
-                    pixel_shader=temp,
+                    pixel_shader=charge_palette,
                     x=(block_x + (segment_width * i)) + i,
                     y=y + 1,
                 )
             )
-
-        self._battery_group.append(battery_terminal)
-        self._battery_group.append(battery_body)
-        for segment in self._battery_blocks:
-            self._battery_group.append(segment)
+            self._battery_group.append(self._battery_blocks[i])
 
     def get_group(self) -> displayio.Group:
         return self._battery_group

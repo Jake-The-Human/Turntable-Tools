@@ -7,30 +7,29 @@ from .rumble_mode import RumbleMode
 from .helper import FONT, DisplayColor, STRINGS
 
 
+INTENSITY_INDEX = 0
+AVG_X_INDEX = 1
+AVG_Y_INDEX = 2
+AVG_Z_INDEX = 3
+
+
 class RumbleScreen:
     def __init__(self) -> None:
-        self._rumble_group = displayio.Group(y=8)
-        text_rumble = label.Label(
-            FONT, color=DisplayColor.WHITE, text=STRINGS.RUMBLE, scale=2, padding_top=2
-        )
-
+        self._rumble_group = displayio.Group()
         self._text_progress = label.Label(
             FONT, color=DisplayColor.WHITE, scale=2, x=0, y=28
         )
 
         self._result_group = displayio.Group()
-        self._text_rumble_intensity = label.Label(FONT, color=DisplayColor.WHITE, y=24)
-        self._text_avg_x = label.Label(FONT, color=DisplayColor.WHITE, y=34)
-        self._text_avg_y = label.Label(FONT, color=DisplayColor.WHITE, y=44)
-        self._text_avg_z = label.Label(FONT, color=DisplayColor.WHITE, y=54)
-        self._result_group.hidden = True
+        self._rumble_data = []
+        for i in range(4):
+            self._rumble_data.append(
+                label.Label(FONT, text=" ", color=DisplayColor.WHITE, padding_left=1)
+            )
+            self._rumble_data[i].x = 1
+            self._rumble_data[i].y = 8 + (self._rumble_data[i].height * i)
+            self._result_group.append(self._rumble_data[i])
 
-        self._result_group.append(self._text_rumble_intensity)
-        self._result_group.append(self._text_avg_x)
-        self._result_group.append(self._text_avg_y)
-        self._result_group.append(self._text_avg_z)
-
-        self._rumble_group.append(text_rumble)
         self._rumble_group.append(self._text_progress)
         self._rumble_group.append(self._result_group)
 
@@ -51,12 +50,18 @@ class RumbleScreen:
             self._text_progress.hidden = True
             self._result_group.hidden = False
             avg_x, avg_y, avg_z, rumble_intensity = rumble_mode.get_results()
-            self._text_rumble_intensity.text = (
+            self._rumble_data[INTENSITY_INDEX].text = (
                 f"Intensity: {self._acceleration_to_db(rumble_intensity):.2f}dB"
             )
-            self._text_avg_x.text = f"Avg X: {self._acceleration_to_db(avg_x):.2f}dB"
-            self._text_avg_y.text = f"Avg Y: {self._acceleration_to_db(avg_y):.2f}dB"
-            self._text_avg_z.text = f"Avg Z: {self._acceleration_to_db(avg_z):.2f}db"
+            self._rumble_data[AVG_X_INDEX].text = (
+                f"Avg X: {self._acceleration_to_db(avg_x):.2f}dB"
+            )
+            self._rumble_data[AVG_Y_INDEX].text = (
+                f"Avg Y: {self._acceleration_to_db(avg_y):.2f}dB"
+            )
+            self._rumble_data[AVG_Z_INDEX].text = (
+                f"Avg Z: {self._acceleration_to_db(avg_z):.2f}db"
+            )
 
     def _acceleration_to_db(self, accel_value: float, a_ref: float = 9.81) -> float:
         """Convert acceleration to decibels (relative to a_ref)."""

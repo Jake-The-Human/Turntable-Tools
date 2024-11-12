@@ -9,17 +9,17 @@ from .helper import DisplayColor, FONT, STRINGS
 class RPMScreen:
     def __init__(self) -> None:
         self._rpm_group = displayio.Group()
-        self._text_rpm = label.Label(FONT, color=DisplayColor.WHITE, scale=3, x=0, y=16)
+        self._text_rpm = label.Label(FONT, color=DisplayColor.WHITE, scale=3, y=16)
         text_rpm_unit = label.Label(
             FONT, text=STRINGS.RPM, color=DisplayColor.WHITE, scale=2, x=88, y=16
         )
         self._text_progress = label.Label(
-            FONT, color=DisplayColor.WHITE, scale=2, x=0, y=42
+            FONT, color=DisplayColor.WHITE, scale=2, y=42
         )
         self._result_group = displayio.Group()
-        self._text_avg = label.Label(FONT, color=DisplayColor.WHITE, x=0, y=36)
-        self._text_min_max = label.Label(FONT, color=DisplayColor.WHITE, x=0, y=45)
-        self._text_wow = label.Label(FONT, color=DisplayColor.WHITE, x=0, y=54)
+        self._text_avg = label.Label(FONT, color=DisplayColor.WHITE, y=36)
+        self._text_min_max = label.Label(FONT, color=DisplayColor.WHITE, y=45)
+        self._text_wow = label.Label(FONT, color=DisplayColor.WHITE, y=54)
 
         self._result_group.append(self._text_avg)
         self._result_group.append(self._text_min_max)
