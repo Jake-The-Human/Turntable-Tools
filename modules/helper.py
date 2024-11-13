@@ -1,18 +1,25 @@
 """Constants used through out the program"""
 
+import displayio
 import terminalio
 
 # SH1107 is vertically oriented 64x128
 CIRCUITPY_DISPLAY_WIDTH: int = 128
 CIRCUITPY_DISPLAY_HEIGHT: int = 64
 
+REFERENCE_VOLTAGE: float = 3.3
+BATTERY_MIN_VOLTAGE: float = 3.2
+BATTERY_MAX_VOLTAGE: float = 4.2
+
 HAS_SD_CARD: bool = True
+HAS_BATTERY_STATUS_CIRCUIT: bool = False
+HAS_AZIMUTH_CIRCUIT: bool = False
 
 # Font...
 FONT = terminalio.FONT
 
 # Common RPMs of turntables
-RPM_33: float = 33.3333333333
+RPM_33: float = 100.0 / 3.0
 RPM_45: float = 45.0
 RPM_78: float = 78.0
 
@@ -21,6 +28,13 @@ RPM_TEST_START_UP_TIME: float = 10
 RPM_TEST_LEN: float = 30
 RUMBLE_TEST_START_UP_TIME: float = 10
 RUMBLE_TEST_LEN: float = 30
+
+
+BLACK_PALETTE = displayio.Palette(1)
+BLACK_PALETTE[0] = 0x000000
+
+WHITE_PALETTE = displayio.Palette(1)
+WHITE_PALETTE[0] = 0xFFFFFF
 
 
 class DisplayColor:
@@ -48,9 +62,7 @@ class Mode:
     LEVEL = 1
     RUMBLE = 2
     AZIMUTH = 3
-
-    # Total number of selectable modes
-    SELECTABLE_MODES = 4
+    ABOUT = 4
 
 
 class STRINGS:
@@ -61,7 +73,8 @@ class STRINGS:
     RPM = "RPM"
     LEVEL = "Level"
     RUMBLE = "Rumble"
-    AZIMUTH = "Azimuth (coming soon)"
+    AZIMUTH = "Azimuth"
+    ABOUT = "About"
 
     START_TURNTABLE = "Starting"
     MEASURING = "Measuring"
@@ -72,3 +85,5 @@ class STRINGS:
     WOW = "Wow"
     FLUTTER = "Flutter"
     WOW_AND_FLUTTER = "W&F"
+
+    NO_AZIMUTH = "Azimuth circuit is\nnot present."

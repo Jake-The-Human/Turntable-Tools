@@ -5,9 +5,12 @@ from adafruit_display_text import label
 from .display import Display
 from .helper import (
     DisplayColor,
+    STRINGS,
     FONT,
     CIRCUITPY_DISPLAY_WIDTH,
     CIRCUITPY_DISPLAY_HEIGHT,
+    WHITE_PALETTE,
+    BLACK_PALETTE,
 )
 
 
@@ -23,20 +26,17 @@ class LevelScreen:
         box_width = int(CIRCUITPY_DISPLAY_WIDTH / 3)
         box_height = int(CIRCUITPY_DISPLAY_HEIGHT / 3)
         color_bitmap = displayio.Bitmap(box_width, box_height, 1)
-        color_palette = displayio.Palette(1)
-        color_palette[0] = DisplayColor.WHITE
 
         bg_sprite = displayio.TileGrid(
-            color_bitmap, pixel_shader=color_palette, x=box_width, y=box_height
+            color_bitmap, pixel_shader=WHITE_PALETTE, x=box_width, y=box_height
         )
         self._level_group.append(bg_sprite)
 
         border: int = 2
         inner_bitmap = displayio.Bitmap(box_width - border, box_height - border, 1)
-        inner_palette = displayio.Palette(1)
-        inner_palette[0] = DisplayColor.BLACK
+
         inner_sprite = displayio.TileGrid(
-            inner_bitmap, pixel_shader=inner_palette, x=box_width + 1, y=box_height + 1
+            inner_bitmap, pixel_shader=BLACK_PALETTE, x=box_width + 1, y=box_height + 1
         )
         self._level_group.append(inner_sprite)
 
@@ -66,16 +66,16 @@ class LevelScreen:
         ]
 
         self._north_triangle = Polygon(
-            pixel_shader=color_palette, points=north_triangle_points, x=0, y=0
+            pixel_shader=WHITE_PALETTE, points=north_triangle_points, x=0, y=0
         )
         self._east_triangle = Polygon(
-            pixel_shader=color_palette, points=east_triangle_points, x=0, y=0
+            pixel_shader=WHITE_PALETTE, points=east_triangle_points, x=0, y=0
         )
         self._south_triangle = Polygon(
-            pixel_shader=color_palette, points=south_triangle_points, x=0, y=0
+            pixel_shader=WHITE_PALETTE, points=south_triangle_points, x=0, y=0
         )
         self._west_triangle = Polygon(
-            pixel_shader=color_palette, points=west_triangle_points, x=0, y=0
+            pixel_shader=WHITE_PALETTE, points=west_triangle_points, x=0, y=0
         )
 
         self._north_triangle.hidden = True
@@ -91,7 +91,7 @@ class LevelScreen:
         # if you can read this then you are good to go!
         text_leveled = label.Label(
             FONT,
-            text="level",
+            text=STRINGS.LEVEL,
             color=DisplayColor.BLACK,
             x=box_width + 7,
             y=box_height + int(box_height / 2),

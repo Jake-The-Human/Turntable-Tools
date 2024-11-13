@@ -10,15 +10,15 @@ from .helper import (
     PixelColor,
 )
 
-MOVING_AVG_SIZE: int = 10
-TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
+_MOVING_AVG_SIZE: int = 10
+_TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
 
 
 class RPMMode:
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel = pixel
         self._buffer_index: int = 0
-        self._buffer_len: int = MOVING_AVG_SIZE
+        self._buffer_len: int = _MOVING_AVG_SIZE
         self._buffer: list[float] = [0 for _ in range(self._buffer_len)]
         self._rpm_data: list[float] = []
         self._record_data: bool = False
@@ -40,7 +40,7 @@ class RPMMode:
         new_rpm: float = sum(self._buffer) / self._buffer_len
 
         current_time = time.time() - self._time
-        if current_time > RPM_TEST_START_UP_TIME and current_time <= TOTAL_TEST_LEN:
+        if current_time > RPM_TEST_START_UP_TIME and current_time <= _TOTAL_TEST_LEN:
             self._pixel.fill(PixelColor.GREEN)
             self._record_data = True
             self._start_up = False
@@ -65,11 +65,7 @@ class RPMMode:
                 )
                 self._rpm_data.clear()
                 if HAS_SD_CARD:
-                    with open("/sd/rpm.txt", mode="a", encoding="ascii") as rpm_result:
-                        avg_rpm, min_rpm, max_rpm, wow, flutter = self._result
-                        rpm_result.write(
-                            f"Avg:{avg_rpm}, Min:{min_rpm}, Max:{max_rpm}, Wow:{wow}%, Flutter:{flutter}%\n"
-                        )
+                    self.write_results_to_file()
 
         return new_rpm
 
@@ -92,6 +88,13 @@ class RPMMode:
         self._pixel.fill(PixelColor.RED)
         self._record_data = False
         self._time = 0
+
+    def write_results_to_file(self) -> None:
+        with open("/sd/rpm.txt", mode="a", encoding="ascii") as rpm_result:
+            avg_rpm, min_rpm, max_rpm, wow, flutter = self._result
+            rpm_result.write(
+                f"Avg:{avg_rpm}, Min:{min_rpm}, Max:{max_rpm}, Wow:{wow}%, Flutter:{flutter}%\n"
+            )
 
     def wow(self, nominal_rpm: float) -> float:
         """This calculates the wow supposedly..."""

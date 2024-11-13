@@ -6,9 +6,9 @@ class MemsSensor:
     def __init__(self, i2c):
         self._sensor = LSM6DS3(i2c)
 
-        self._acceleration: tuple[float, float, float] = self._sensor.acceleration
-        self._gyro: tuple[float, float, float] = self._sensor.gyro
-        self._sensor_temp: float = self._sensor.temperature
+        self._acceleration: tuple[float, float, float] = (0, 0, 0)
+        self._gyro: tuple[float, float, float] = (0, 0, 0)
+        self._sensor_temp: float = 0.0
 
         self._acceleration_offset: tuple[float, float, float] = (0, 0, 0)
         self._gyro_offset: tuple[float, float, float] = (0, 0, 0)

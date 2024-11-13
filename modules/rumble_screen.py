@@ -7,10 +7,10 @@ from .rumble_mode import RumbleMode
 from .helper import FONT, DisplayColor, STRINGS
 
 
-INTENSITY_INDEX = 0
-AVG_X_INDEX = 1
-AVG_Y_INDEX = 2
-AVG_Z_INDEX = 3
+_INTENSITY_INDEX = 0
+_AVG_X_INDEX = 1
+_AVG_Y_INDEX = 2
+_AVG_Z_INDEX = 3
 
 
 class RumbleScreen:
@@ -50,16 +50,16 @@ class RumbleScreen:
             self._text_progress.hidden = True
             self._result_group.hidden = False
             avg_x, avg_y, avg_z, rumble_intensity = rumble_mode.get_results()
-            self._rumble_data[INTENSITY_INDEX].text = (
+            self._rumble_data[_INTENSITY_INDEX].text = (
                 f"Intensity: {self._acceleration_to_db(rumble_intensity):.2f}dB"
             )
-            self._rumble_data[AVG_X_INDEX].text = (
+            self._rumble_data[_AVG_X_INDEX].text = (
                 f"Avg X: {self._acceleration_to_db(avg_x):.2f}dB"
             )
-            self._rumble_data[AVG_Y_INDEX].text = (
+            self._rumble_data[_AVG_Y_INDEX].text = (
                 f"Avg Y: {self._acceleration_to_db(avg_y):.2f}dB"
             )
-            self._rumble_data[AVG_Z_INDEX].text = (
+            self._rumble_data[_AVG_Z_INDEX].text = (
                 f"Avg Z: {self._acceleration_to_db(avg_z):.2f}db"
             )
 

@@ -4,15 +4,15 @@ from neopixel import NeoPixel
 
 from .helper import PixelColor, RUMBLE_TEST_START_UP_TIME, RUMBLE_TEST_LEN
 
-MOVING_AVG_SIZE: int = 10
-TOTAL_TEST_LEN = RUMBLE_TEST_LEN + RUMBLE_TEST_START_UP_TIME
+_MOVING_AVG_SIZE: int = 10
+_TOTAL_TEST_LEN = RUMBLE_TEST_LEN + RUMBLE_TEST_START_UP_TIME
 
 
 class RumbleMode:
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel = pixel
         self._buffer_index: int = 0
-        self._buffer_len: int = MOVING_AVG_SIZE
+        self._buffer_len: int = _MOVING_AVG_SIZE
         self._buffer_x: list[float] = [0 for _ in range(self._buffer_len)]
         self._buffer_y: list[float] = [0 for _ in range(self._buffer_len)]
         self._buffer_z: list[float] = [0 for _ in range(self._buffer_len)]
@@ -59,7 +59,7 @@ class RumbleMode:
         ) ** 0.5
 
         current_time = time.time() - self._time
-        if current_time > RUMBLE_TEST_START_UP_TIME and current_time <= TOTAL_TEST_LEN:
+        if current_time > RUMBLE_TEST_START_UP_TIME and current_time <= _TOTAL_TEST_LEN:
             self._pixel.fill(PixelColor.GREEN)
             self._record_data = True
             self._start_up = False
