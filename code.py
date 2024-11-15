@@ -2,10 +2,9 @@
 
 import time
 import board
-
 import neopixel
 
-from modules.helper import Mode, PixelColor, HAS_SD_CARD
+from modules.helper import UpdateGui, Mode, PixelColor, HAS_SD_CARD
 from modules.display import Display
 from modules.mems_sensor import MemsSensor
 from modules.buttons import Buttons
@@ -55,12 +54,13 @@ azimuth_screen = AzimuthScreen()
 about_screen = AboutScreen()
 
 # Init start up state
+update_gui = UpdateGui()
+update_gui.callback = lambda: main_screen.update()
 main_screen.show_screen(screen)
 mode = Mode.MAIN_MENU
-timer: float = 0
 
 
-def update_gui(current_mode: int, new_mode: int) -> int:
+def change_mode(current_mode: int, new_mode: int) -> int:
     """This function handles update the gui's mode"""
     if new_mode == current_mode:
         return current_mode
@@ -91,18 +91,18 @@ while True:
             main_screen.up()
             # time.sleep(0.2)
         elif buttons.b_pressed():
-            mode = update_gui(current_mode=mode, new_mode=main_screen.select())
+            mode = change_mode(current_mode=mode, new_mode=main_screen.select())
             # time.sleep(0.2)
         elif buttons.c_pressed():
             main_screen.down()
             # time.sleep(0.2)
 
-        main_screen.update()
+        update_gui.callback = main_screen.update
         pixel.fill(PixelColor.OFF)
 
     elif mode == Mode.RPM:
         if buttons.a_pressed():
-            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
         elif buttons.b_pressed():
             # Start recording rpm data
             rpm_mode.start()
@@ -113,42 +113,43 @@ while True:
             sensor.set_offset()
 
         new_rpm = rpm_mode.update(sensor.get_rpm())
-        rpm_screen.update(rpm_mode, new_rpm)
+        update_gui.callback = lambda: rpm_screen.update(rpm_mode, new_rpm)
 
     elif mode == Mode.LEVEL:
         if buttons.a_pressed():
-            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
         elif buttons.b_pressed():
             pass
         elif buttons.c_pressed():
             sensor.set_offset()
 
         level_data = level_mode.update(sensor.get_acceleration())
-        level_screen.update(level_data)
+        update_gui.callback = lambda: level_screen.update(level_data)
 
     elif mode == Mode.RUMBLE:
         if buttons.a_pressed():
-            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
         elif buttons.b_pressed():
             rumble_mode.start()
         elif buttons.c_pressed():
             sensor.set_offset()
 
         rumble_data = rumble_mode.update(sensor.get_acceleration())
-        rumble_screen.update(rumble_mode)
+        update_gui.callback = lambda: rumble_screen.update(rumble_mode)
 
     elif mode == Mode.AZIMUTH:
         if buttons.a_pressed():
-            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
         elif buttons.b_pressed():
             pass
         elif buttons.c_pressed():
             pass
 
         azimuth_mode.update()
-        azimuth_screen.update()
+        update_gui.callback = azimuth_screen.update
     elif mode == Mode.ABOUT:
         if buttons.a_pressed():
-            mode = update_gui(current_mode=mode, new_mode=Mode.MAIN_MENU)
+            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
 
-    time.sleep(0.016)
+    update_gui.update()
+    time.sleep(0.001)

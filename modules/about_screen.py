@@ -1,3 +1,5 @@
+"""This file is about the about page on the device"""
+
 import displayio
 from adafruit_display_text import label
 

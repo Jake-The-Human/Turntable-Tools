@@ -3,7 +3,7 @@ from adafruit_display_text import label
 
 from .display import Display
 from .rpm_mode import RPMMode
-from .helper import DisplayColor, FONT, STRINGS
+from .helper import DisplayColor, STRINGS, FONT
 
 
 class RPMScreen:
@@ -13,13 +13,12 @@ class RPMScreen:
         text_rpm_unit = label.Label(
             FONT, text=STRINGS.RPM, color=DisplayColor.WHITE, scale=2, x=88, y=16
         )
-        self._text_progress = label.Label(
-            FONT, color=DisplayColor.WHITE, scale=2, y=42
-        )
+        self._text_progress = label.Label(FONT, color=DisplayColor.WHITE, scale=2, y=42)
+
         self._result_group = displayio.Group()
         self._text_avg = label.Label(FONT, color=DisplayColor.WHITE, y=36)
-        self._text_min_max = label.Label(FONT, color=DisplayColor.WHITE, y=45)
-        self._text_wow = label.Label(FONT, color=DisplayColor.WHITE, y=54)
+        self._text_min_max = label.Label(FONT, color=DisplayColor.WHITE, y=46)
+        self._text_wow = label.Label(FONT, color=DisplayColor.WHITE, y=56)
 
         self._result_group.append(self._text_avg)
         self._result_group.append(self._text_min_max)
@@ -56,4 +55,5 @@ class RPMScreen:
             self._text_wow.text = (
                 f"{STRINGS.WOW_AND_FLUTTER}: {wow:.2f}% {flutter:.2f}%"
             )
+
         self._text_rpm.text = f"{rpm:.2f}"

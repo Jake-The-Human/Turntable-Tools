@@ -1,7 +1,6 @@
 import time
 from neopixel import NeoPixel
 
-
 from .helper import PixelColor, RUMBLE_TEST_START_UP_TIME, RUMBLE_TEST_LEN
 
 _MOVING_AVG_SIZE: int = 10
@@ -30,7 +29,6 @@ class RumbleMode:
         """This is for the moving average index so it does not go out of bounds"""
         self._buffer_index = (self._buffer_index + 1) % self._buffer_len
         return self._buffer_index
-
 
     def get_results(self) -> tuple[float, float, float, float]:
         return self._result

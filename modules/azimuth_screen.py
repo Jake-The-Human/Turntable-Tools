@@ -11,7 +11,7 @@ class AzimuthScreen:
         if not HAS_AZIMUTH_CIRCUIT:
             text_title = label.Label(
                 FONT,
-                text=STRINGS.NO_AZIMUTH,
+                text=f"{STRINGS.AZIMUTH} {STRINGS.NO_CIRCUIT}",
                 color=DisplayColor.WHITE,
                 y=8,
                 padding_left=2,

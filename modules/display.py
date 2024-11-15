@@ -1,26 +1,21 @@
 """This file wraps the screen logic"""
 
 import displayio
+from adafruit_displayio_sh1107 import SH1107
 
 try:
     from i2cdisplaybus import I2CDisplayBus
 except ImportError:
     from displayio import I2CDisplay as I2CDisplayBus
 
-from adafruit_displayio_sh1107 import SH1107
-
-from .helper import CIRCUITPY_DISPLAY_WIDTH, CIRCUITPY_DISPLAY_HEIGHT
-
-
-_DEVICE_ADDRESS = 0x3C
+from .helper import DISPLAY_ADDRESS, CIRCUITPY_DISPLAY_WIDTH, CIRCUITPY_DISPLAY_HEIGHT
 
 
 class Display:
     def __init__(self, i2c) -> None:
         displayio.release_displays()
-        display_bus = I2CDisplayBus(i2c, device_address=_DEVICE_ADDRESS)
         self._display = SH1107(
-            display_bus,
+            bus=I2CDisplayBus(i2c, device_address=DISPLAY_ADDRESS),
             width=CIRCUITPY_DISPLAY_WIDTH,
             height=CIRCUITPY_DISPLAY_HEIGHT,
         )

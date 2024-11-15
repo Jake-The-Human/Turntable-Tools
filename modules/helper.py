@@ -1,16 +1,27 @@
 """Constants used through out the program"""
 
-import displayio
+import time
+import board
 import terminalio
+from displayio import Palette
+
+# Pins and address
+DISPLAY_ADDRESS = 0x3C
+A_BUTTON_PIN = board.D9
+B_BUTTON_PIN = board.D6
+C_BUTTON_PIN = board.D5
+BATTERY_VOLTAGE_PIN = board.A3
 
 # SH1107 is vertically oriented 64x128
 CIRCUITPY_DISPLAY_WIDTH: int = 128
 CIRCUITPY_DISPLAY_HEIGHT: int = 64
 
+# Battery info
 REFERENCE_VOLTAGE: float = 3.3
-BATTERY_MIN_VOLTAGE: float = 3.2
+BATTERY_MIN_VOLTAGE: float = 3.0
 BATTERY_MAX_VOLTAGE: float = 4.2
 
+# Turn extra features on/off
 HAS_SD_CARD: bool = True
 HAS_BATTERY_STATUS_CIRCUIT: bool = False
 HAS_AZIMUTH_CIRCUIT: bool = False
@@ -23,18 +34,38 @@ RPM_33: float = 100.0 / 3.0
 RPM_45: float = 45.0
 RPM_78: float = 78.0
 
+# Leveling debug
+SHOW_X_Y = True
+
 # These are for when capturing data
 RPM_TEST_START_UP_TIME: float = 10
 RPM_TEST_LEN: float = 30
 RUMBLE_TEST_START_UP_TIME: float = 10
 RUMBLE_TEST_LEN: float = 30
 
-
-BLACK_PALETTE = displayio.Palette(1)
+# Black and white color palettes
+BLACK_PALETTE = Palette(1)
 BLACK_PALETTE[0] = 0x000000
 
-WHITE_PALETTE = displayio.Palette(1)
+WHITE_PALETTE = Palette(1)
 WHITE_PALETTE[0] = 0xFFFFFF
+
+
+class UpdateGui:
+    """The purpose of this class is to separate the data collection from the screen updating"""
+
+    def __init__(self) -> None:
+        self.gui_update_time: float = 0.033
+        self.timer: float = time.time()
+        self.callback: any
+
+    def update(self) -> None:
+        if (
+            self.callback is not None
+            and time.time() - self.timer >= self.gui_update_time
+        ):
+            self.callback()
+            self.timer = time.time()
 
 
 class DisplayColor:
@@ -86,4 +117,4 @@ class STRINGS:
     FLUTTER = "Flutter"
     WOW_AND_FLUTTER = "W&F"
 
-    NO_AZIMUTH = "Azimuth circuit is\nnot present."
+    NO_CIRCUIT = "circuit is\nnot present."

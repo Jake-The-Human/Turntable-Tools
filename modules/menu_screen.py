@@ -28,13 +28,6 @@ class MenuScreen:
         separator = displayio.TileGrid(
             separator_bitmap, pixel_shader=WHITE_PALETTE, y=14
         )
-        self._battery_status = BatteryStatus(CIRCUITPY_DISPLAY_WIDTH - 24, 4)
-        title_group.append(text_title)
-
-        if HAS_BATTERY_STATUS_CIRCUIT:
-            title_group.append(self._battery_status.get_group())
-
-        title_group.append(separator)
 
         menu_items = [
             STRINGS.RPM,
@@ -46,6 +39,13 @@ class MenuScreen:
 
         self._menu = Menu(items=menu_items, visible_items=4, x=2, y=22)
 
+        title_group.append(text_title)
+
+        if HAS_BATTERY_STATUS_CIRCUIT:
+            self._battery_status = BatteryStatus(CIRCUITPY_DISPLAY_WIDTH - 24, 4)
+            title_group.append(self._battery_status.get_group())
+
+        title_group.append(separator)
         self._main_group.append(title_group)
         self._main_group.append(self._menu.group)
 
@@ -66,4 +66,6 @@ class MenuScreen:
         screen.set_display(self._main_group)
 
     def update(self) -> None:
-        self._battery_status.update()
+        """Update the Menu screen"""
+        if HAS_BATTERY_STATUS_CIRCUIT:
+            self._battery_status.update()

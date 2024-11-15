@@ -14,6 +14,28 @@ _MOVING_AVG_SIZE: int = 10
 _TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
 
 
+def _wow(rpm_data: list[float], nominal_rpm: float) -> float:
+    """This calculates the wow supposedly..."""
+    # Calculate the difference between each measured RPM and the nominal RPM
+    deviations = [abs(rpm - nominal_rpm) for rpm in rpm_data]
+
+    # Calculate the wow as the maximum deviation (slow speed variations)
+    wow = max(deviations) / nominal_rpm * 100
+    return wow
+
+
+def _flutter(rpm_data: list[float], nominal_rpm: float) -> float:
+    """NOTE flutter but not convinced i need this"""
+    # Calculate short-term deviations between consecutive RPM values
+    flutter_deviations = [
+        abs(rpm_data[i] - rpm_data[i - 1]) for i in range(1, len(rpm_data))
+    ]
+
+    # Calculate flutter as the maximum short-term deviation, in percentage terms
+    flutter = max(flutter_deviations) / nominal_rpm * 100  # Convert to percentage
+    return flutter
+
+
 class RPMMode:
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel = pixel
@@ -60,8 +82,8 @@ class RPMMode:
                     rpm_avg,
                     min(self._rpm_data),
                     max(self._rpm_data),
-                    self.wow(nominal_rpm),
-                    self.flutter(nominal_rpm),
+                    _wow(self._rpm_data, nominal_rpm),
+                    _flutter(self._rpm_data, nominal_rpm),
                 )
                 self._rpm_data.clear()
                 if HAS_SD_CARD:
@@ -95,24 +117,3 @@ class RPMMode:
             rpm_result.write(
                 f"Avg:{avg_rpm}, Min:{min_rpm}, Max:{max_rpm}, Wow:{wow}%, Flutter:{flutter}%\n"
             )
-
-    def wow(self, nominal_rpm: float) -> float:
-        """This calculates the wow supposedly..."""
-        # Calculate the difference between each measured RPM and the nominal RPM
-        deviations = [abs(rpm - nominal_rpm) for rpm in self._rpm_data]
-
-        # Calculate the wow as the maximum deviation (slow speed variations)
-        wow = max(deviations) / nominal_rpm * 100
-        return wow
-
-    def flutter(self, nominal_rpm: float) -> float:
-        """NOTE flutter but not convinced i need this"""
-        # Calculate short-term deviations between consecutive RPM values
-        flutter_deviations = [
-            abs(self._rpm_data[i] - self._rpm_data[i - 1])
-            for i in range(1, len(self._rpm_data))
-        ]
-
-        # Calculate flutter as the maximum short-term deviation, in percentage terms
-        flutter = max(flutter_deviations) / nominal_rpm * 100  # Convert to percentage
-        return flutter

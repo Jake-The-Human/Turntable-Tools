@@ -8,6 +8,9 @@ class Menu:
     def __init__(
         self, items: list[str], visible_items: int = 1, x: int = 0, y: int = 0
     ) -> None:
+        self._item_index: int = 0
+        self._menu_index: int = 0
+        self._prev_index: int = -1
         self.menu_items_names: list[str] = items
         self.group = displayio.Group(x=x, y=y)
         self._menu_items: list[label.Label] = []
@@ -23,14 +26,8 @@ class Menu:
             self._menu_items.append(new_item)
             self.group.append(new_item)
 
-        self._item_index: int = 0
-        self._menu_index: int = 0
-        self._prev_index: int = -1
-
         self._menu_items[self._menu_index].background_color = DisplayColor.WHITE
         self._menu_items[self._menu_index].color = DisplayColor.BLACK
-
-        self._update()
 
     def __len__(self):
         return len(self._menu_items)
@@ -69,9 +66,3 @@ class Menu:
 
         # self._menu_items[self._menu_index].background_color = DisplayColor.WHITE
         # self._menu_items[self._menu_index].color = DisplayColor.BLACK
-
-        # if self._prev_index >= 0:
-        #     self._menu_items[self._prev_index].background_color = None
-        #     self._menu_items[self._prev_index].color = DisplayColor.WHITE
-
-        # self._prev_index = self._menu_index
