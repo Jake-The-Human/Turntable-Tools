@@ -44,7 +44,7 @@ class RPMScreen:
             self._text_progress.text = STRINGS.START_TURNTABLE
 
         elif not rpm_mode.is_recording_data():
-            avg_rpm, min_rpm, max_rpm, wow, flutter = rpm_mode.get_results()
+            avg_rpm, min_rpm, max_rpm, wow, flutter = rpm_mode.result
             self._text_progress.hidden = True
             self._result_group.hidden = False
 

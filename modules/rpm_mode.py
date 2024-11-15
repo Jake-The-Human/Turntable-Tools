@@ -1,5 +1,6 @@
 import time
 from neopixel import NeoPixel
+from .moving_average import MovingAvg
 from .helper import (
     RPM_33,
     RPM_45,
@@ -10,7 +11,6 @@ from .helper import (
     PixelColor,
 )
 
-_MOVING_AVG_SIZE: int = 10
 _TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
 
 
@@ -39,27 +39,16 @@ def _flutter(rpm_data: list[float], nominal_rpm: float) -> float:
 class RPMMode:
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel = pixel
-        self._buffer_index: int = 0
-        self._buffer_len: int = _MOVING_AVG_SIZE
-        self._buffer: list[float] = [0 for _ in range(self._buffer_len)]
         self._rpm_data: list[float] = []
+
         self._record_data: bool = False
         self._start_up: bool = False
         self._time: float = 0
-        self._result: tuple = (0, 0, 0, 0, 0)
-
-    def _get_buffer_index(self) -> int:
-        """This is for the moving average index so it does not go out of bounds"""
-        self._buffer_index = (self._buffer_index + 1) % self._buffer_len
-        return self._buffer_index
-
-    def get_results(self) -> tuple[float, float, float, float, float]:
-        return self._result
+        self.result: tuple = (0, 0, 0, 0, 0)
 
     def update(self, rpm: float) -> float:
         """This returns normalized rpm data"""
-        self._buffer[self._get_buffer_index()] = rpm
-        new_rpm: float = sum(self._buffer) / self._buffer_len
+        new_rpm: float = rpm
 
         current_time = time.time() - self._time
         if current_time > RPM_TEST_START_UP_TIME and current_time <= _TOTAL_TEST_LEN:
@@ -78,7 +67,7 @@ class RPMMode:
                     [RPM_33, RPM_45, RPM_78], key=lambda x: abs(x - rpm_avg)
                 )
 
-                self._result = (
+                self.result = (
                     rpm_avg,
                     min(self._rpm_data),
                     max(self._rpm_data),
@@ -113,7 +102,7 @@ class RPMMode:
 
     def write_results_to_file(self) -> None:
         with open("/sd/rpm.txt", mode="a", encoding="ascii") as rpm_result:
-            avg_rpm, min_rpm, max_rpm, wow, flutter = self._result
+            avg_rpm, min_rpm, max_rpm, wow, flutter = self.result
             rpm_result.write(
                 f"Avg:{avg_rpm}, Min:{min_rpm}, Max:{max_rpm}, Wow:{wow}%, Flutter:{flutter}%\n"
             )

@@ -42,6 +42,8 @@ RPM_TEST_START_UP_TIME: float = 10
 RPM_TEST_LEN: float = 30
 RUMBLE_TEST_START_UP_TIME: float = 10
 RUMBLE_TEST_LEN: float = 30
+CALIBRATION_TEST_START_UP_TIME: float = 5
+CALIBRATION_TEST_LEN: float = 5
 
 # Black and white color palettes
 BLACK_PALETTE = Palette(1)
@@ -93,7 +95,8 @@ class Mode:
     LEVEL = 1
     RUMBLE = 2
     AZIMUTH = 3
-    ABOUT = 4
+    CALIBRATE = 4
+    ABOUT = 5
 
 
 class STRINGS:
@@ -105,10 +108,12 @@ class STRINGS:
     LEVEL = "Level"
     RUMBLE = "Rumble"
     AZIMUTH = "Azimuth"
+    CALIBRATE = "Calibrate"
     ABOUT = "About"
 
     START_TURNTABLE = "Starting"
     MEASURING = "Measuring"
+    CALIBRATE = "Calibrate"
 
     AVG = "Avg"
     MIN = "Min"
@@ -116,5 +121,6 @@ class STRINGS:
     WOW = "Wow"
     FLUTTER = "Flutter"
     WOW_AND_FLUTTER = "W&F"
+    INTENSITY = "Intensity"
 
-    NO_CIRCUIT = "circuit is\nnot present."
+    NO_CIRCUIT = "Circuit is not\npresent."

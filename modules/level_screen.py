@@ -97,8 +97,9 @@ class LevelScreen:
         x, y = sensor_data
         if SHOW_X_Y:
             self._text_level_x_y.text = f"X:{x:.2f} Y:{y:.2f}"
-
-        self._triangles[_NORTH].hidden = y >= 0
-        self._triangles[_EAST].hidden = x <= 0
-        self._triangles[_SOUTH].hidden = y <= 0
-        self._triangles[_WEST].hidden = x >= 0
+        x_rounded = round(x, 1)
+        y_rounded = round(y, 1)
+        self._triangles[_NORTH].hidden = y_rounded > 0
+        self._triangles[_EAST].hidden = x_rounded < 0
+        self._triangles[_SOUTH].hidden = y_rounded < 0
+        self._triangles[_WEST].hidden = x_rounded > 0

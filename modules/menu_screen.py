@@ -34,6 +34,7 @@ class MenuScreen:
             STRINGS.LEVEL,
             STRINGS.RUMBLE,
             STRINGS.AZIMUTH,
+            STRINGS.CALIBRATE,
             STRINGS.ABOUT,
         ]
 

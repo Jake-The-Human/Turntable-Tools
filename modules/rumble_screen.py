@@ -23,9 +23,7 @@ def _acceleration_to_db(accel_value: float, a_ref: float = 9.81) -> float:
 class RumbleScreen:
     def __init__(self) -> None:
         self._rumble_group = displayio.Group()
-        self._text_progress = label.Label(
-            FONT, color=DisplayColor.WHITE, scale=2, x=0, y=28
-        )
+        self._text_progress = label.Label(FONT, color=DisplayColor.WHITE, scale=2, y=28)
 
         self._result_group = displayio.Group()
         self._rumble_data = []
@@ -58,9 +56,9 @@ class RumbleScreen:
         elif not rumble_mode.is_recording_data():
             self._text_progress.hidden = True
             self._result_group.hidden = False
-            avg_x, avg_y, avg_z, rumble_intensity = rumble_mode.get_results()
+            avg_x, avg_y, avg_z, rumble_intensity = rumble_mode.result
             self._rumble_data[_INTENSITY_INDEX].text = (
-                f"Intensity: {_acceleration_to_db(rumble_intensity):.2f}dB"
+                f"{STRINGS.INTENSITY}: {_acceleration_to_db(rumble_intensity):.2f}dB"
             )
             self._rumble_data[_AVG_X_INDEX].text = (
                 f"Avg X: {_acceleration_to_db(avg_x):.2f}dB"

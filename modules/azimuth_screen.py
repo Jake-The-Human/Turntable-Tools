@@ -2,7 +2,14 @@ import displayio
 from adafruit_display_text import label
 
 from .display import Display
-from .helper import STRINGS, DisplayColor, FONT, HAS_AZIMUTH_CIRCUIT
+from .helper import (
+    STRINGS,
+    DisplayColor,
+    FONT,
+    HAS_AZIMUTH_CIRCUIT,
+    CIRCUITPY_DISPLAY_HEIGHT,
+    CIRCUITPY_DISPLAY_WIDTH,
+)
 
 
 class AzimuthScreen:
@@ -11,7 +18,7 @@ class AzimuthScreen:
         if not HAS_AZIMUTH_CIRCUIT:
             text_title = label.Label(
                 FONT,
-                text=f"{STRINGS.AZIMUTH} {STRINGS.NO_CIRCUIT}",
+                text=f"{STRINGS.NO_CIRCUIT}",
                 color=DisplayColor.WHITE,
                 y=8,
                 padding_left=2,
