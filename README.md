@@ -10,6 +10,8 @@ Right now I am using a AdaFruit Feather board and a mems device.
 - [Adafruit LSM6DS3TR-C 6-DoF Accel + Gyro IMU](https://www.adafruit.com/product/4503)
 - [Battery](https://www.adafruit.com/product/4236)
 - STEMMA QT 4pin cable
+- Azimuth circuit (Optional)
+- [Adafruit MAX17048 ](https://www.adafruit.com/product/5580) (Optional)
 
 ## Button Controls:
 ### Main Menu Buttons:
