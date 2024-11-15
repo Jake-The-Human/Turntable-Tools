@@ -8,12 +8,13 @@ Right now I am using a AdaFruit Feather board and a mems device.
 - [Adafruit Feather RP2040 Adalogger](https://www.adafruit.com/product/5980)
 - [Adafruit FeatherWing OLED - 128x64 OLED](https://www.adafruit.com/product/4650)
 - [Adafruit LSM6DS3TR-C 6-DoF Accel + Gyro IMU](https://www.adafruit.com/product/4503)
-- [Battery](https://www.adafruit.com/product/4236)
-- STEMMA QT 4pin cable (Number depends on how you build the circuit)
-- JST-PH 2-pin Jumper Cable (Depends which power status circuit you use)
-- Azimuth circuit (Optional)
+- [Battery](https://www.adafruit.com/product/4236) (Size of batter is up to you this is the one I used)
 - [Adafruit MAX17048 ](https://www.adafruit.com/product/5580) (Optional)
 - [Power Switch](https://www.adafruit.com/product/805) (Optional)
+- STEMMA QT 4pin cable (Number depends on how you build the circuit)
+- JST-PH 2-pin Jumper Cable (Depends which power status circuit you use)
+- Azimuth circuit (Optional and coming soon)
+
 
 ## Button Controls:
 ### Main Menu Buttons:
