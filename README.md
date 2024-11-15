@@ -17,25 +17,35 @@ Right now I am using a AdaFruit Feather board and a mems device.
 
 
 ## Button Controls:
-### Main Menu Buttons:
-- A: Rpm Mode
-- B: Leveling Mode
-- C: Rumble Measurement not sure if this will be added
+### Main Menu:
+- A: Move selection up
+- B: Select
+- C: Move selection down
 
-### RPM Buttons:
+### RPM Mode:
+This mode will show a real time rpm value. If you start the measurement it will find the avg, min, max rpms, and wow and flutter.
 - A: Back to main menu
 - B: Start measuring RPM data
-- C: Set an offset to help if sensor is noisy
 
-### Leveling Button:
+### Leveling Mode:
+This mode helps you level your turntable.
 - A: Back to main menu
-- B: None
-- C: Set an offset to help if sensor is noisy
 
-### Rumble Button:
+### Rumble Mode:
+This mode will let you measure the rumble of your turntable in dB.
 - A: Back to main menu
 - B: Start measuring rumble data
-- C: Set an offset to help if sensor is noisy
+
+### Azimuth Mode: (coming soon)
+- A: Back to main menu
+
+### Calibration Mode:
+This mode will try and reduce noise from the sensor.
+- A: Back to main menu
+- B: Starts calibration
+
+### About Page:
+- A: Back to main menu
 
 More to come soon.
 
