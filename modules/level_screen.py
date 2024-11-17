@@ -3,6 +3,7 @@ from vectorio import Polygon
 from adafruit_display_text import label
 
 from .display import Display
+from .level_mode import LevelMode
 from .helper import (
     DisplayColor,
     STRINGS,
@@ -92,9 +93,9 @@ class LevelScreen:
         """This will make the display show the leveling tool"""
         screen.set_display(self._level_group)
 
-    def update(self, sensor_data: tuple[float, float]) -> None:
+    def update(self, level_mode: LevelMode) -> None:
         """This update the x and y values on the display"""
-        x, y = sensor_data
+        x, y = level_mode.current_position
         if SHOW_X_Y:
             self._text_level_x_y.text = f"X:{x:.2f} Y:{y:.2f}"
         x_rounded = round(x, 1)

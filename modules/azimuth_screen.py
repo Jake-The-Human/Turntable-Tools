@@ -11,5 +11,5 @@ class AzimuthScreen:
         """This will make the display show the azimuth tool"""
         screen.set_display(self._azimuth_group)
 
-    def update(self) -> None:
+    def update(self, _) -> None:
         pass

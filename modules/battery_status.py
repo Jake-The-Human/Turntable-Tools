@@ -15,6 +15,8 @@ from .helper import (
 # Not sure if i should show the battery percentage or icon
 _SHOW_BATTERY_ICON = True
 
+_VOLTAGE_DIVIDER_CIRCUIT = False
+
 
 def _get_battery_percentage(voltage: float):
     # Clamp the voltage between min and max to avoid percentages < 0 or > 100
@@ -81,5 +83,5 @@ class BatteryStatus:
             self._text_battery_percent.text = f"{int(battery_percent)}%"
 
     def _get_voltage(self) -> float:
-        """Gets current battery voltage"""
+        """Gets current battery voltage for voltage divider circuit"""
         return self._vbat_voltage.value / 65535.0 * REFERENCE_VOLTAGE * 2.0

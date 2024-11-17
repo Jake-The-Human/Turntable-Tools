@@ -1,6 +1,6 @@
 """This file is about the about page on the device"""
 
-import displayio
+from displayio import Group
 from adafruit_display_text import label
 
 from .display import Display
@@ -9,7 +9,7 @@ from .helper import FONT, DisplayColor
 
 class AboutScreen:
     def __init__(self) -> None:
-        self._about_group = displayio.Group()
+        self._about_group = Group()
         _text_about = label.Label(
             FONT,
             text="Author: Jake Adamson\nMade in Boston MA B^)"

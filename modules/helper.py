@@ -7,8 +7,8 @@ from displayio import Palette
 
 # Turn features on/off
 HAS_MEMS_CIRCUIT: bool = True
-HAS_ADC_CIRCUIT: bool = True
-HAS_BATTERY_STATUS_CIRCUIT: bool = True
+HAS_ADC_CIRCUIT: bool = False
+HAS_BATTERY_STATUS_CIRCUIT: bool = False
 HAS_SD_CARD: bool = True
 
 # Pins and address
@@ -60,16 +60,17 @@ class UpdateGui:
     def __init__(self) -> None:
         self.gui_update_time: float = 0.03
         self.timer: float = time.time()
-        self.callback: any
+        self.callback = UpdateGui._stub
 
     def update(self) -> None:
         """Check if enough time has pass before updating the gui"""
-        if (
-            self.callback is not None
-            and time.time() - self.timer >= self.gui_update_time
-        ):
+        if time.time() - self.timer >= self.gui_update_time:
             self.callback()
             self.timer = time.time()
+
+    @staticmethod
+    def _stub() -> None:
+        pass
 
 
 class DisplayColor:
@@ -88,21 +89,6 @@ class PixelColor:
     RED: tuple = (255, 0, 0)
 
 
-class Mode:
-    """These constants are used to describe what Mode the device is in"""
-
-    DEBUG = -2
-    MAIN_MENU = -1
-    RPM = 0
-    LEVEL = 1
-    RUMBLE = 2
-    AZIMUTH = 3
-    NOISE = 4
-    DISTORTION = 5
-    CALIBRATE = 6
-    ABOUT = 7
-
-
 class STRINGS:
     """String used through out device"""
 
@@ -113,7 +99,7 @@ class STRINGS:
     AZIMUTH = "Azimuth"
     NOISE = "Noise Floor"
     DISTORTION = "Distortion"
-    CALIBRATE = "Calibrate"
+    CALIBRATE_MEMS = "Calibrate MEMS"
     ABOUT = "About"
 
     START_TURNTABLE = "Starting"
@@ -127,3 +113,29 @@ class STRINGS:
     INTENSITY = "Intensity"
 
     NO_CIRCUIT = "Circuit is not\npresent."
+
+
+class Mode:
+    """These constants are used to describe what Mode the device is in"""
+
+    DEBUG = -2
+    MAIN_MENU = -1
+    RPM = 0
+    LEVEL = 1
+    RUMBLE = 2
+    AZIMUTH = 3
+    NOISE = 4
+    DISTORTION = 5
+    CALIBRATE_MEMS = 6
+    ABOUT = 7
+
+    MODE_TO_STR = {
+        DEBUG: "Debug",
+        MAIN_MENU: "Main Menu",
+        RPM: STRINGS.RPM,
+        LEVEL: STRINGS.LEVEL,
+        RUMBLE: STRINGS.RUMBLE,
+        AZIMUTH: STRINGS.AZIMUTH,
+        CALIBRATE_MEMS: STRINGS.CALIBRATE_MEMS,
+        ABOUT: STRINGS.ABOUT,
+    }

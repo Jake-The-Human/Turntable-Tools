@@ -1,5 +1,7 @@
 import time
 from neopixel import NeoPixel
+from .mems_sensor import MemsSensor
+from .buttons import Buttons
 from .helper import (
     RPM_33,
     RPM_45,
@@ -43,11 +45,16 @@ class RPMMode:
 
         self._record_data: bool = False
         self._start_up: bool = False
+        self.current_rpm: float = 0
         self.result: tuple = (0, 0, 0, 0, 0)
 
-    def update(self, rpm: float) -> float:
+    def handle_buttons(self, buttons: Buttons) -> None:
+        if buttons.b_pressed():
+            self.start()
+
+    def update(self, sensor: MemsSensor) -> None:
         """This returns normalized rpm data"""
-        new_rpm: float = rpm
+        new_rpm: float = sensor.get_rpm()
 
         current_time = time.time() - self._time
         if current_time > RPM_TEST_START_UP_TIME and current_time <= _TOTAL_TEST_LEN:
@@ -58,7 +65,7 @@ class RPMMode:
         elif self._record_data:
             self.stop()
             # remove any noise or low rpms from the list
-            self._rpm_data = [d for d in self._rpm_data if d > 29]
+            # self._rpm_data = [d for d in self._rpm_data if d > 29]
 
             if self._rpm_data != []:
                 rpm_avg: float = sum(self._rpm_data) / len(self._rpm_data)
@@ -77,7 +84,7 @@ class RPMMode:
                 if HAS_SD_CARD:
                     self.write_results_to_file()
 
-        return new_rpm
+        self.current_rpm = new_rpm
 
     def is_recording_data(self) -> bool:
         """Is used to check if we are capturing rpm data"""

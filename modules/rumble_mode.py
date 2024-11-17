@@ -1,6 +1,8 @@
 import time
 from neopixel import NeoPixel
 
+from .mems_sensor import MemsSensor
+from .buttons import Buttons
 from .moving_average import MovingAvgTuple, MovingAvg
 from .helper import (
     PixelColor,
@@ -22,9 +24,11 @@ class RumbleMode:
         self._start_up: bool = False
         self.result: tuple = (0, 0, 0, 0)
 
-    def update(
-        self, sensor_data: tuple[float, float, float]
-    ) -> tuple[float, float, float, float]:
+    def handle_buttons(self, buttons: Buttons) -> None:
+        if buttons.b_pressed():
+            self.start()
+
+    def update(self, sensor: MemsSensor) -> None:
         """
         Rumble Intensity Calculation:
             The variable rumble_intensity is a simple measure of vibration strength,
@@ -32,12 +36,10 @@ class RumbleMode:
             (like the RMS value of recent changes).
         """
         # Finding the moving avg here to try and de-noise sensor
-        avg_x, avg_y, avg_z = self._moving_avg.update(sensor_data)
+        avg_x, avg_y, avg_z = self._moving_avg.update(sensor.get_acceleration())
 
-        x, y, z = sensor_data
-        intensity = (
-            (x - avg_x) ** 2 + (y - avg_y) ** 2 + (z - avg_z) ** 2
-        ) ** 0.5
+        x, y, z = sensor.get_acceleration()
+        intensity = ((x - avg_x) ** 2 + (y - avg_y) ** 2 + (z - avg_z) ** 2) ** 0.5
 
         avg_rumble_intensity = self._avg_intensity.update(intensity)
 
@@ -51,8 +53,6 @@ class RumbleMode:
         elif self._record_data:
             self.stop()
             self.result = (avg_x, avg_y, avg_z, avg_rumble_intensity)
-
-        return avg_x, avg_y, avg_z, avg_rumble_intensity
 
     def is_recording_data(self) -> bool:
         """Is used to check if we are capturing rpm data"""

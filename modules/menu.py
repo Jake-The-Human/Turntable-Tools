@@ -6,19 +6,19 @@ from .helper import DisplayColor, FONT, CIRCUITPY_DISPLAY_WIDTH
 
 class Menu:
     def __init__(
-        self, items: list[str], visible_items: int = 1, x: int = 0, y: int = 0
+        self, items: list, visible_items: int = 1, x: int = 0, y: int = 0
     ) -> None:
         self._item_index: int = 0
         self._menu_index: int = 0
         self._prev_index: int = -1
-        self.menu_items_names: list[str] = items
+        self.menu_items_names: list = items
 
         self.group = displayio.Group(x=x, y=y)
         self._menu_items: list[label.Label] = []
         for i in range(visible_items):
             new_item = label.Label(
                 FONT,
-                text=items[i],
+                text=items[i][1],
                 color=DisplayColor.WHITE,
                 padding_left=2,
                 padding_right=CIRCUITPY_DISPLAY_WIDTH,
@@ -35,7 +35,7 @@ class Menu:
 
     def select(self) -> int:
         """Return the current index"""
-        return self._item_index
+        return self.menu_items_names[self._item_index][0]
 
     def up(self) -> None:
         """Move the menu index up"""
@@ -65,6 +65,6 @@ class Menu:
         # this is where the menu gui text is updated
         for i, item in enumerate(range(top_index, bottom_index)):
             if item < len(self.menu_items_names):
-                self._menu_items[i].text = self.menu_items_names[item]
+                self._menu_items[i].text = self.menu_items_names[item][1]
             else:
                 self._menu_items[i].text = ""

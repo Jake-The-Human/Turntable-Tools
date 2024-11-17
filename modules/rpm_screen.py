@@ -33,7 +33,7 @@ class RPMScreen:
         """This will make the display show the RPM tool"""
         screen.set_display(self._rpm_group)
 
-    def update(self, rpm_mode: RPMMode, rpm: float) -> None:
+    def update(self, rpm_mode: RPMMode) -> None:
         """Update the RPM number on screen"""
         if rpm_mode.is_recording_data():
             self._text_progress.text = STRINGS.MEASURING
@@ -56,4 +56,4 @@ class RPMScreen:
                 f"{STRINGS.WOW_AND_FLUTTER}: {wow:.2f}% {flutter:.2f}%"
             )
 
-        self._text_rpm.text = f"{rpm:.2f}"
+        self._text_rpm.text = f"{rpm_mode.current_rpm:.2f}"

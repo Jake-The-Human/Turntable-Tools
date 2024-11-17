@@ -1,97 +1,137 @@
 """This file is the entry point for the Turntable Tool"""
 
-import time
+from time import sleep
 import board
-import neopixel
+from busio import I2C, SPI
+from neopixel import NeoPixel
 
 from modules.helper import (
     UpdateGui,
     Mode,
     PixelColor,
+    STRINGS,
     HAS_SD_CARD,
     HAS_ADC_CIRCUIT,
     HAS_MEMS_CIRCUIT,
 )
 from modules.display import Display
-from modules.mems_sensor import MemsSensor
 from modules.buttons import Buttons
+from modules.menu_screen import MenuScreen
+from modules.about_screen import AboutScreen
+
+# MEMS imports
+from modules.mems_sensor import MemsSensor
+from modules.calibrate_mems_mode import CalibrateMemsMode
 from modules.rpm_mode import RPMMode
 from modules.level_mode import LevelMode
 from modules.rumble_mode import RumbleMode
-from modules.calibrate_mode import CalibrateMode
-from modules.azimuth_mode import AzimuthMode
-from modules.menu_screen import MenuScreen
 from modules.rpm_screen import RPMScreen
 from modules.level_screen import LevelScreen
 from modules.rumble_screen import RumbleScreen
+from modules.calibrate_mems_screen import CalibrateMemsScreen
+
+# ADC imports
+from modules.azimuth_mode import AzimuthMode
 from modules.azimuth_screen import AzimuthScreen
-from modules.calibrate_screen import CalibrateScreen
-from modules.about_screen import AboutScreen
 
-if HAS_SD_CARD:
-    import busio
-    import digitalio
+
+def setup_sd_card():
     import storage
-    import adafruit_sdcard
+    from digitalio import DigitalInOut
+    from adafruit_sdcard import SDCard
 
-    # Connect to the card and mount the filesystem.
-    cs = digitalio.DigitalInOut(board.SD_CS)
-    sd_spi = busio.SPI(board.SD_CLK, board.SD_MOSI, board.SD_MISO)
-    sd_card = adafruit_sdcard.SDCard(sd_spi, cs)
+    cs = DigitalInOut(board.SD_CS)
+    sd_spi = SPI(board.SD_CLK, board.SD_MOSI, board.SD_MISO)
+    sd_card = SDCard(sd_spi, cs)
     vfs = storage.VfsFat(sd_card)
     storage.mount(vfs, "/sd")
 
+
+def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
+    handler = {
+        Mode.RPM: RPMMode(neo_pixel),
+        Mode.LEVEL: LevelMode(neo_pixel),
+        Mode.RUMBLE: RumbleMode(neo_pixel),
+        Mode.CALIBRATE_MEMS: CalibrateMemsMode(neo_pixel),
+        "menu": [Mode.RPM, Mode.LEVEL, Mode.RUMBLE, Mode.CALIBRATE_MEMS],
+        "sensor": MemsSensor(i2c_bus),
+        "screens": {
+            Mode.RPM: RPMScreen(),
+            Mode.LEVEL: LevelScreen(),
+            Mode.RUMBLE: RumbleScreen(),
+            Mode.CALIBRATE_MEMS: CalibrateMemsScreen(),
+        },
+    }
+    # Offset are load from the sd card if saved and the sensor is updated
+    calibrate_mode = handler[Mode.CALIBRATE_MEMS]
+    handler["sensor"].set_offsets(
+        calibrate_mode.acceleration_offset,
+        calibrate_mode.gyro_offset,
+    )
+    return handler
+
+
+def setup_adc_circuit(neo_pixel: NeoPixel) -> dict:
+    return {
+        Mode.AZIMUTH: AzimuthMode(neo_pixel),
+        Mode.NOISE: None,
+        Mode.DISTORTION: None,
+        "menu": [Mode.AZIMUTH],
+        "sensor": None,
+        "screens": {
+            Mode.AZIMUTH: AzimuthScreen(),
+            Mode.NOISE: None,
+            Mode.DISTORTION: None,
+        },
+    }
+
+
+def build_menu_list(handlers: list[dict]) -> list[int]:
+    menu_list: list[int] = []
+    for h in handlers:
+        if h:
+            menu_list += h["menu"]
+    menu_list.append(Mode.ABOUT)
+    return menu_list
+
+
 # Setup Feather board
 i2c = board.STEMMA_I2C()
-pixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
-sensor = MemsSensor(i2c)
-screen = Display(board.I2C())
+pixel = NeoPixel(board.NEOPIXEL, 1)
+screen = Display(i2c)
 buttons = Buttons()
 
-# Setup the different tools
-if HAS_MEMS_CIRCUIT:
-    rpm_mode = RPMMode(pixel)
-    level_mode = LevelMode(pixel)
-    rumble_mode = RumbleMode(pixel)
-    rpm_screen = RPMScreen()
-    level_screen = LevelScreen()
-    rumble_screen = RumbleScreen()
+if HAS_SD_CARD:
+    setup_sd_card()
 
-if HAS_ADC_CIRCUIT:
-    azimuth_mode = AzimuthMode(pixel)
-    azimuth_screen = AzimuthScreen()
+# Setup the different tools
+mems_handlers: dict = setup_mems_circuit(i2c, pixel) if HAS_MEMS_CIRCUIT else {}
+adc_handlers: dict = setup_adc_circuit(pixel) if HAS_ADC_CIRCUIT else {}
 
 # Setup the display logic for the different tools
-main_screen = MenuScreen()
-calibrate_screen = CalibrateScreen(sensor.calibrate_mode)
+main_screen = MenuScreen(build_menu_list([adc_handlers, mems_handlers]))
 about_screen = AboutScreen()
 
 # Init start up state
 update_gui = UpdateGui()
 update_gui.callback = main_screen.update
 main_screen.show_screen(screen)
-mode = Mode.MAIN_MENU
+device_mode = Mode.MAIN_MENU
 
 
-def change_mode(current_mode: int, new_mode: int) -> int:
+def change_mode(current_mode: int, new_mode: int = Mode.MAIN_MENU) -> int:
     """This function handles update the gui's mode"""
     if new_mode == current_mode:
         return current_mode
 
     if new_mode == Mode.MAIN_MENU:
         main_screen.show_screen(screen)
-    elif new_mode == Mode.RPM and HAS_MEMS_CIRCUIT:
-        rpm_screen.show_screen(screen)
-    elif new_mode == Mode.LEVEL and HAS_MEMS_CIRCUIT:
-        level_screen.show_screen(screen)
-    elif new_mode == Mode.RUMBLE and HAS_MEMS_CIRCUIT:
-        rumble_screen.show_screen(screen)
-    elif new_mode == Mode.AZIMUTH and HAS_ADC_CIRCUIT:
-        azimuth_screen.show_screen(screen)
-    elif new_mode == Mode.CALIBRATE:
-        calibrate_screen.show_screen(screen)
     elif new_mode == Mode.ABOUT:
         about_screen.show_screen(screen)
+    elif new_mode in mems_handlers:
+        mems_handlers["screens"][new_mode].show_screen(screen)
+    elif new_mode in adc_handlers:
+        adc_handlers["screens"][new_mode].show_screen(screen)
     else:
         new_mode = Mode.MAIN_MENU
         main_screen.show_screen(screen)
@@ -102,72 +142,48 @@ def change_mode(current_mode: int, new_mode: int) -> int:
 # Main logic loop
 while True:
     buttons.update()
-    sensor.update()
 
-    if mode == Mode.MAIN_MENU:
+    if device_mode == Mode.MAIN_MENU:
         if buttons.a_pressed():
             main_screen.up()
         elif buttons.b_pressed():
-            mode = change_mode(current_mode=mode, new_mode=main_screen.select())
+            device_mode = change_mode(
+                current_mode=device_mode, new_mode=main_screen.select()
+            )
         elif buttons.c_pressed():
             main_screen.down()
 
         update_gui.callback = main_screen.update
         pixel.fill(PixelColor.OFF)
 
-    elif mode == Mode.RPM and HAS_MEMS_CIRCUIT:
+    elif device_mode in mems_handlers:
+        mems_sensor: MemsSensor = mems_handlers["sensor"]
+        mems_mode = mems_handlers[device_mode]
+        mems_mode_screen = mems_handlers["screens"][device_mode]
+
         if buttons.a_pressed():
-            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
-        elif buttons.b_pressed():
-            # Start recording rpm data
-            rpm_mode.start()
-        # elif buttons.c_pressed():
-        #     # This sleep is used to avoided capturing the button press
-        #     time.sleep(0.7)
-        #     sensor.set_offset()
+            device_mode = change_mode(current_mode=device_mode)
 
-        new_rpm = rpm_mode.update(sensor.get_rpm())
-        update_gui.callback = lambda: rpm_screen.update(rpm_mode, new_rpm)
+        mems_mode.handle_buttons(buttons)
 
-    elif mode == Mode.LEVEL and HAS_MEMS_CIRCUIT:
+        mems_sensor.update()
+        mems_mode.update(mems_sensor)
+        update_gui.callback = lambda: mems_mode_screen.update(mems_mode)
+
+    elif device_mode in adc_handlers:
+        adc_sensor = mems_handlers["sensor"]
+        adc_mode = adc_handlers[device_mode]
+        adc_mode_screen = adc_handlers["screens"][device_mode]
+
         if buttons.a_pressed():
-            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
+            device_mode = change_mode(current_mode=device_mode)
 
-        level_data = level_mode.update(sensor.get_acceleration())
-        update_gui.callback = lambda: level_screen.update(level_data)
+        adc_mode.update()
+        update_gui.callback = lambda: adc_mode_screen.update(adc_mode)
 
-    elif mode == Mode.RUMBLE and HAS_MEMS_CIRCUIT:
+    elif device_mode == Mode.ABOUT:
         if buttons.a_pressed():
-            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
-        elif buttons.b_pressed():
-            rumble_mode.start()
-
-        rumble_data = rumble_mode.update(sensor.get_acceleration())
-        update_gui.callback = lambda: rumble_screen.update(rumble_mode)
-
-    elif mode == Mode.AZIMUTH and HAS_ADC_CIRCUIT:
-        if buttons.a_pressed():
-            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
-        elif buttons.b_pressed():
-            pass
-        elif buttons.c_pressed():
-            pass
-
-        azimuth_mode.update()
-        update_gui.callback = azimuth_screen.update
-
-    elif mode == Mode.CALIBRATE:
-        if buttons.a_pressed():
-            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
-        elif buttons.b_pressed():
-            sensor.calibrate_mode.start(pixel)
-
-        sensor.calibrate_mode.update(pixel, sensor.acceleration, sensor.gyro)
-        update_gui.callback = lambda: calibrate_screen.update(sensor.calibrate_mode)
-
-    elif mode == Mode.ABOUT:
-        if buttons.a_pressed():
-            mode = change_mode(current_mode=mode, new_mode=Mode.MAIN_MENU)
+            device_mode = change_mode(current_mode=device_mode)
 
     update_gui.update()
-    time.sleep(0.015)
+    sleep(0.015)

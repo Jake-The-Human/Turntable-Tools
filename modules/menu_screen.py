@@ -7,6 +7,7 @@ from .menu import Menu
 from .helper import (
     DisplayColor,
     STRINGS,
+    Mode,
     FONT,
     CIRCUITPY_DISPLAY_WIDTH,
     HAS_BATTERY_STATUS_CIRCUIT,
@@ -15,7 +16,7 @@ from .helper import (
 
 
 class MenuScreen:
-    def __init__(self) -> None:
+    def __init__(self, menu_items: list[int]) -> None:
         # Make the display context
         self._main_group = displayio.Group()
 
@@ -29,18 +30,11 @@ class MenuScreen:
             separator_bitmap, pixel_shader=WHITE_PALETTE, y=14
         )
 
-        menu_items = [
-            STRINGS.RPM,
-            STRINGS.LEVEL,
-            STRINGS.RUMBLE,
-            STRINGS.AZIMUTH,
-            STRINGS.NOISE,
-            STRINGS.DISTORTION,
-            STRINGS.CALIBRATE,
-            STRINGS.ABOUT,
-        ]
+        menu_items_data = []
+        for mode in menu_items:
+            menu_items_data.append([mode, Mode.MODE_TO_STR[mode]])
 
-        self._menu = Menu(items=menu_items, visible_items=4, x=2, y=22)
+        self._menu = Menu(items=menu_items_data, visible_items=4, x=2, y=22)
 
         title_group.append(text_title)
 
