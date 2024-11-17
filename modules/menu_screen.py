@@ -34,6 +34,8 @@ class MenuScreen:
             STRINGS.LEVEL,
             STRINGS.RUMBLE,
             STRINGS.AZIMUTH,
+            STRINGS.NOISE,
+            STRINGS.DISTORTION,
             STRINGS.CALIBRATE,
             STRINGS.ABOUT,
         ]

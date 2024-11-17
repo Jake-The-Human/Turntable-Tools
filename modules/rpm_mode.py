@@ -1,6 +1,5 @@
 import time
 from neopixel import NeoPixel
-from .moving_average import MovingAvg
 from .helper import (
     RPM_33,
     RPM_45,
@@ -40,10 +39,10 @@ class RPMMode:
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel = pixel
         self._rpm_data: list[float] = []
+        self._time: float = 0
 
         self._record_data: bool = False
         self._start_up: bool = False
-        self._time: float = 0
         self.result: tuple = (0, 0, 0, 0, 0)
 
     def update(self, rpm: float) -> float:

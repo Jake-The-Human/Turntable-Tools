@@ -12,6 +12,7 @@ class Menu:
         self._menu_index: int = 0
         self._prev_index: int = -1
         self.menu_items_names: list[str] = items
+
         self.group = displayio.Group(x=x, y=y)
         self._menu_items: list[label.Label] = []
         for i in range(visible_items):
@@ -38,12 +39,14 @@ class Menu:
 
     def up(self) -> None:
         """Move the menu index up"""
+        self._prev_index = self._menu_index
         self._item_index = (self._item_index - 1) % len(self.menu_items_names)
         self._menu_index = (self._menu_index - 1) % len(self._menu_items)
         self._update()
 
     def down(self) -> None:
         """Move the menu index down"""
+        self._prev_index = self._menu_index
         self._item_index = (self._item_index + 1) % len(self.menu_items_names)
         self._menu_index = (self._menu_index + 1) % len(self._menu_items)
         self._update()
@@ -56,13 +59,12 @@ class Menu:
         if not self._menu_items:
             return
 
-        top_index = self._item_index
-        bottom_index = top_index + (len(self._menu_items))
-        for i, item in enumerate(range(self._item_index, bottom_index)):
+        top_index: int = self._item_index
+        bottom_index: int = top_index + len(self._menu_items)
+        # if bottom_index <= len(self.menu_items_names):
+        # this is where the menu gui text is updated
+        for i, item in enumerate(range(top_index, bottom_index)):
             if item < len(self.menu_items_names):
                 self._menu_items[i].text = self.menu_items_names[item]
             else:
                 self._menu_items[i].text = ""
-
-        # self._menu_items[self._menu_index].background_color = DisplayColor.WHITE
-        # self._menu_items[self._menu_index].color = DisplayColor.BLACK

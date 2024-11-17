@@ -16,10 +16,10 @@ class RumbleMode:
         self._pixel = pixel
         self._moving_avg = MovingAvgTuple()
         self._avg_intensity = MovingAvg()
+        self._time: float = 0
 
         self._record_data: bool = False
         self._start_up: bool = False
-        self._time: float = 0
         self.result: tuple = (0, 0, 0, 0)
 
     def update(

@@ -5,6 +5,12 @@ import board
 import terminalio
 from displayio import Palette
 
+# Turn features on/off
+HAS_MEMS_CIRCUIT: bool = True
+HAS_ADC_CIRCUIT: bool = True
+HAS_BATTERY_STATUS_CIRCUIT: bool = True
+HAS_SD_CARD: bool = True
+
 # Pins and address
 DISPLAY_ADDRESS = 0x3C
 A_BUTTON_PIN = board.D9
@@ -20,11 +26,6 @@ CIRCUITPY_DISPLAY_HEIGHT: int = 64
 REFERENCE_VOLTAGE: float = 3.3
 BATTERY_MIN_VOLTAGE: float = 3.0
 BATTERY_MAX_VOLTAGE: float = 4.2
-
-# Turn extra features on/off
-HAS_SD_CARD: bool = True
-HAS_BATTERY_STATUS_CIRCUIT: bool = False
-HAS_AZIMUTH_CIRCUIT: bool = False
 
 # Font...
 FONT = terminalio.FONT
@@ -57,11 +58,12 @@ class UpdateGui:
     """The purpose of this class is to separate the data collection from the screen updating"""
 
     def __init__(self) -> None:
-        self.gui_update_time: float = 0.033
+        self.gui_update_time: float = 0.03
         self.timer: float = time.time()
         self.callback: any
 
     def update(self) -> None:
+        """Check if enough time has pass before updating the gui"""
         if (
             self.callback is not None
             and time.time() - self.timer >= self.gui_update_time
@@ -95,31 +97,32 @@ class Mode:
     LEVEL = 1
     RUMBLE = 2
     AZIMUTH = 3
-    CALIBRATE = 4
-    ABOUT = 5
+    NOISE = 4
+    DISTORTION = 5
+    CALIBRATE = 6
+    ABOUT = 7
 
 
 class STRINGS:
     """String used through out device"""
 
     TITLE = "Turntable Tool"
-    RPM_WOW = "RPM & Wow"
     RPM = "RPM"
     LEVEL = "Level"
     RUMBLE = "Rumble"
     AZIMUTH = "Azimuth"
+    NOISE = "Noise Floor"
+    DISTORTION = "Distortion"
     CALIBRATE = "Calibrate"
     ABOUT = "About"
 
     START_TURNTABLE = "Starting"
     MEASURING = "Measuring"
-    CALIBRATE = "Calibrate"
+    CALIBRATING = "Calibrating"
 
     AVG = "Avg"
     MIN = "Min"
     MAX = "Max"
-    WOW = "Wow"
-    FLUTTER = "Flutter"
     WOW_AND_FLUTTER = "W&F"
     INTENSITY = "Intensity"
 
