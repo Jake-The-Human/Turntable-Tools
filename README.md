@@ -9,7 +9,6 @@ Right now I am using a AdaFruit Feather board and a mems device.
 - [Adafruit Feather RP2040 Adalogger](https://www.adafruit.com/product/5980)
 - [Adafruit FeatherWing OLED - 128x64 OLED](https://www.adafruit.com/product/4650)
 - [Adafruit LSM6DS3TR-C 6-DoF Accel + Gyro IMU](https://www.adafruit.com/product/4503) (for RPM, leveling, and rumble)
-- [ADS1115 16-Bit ADC](https://www.adafruit.com/product/1085) (for azimuth and maybe more)
 - [Battery](https://www.adafruit.com/product/4236) (Size of batter is up to you this is the one I used)
 - [Adafruit MAX17048 ](https://www.adafruit.com/product/5580) (Optional)
 - [Power Switch](https://www.adafruit.com/product/805) (Optional)
