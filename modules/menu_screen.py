@@ -1,3 +1,5 @@
+"""This file draw the menu to the screen"""
+from time import time
 import displayio
 from adafruit_display_text import label
 
@@ -16,7 +18,7 @@ from .helper import (
 
 
 class MenuScreen:
-    def __init__(self, menu_items: list[int]) -> None:
+    def __init__(self, battery_info, menu_items: list[int]) -> None:
         # Make the display context
         self._main_group = displayio.Group()
 
@@ -39,7 +41,7 @@ class MenuScreen:
         title_group.append(text_title)
 
         if HAS_BATTERY_STATUS_CIRCUIT:
-            self._battery_status = BatteryStatus(CIRCUITPY_DISPLAY_WIDTH - 24, 4)
+            self._battery_status = BatteryStatus(battery_info, CIRCUITPY_DISPLAY_WIDTH - 24, 4)
             title_group.append(self._battery_status.get_group())
 
         title_group.append(separator)

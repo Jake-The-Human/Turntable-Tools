@@ -1,4 +1,6 @@
-import displayio
+"""This is how the menu is handled"""
+
+from displayio import Group
 from adafruit_display_text import label
 
 from .helper import DisplayColor, FONT, CIRCUITPY_DISPLAY_WIDTH
@@ -13,7 +15,7 @@ class Menu:
         self._prev_index: int = -1
         self.menu_items_names: list = items
 
-        self.group = displayio.Group(x=x, y=y)
+        self.group = Group(x=x, y=y)
         self._menu_items: list[label.Label] = []
         for i in range(visible_items):
             new_item = label.Label(
@@ -56,6 +58,7 @@ class Menu:
         return self._menu_items[index]
 
     def _update(self) -> None:
+        """Redraws the list"""
         if not self._menu_items:
             return
 

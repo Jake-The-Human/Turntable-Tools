@@ -1,6 +1,6 @@
-"""Constants used through out the program"""
+"""Constants and other data used through out the program"""
 
-import time
+from time import time
 import board
 import terminalio
 from displayio import Palette
@@ -8,7 +8,7 @@ from displayio import Palette
 # Turn features on/off
 HAS_MEMS_CIRCUIT: bool = True
 HAS_ADC_CIRCUIT: bool = False
-HAS_BATTERY_STATUS_CIRCUIT: bool = False
+HAS_BATTERY_STATUS_CIRCUIT: bool = True
 HAS_SD_CARD: bool = True
 
 # Pins and address
@@ -49,7 +49,6 @@ CALIBRATION_TEST_LEN: float = 5
 # Black and white color palettes
 BLACK_PALETTE = Palette(1)
 BLACK_PALETTE[0] = 0x000000
-
 WHITE_PALETTE = Palette(1)
 WHITE_PALETTE[0] = 0xFFFFFF
 
@@ -59,14 +58,14 @@ class UpdateGui:
 
     def __init__(self) -> None:
         self.gui_update_time: float = 0.03
-        self.timer: float = time.time()
+        self.timer: float = time()
         self.callback = UpdateGui._stub
 
     def update(self) -> None:
         """Check if enough time has pass before updating the gui"""
-        if time.time() - self.timer >= self.gui_update_time:
-            self.callback()
-            self.timer = time.time()
+        # if time() - self.timer >= self.gui_update_time:
+        self.callback()
+        # self.timer = time()
 
     @staticmethod
     def _stub() -> None:
@@ -112,6 +111,8 @@ class STRINGS:
     WOW_AND_FLUTTER = "W&F"
     INTENSITY = "Intensity"
 
+    ACCEL_OFFSET = "Accel Offset"
+    GYRO_OFFSET = "Gyro Offset"
     NO_CIRCUIT = "Circuit is not\npresent."
 
 

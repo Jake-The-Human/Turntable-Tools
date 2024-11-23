@@ -1,6 +1,10 @@
+"""Mems sensor data capture happens here"""
+
 from busio import I2C
 from math import pi
 from adafruit_lsm6ds.lsm6ds3 import LSM6DS3
+
+from .moving_average import MovingAvgTuple
 
 
 class MemsSensor:
@@ -11,13 +15,16 @@ class MemsSensor:
         self.gyro: tuple[float, float, float] = (0, 0, 0)
         self._sensor_temp: float = 0.0
 
+        self.avg_accel = MovingAvgTuple()
+        self.avg_gyro = MovingAvgTuple()
+
         self.acceleration_offset: tuple[float, float, float] = (0, 0, 0)
         self.gyro_offset: tuple[float, float, float] = (0, 0, 0)
 
     def update(self) -> None:
         """Update the sensor position"""
-        self.acceleration = self._sensor.acceleration
-        self.gyro = self._sensor.gyro
+        self.acceleration = self.avg_accel.update(self._sensor.acceleration)
+        self.gyro = self.avg_gyro.update(self._sensor.gyro)
         self._sensor_temp = self._sensor.temperature
 
     def get_acceleration(self) -> tuple[float, float, float]:
@@ -30,12 +37,12 @@ class MemsSensor:
         """Gets the gyro data"""
         gyro_x, gyro_y, gyro_z = self.gyro
         offset_x, offset_y, offset_z = self.gyro_offset
-
         return (gyro_x - offset_x, gyro_y - offset_y, gyro_z - offset_z)
 
     def get_rpm(self) -> float:
         """gets RPM from gyro"""
         _, _, gyro_z = self.get_gyro()
+        print(gyro_z)
         return abs(gyro_z * 60.0 / (2.0 * pi))
 
     def get_degrees(self) -> float:
@@ -48,5 +55,6 @@ class MemsSensor:
         acceleration_offset: tuple[float, float, float],
         gyro_offset: tuple[float, float, float],
     ) -> None:
+        """Update the offset of the sensor"""
         self.acceleration_offset = acceleration_offset
         self.gyro_offset = gyro_offset

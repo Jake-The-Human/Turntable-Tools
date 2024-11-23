@@ -1,3 +1,4 @@
+"""This file handles draw rpm data to the screen"""
 import displayio
 from adafruit_display_text import label
 
@@ -11,7 +12,7 @@ class RPMScreen:
         self._rpm_group = displayio.Group()
         self._text_rpm = label.Label(FONT, color=DisplayColor.WHITE, scale=3, y=16)
         text_rpm_unit = label.Label(
-            FONT, text=STRINGS.RPM, color=DisplayColor.WHITE, scale=2, x=88, y=16
+            FONT, text=STRINGS.RPM, color=DisplayColor.WHITE, scale=2, x=89, y=16
         )
         self._text_progress = label.Label(FONT, color=DisplayColor.WHITE, scale=2, y=42)
 

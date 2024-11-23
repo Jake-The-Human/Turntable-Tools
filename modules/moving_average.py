@@ -1,4 +1,6 @@
-MOVING_AVG_SIZE: int = 10
+"""This file is the moving avg logic that is used to de-noise the sensor"""
+
+_MOVING_AVG_SIZE: int = 10
 
 
 def _get_next_index(index: int, list_len: int) -> int:
@@ -7,7 +9,7 @@ def _get_next_index(index: int, list_len: int) -> int:
 
 
 class MovingAvg:
-    def __init__(self, size: int = MOVING_AVG_SIZE):
+    def __init__(self, size: int = _MOVING_AVG_SIZE):
         self._index = 0
         self._size = size
         self._buffer: list = [0 for _ in range(size)]
@@ -23,7 +25,7 @@ class MovingAvg:
 
 
 class MovingAvgTuple:
-    def __init__(self, size: int = MOVING_AVG_SIZE):
+    def __init__(self, size: int = _MOVING_AVG_SIZE):
         self._index = 0
         self._size = size
         self._buffer: list[tuple] = [(0, 0, 0) for _ in range(size)]

@@ -59,6 +59,7 @@ class CalibrateMemsMode:
             self.acceleration_offset, self.gyro_offset = _read_to_file()
 
     def handle_buttons(self, buttons: Buttons) -> None:
+        """Any mode specific action that are triggered by a button"""
         if buttons.b_pressed():
             self.start()
 

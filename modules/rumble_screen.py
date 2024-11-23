@@ -1,3 +1,5 @@
+"""This file handles draw rumble data to the screen"""
+
 from math import log
 import displayio
 from adafruit_display_text import label

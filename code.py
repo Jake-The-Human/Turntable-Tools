@@ -18,6 +18,7 @@ from modules.display import Display
 from modules.buttons import Buttons
 from modules.menu_screen import MenuScreen
 from modules.about_screen import AboutScreen
+from modules.battery_info import BatteryInfo
 
 # MEMS imports
 from modules.mems_sensor import MemsSensor
@@ -99,7 +100,6 @@ def build_menu_list(handlers: list[dict]) -> list[int]:
 i2c = board.STEMMA_I2C()
 pixel = NeoPixel(board.NEOPIXEL, 1)
 screen = Display(i2c)
-buttons = Buttons()
 
 if HAS_SD_CARD:
     setup_sd_card()
@@ -109,7 +109,8 @@ mems_handlers: dict = setup_mems_circuit(i2c, pixel) if HAS_MEMS_CIRCUIT else {}
 adc_handlers: dict = setup_adc_circuit(pixel) if HAS_ADC_CIRCUIT else {}
 
 # Setup the display logic for the different tools
-main_screen = MenuScreen(build_menu_list([adc_handlers, mems_handlers]))
+battery_info = BatteryInfo(i2c)
+main_screen = MenuScreen(battery_info, build_menu_list([adc_handlers, mems_handlers]))
 about_screen = AboutScreen()
 
 # Init start up state
@@ -117,6 +118,8 @@ update_gui = UpdateGui()
 update_gui.callback = main_screen.update
 main_screen.show_screen(screen)
 device_mode = Mode.MAIN_MENU
+
+buttons = Buttons()
 
 
 def change_mode(current_mode: int, new_mode: int = Mode.MAIN_MENU) -> int:

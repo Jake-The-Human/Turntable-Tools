@@ -1,3 +1,5 @@
+"""This is were we draw the level info to the screen"""
+
 import displayio
 from vectorio import Polygon
 from adafruit_display_text import label
@@ -98,8 +100,8 @@ class LevelScreen:
         x, y = level_mode.current_position
         if SHOW_X_Y:
             self._text_level_x_y.text = f"X:{x:.2f} Y:{y:.2f}"
-        x_rounded = round(x, 1)
-        y_rounded = round(y, 1)
+        x_rounded = round(x, 2)
+        y_rounded = round(y, 2)
         self._triangles[_NORTH].hidden = y_rounded > 0
         self._triangles[_EAST].hidden = x_rounded < 0
         self._triangles[_SOUTH].hidden = y_rounded < 0

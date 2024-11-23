@@ -49,6 +49,7 @@ class RPMMode:
         self.result: tuple = (0, 0, 0, 0, 0)
 
     def handle_buttons(self, buttons: Buttons) -> None:
+        """Any mode specific action that are triggered by a button"""
         if buttons.b_pressed():
             self.start()
 
