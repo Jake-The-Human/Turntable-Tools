@@ -3,6 +3,7 @@
 from time import time
 import board
 import terminalio
+from microcontroller import Pin
 from displayio import Palette
 
 # Turn features on/off
@@ -13,10 +14,10 @@ HAS_SD_CARD: bool = True
 
 # Pins and address
 DISPLAY_ADDRESS = 0x3C
-A_BUTTON_PIN = board.D9
-B_BUTTON_PIN = board.D6
-C_BUTTON_PIN = board.D5
-BATTERY_VOLTAGE_PIN = board.A3
+A_BUTTON_PIN: Pin = board.D9
+B_BUTTON_PIN: Pin = board.D6
+C_BUTTON_PIN: Pin = board.D5
+BATTERY_VOLTAGE_PIN: Pin = board.A3
 
 # SH1107 is vertically oriented 64x128
 CIRCUITPY_DISPLAY_WIDTH: int = 128
@@ -36,7 +37,7 @@ RPM_45: float = 45.0
 RPM_78: float = 78.0
 
 # Leveling debug
-SHOW_X_Y = True
+SHOW_X_Y: bool = True
 
 # These are for when capturing data
 RPM_TEST_START_UP_TIME: float = 10

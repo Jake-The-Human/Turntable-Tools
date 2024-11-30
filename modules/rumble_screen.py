@@ -4,7 +4,6 @@ from math import log
 import displayio
 from adafruit_display_text import label
 
-from .display import Display
 from .rumble_mode import RumbleMode
 from .helper import FONT, DisplayColor, STRINGS
 
@@ -22,13 +21,13 @@ def _acceleration_to_db(accel_value: float, a_ref: float = 9.81) -> float:
     )
 
 
-class RumbleScreen:
+class RumbleScreen(displayio.Group):
     def __init__(self) -> None:
-        self._rumble_group = displayio.Group()
+        super().__init__()
         self._text_progress = label.Label(FONT, color=DisplayColor.WHITE, scale=2, y=28)
 
         self._result_group = displayio.Group()
-        self._rumble_data = []
+        self._rumble_data: list = []
         number_of_data_points_to_display = 4
         for i in range(number_of_data_points_to_display):
             self._rumble_data.append(
@@ -38,12 +37,8 @@ class RumbleScreen:
             self._rumble_data[i].y = 8 + (self._rumble_data[i].height * i)
             self._result_group.append(self._rumble_data[i])
 
-        self._rumble_group.append(self._text_progress)
-        self._rumble_group.append(self._result_group)
-
-    def show_screen(self, screen: Display) -> None:
-        """This will make the display rumble screen"""
-        screen.set_display(self._rumble_group)
+        self.append(self._text_progress)
+        self.append(self._result_group)
 
     def update(self, rumble_mode: RumbleMode) -> None:
         """Update the rumble number on screen"""

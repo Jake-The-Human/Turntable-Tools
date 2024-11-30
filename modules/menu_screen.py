@@ -1,10 +1,10 @@
 """This file draw the menu to the screen"""
-from time import time
+
 import displayio
 from adafruit_display_text import label
 
 from .display import Display
-from .battery_status import BatteryStatus
+from .battery_icon import BatteryIcon
 from .menu import Menu
 from .helper import (
     DisplayColor,
@@ -17,13 +17,10 @@ from .helper import (
 )
 
 
-class MenuScreen:
+class MenuScreen(displayio.Group):
     def __init__(self, battery_info, menu_items: list[int]) -> None:
-        # Make the display context
-        self._main_group = displayio.Group()
+        super().__init__()
 
-        # Temp Main Menu elements
-        title_group = displayio.Group()
         text_title = label.Label(
             FONT, text=STRINGS.TITLE, color=DisplayColor.WHITE, y=8, padding_left=2
         )
@@ -38,15 +35,16 @@ class MenuScreen:
 
         self._menu = Menu(items=menu_items_data, visible_items=4, x=2, y=22)
 
-        title_group.append(text_title)
+        self.append(text_title)
 
         if HAS_BATTERY_STATUS_CIRCUIT:
-            self._battery_status = BatteryStatus(battery_info, CIRCUITPY_DISPLAY_WIDTH - 24, 4)
-            title_group.append(self._battery_status.get_group())
+            self._battery_status = BatteryIcon(
+                battery_info, CIRCUITPY_DISPLAY_WIDTH - 24, 4
+            )
+            self.append(self._battery_status)
 
-        title_group.append(separator)
-        self._main_group.append(title_group)
-        self._main_group.append(self._menu.group)
+        self.append(separator)
+        self.append(self._menu.group)
 
     def select(self) -> int:
         """Return the current index"""
@@ -62,7 +60,7 @@ class MenuScreen:
 
     def show_screen(self, screen: Display) -> None:
         """This will make the display show main menu"""
-        screen.set_display(self._main_group)
+        screen.set_display(self)
 
     def update(self) -> None:
         """Update the Menu screen"""

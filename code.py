@@ -9,7 +9,6 @@ from modules.helper import (
     UpdateGui,
     Mode,
     PixelColor,
-    STRINGS,
     HAS_SD_CARD,
     HAS_ADC_CIRCUIT,
     HAS_MEMS_CIRCUIT,
@@ -98,7 +97,7 @@ def build_menu_list(handlers: list[dict]) -> list[int]:
 
 # Setup Feather board
 i2c = board.STEMMA_I2C()
-pixel = NeoPixel(board.NEOPIXEL, 1)
+pixel = NeoPixel(board.NEOPIXEL, n=1)
 screen = Display(i2c)
 
 if HAS_SD_CARD:
@@ -116,9 +115,10 @@ about_screen = AboutScreen()
 # Init start up state
 update_gui = UpdateGui()
 update_gui.callback = main_screen.update
-main_screen.show_screen(screen)
+screen.set_display(main_screen)
 device_mode = Mode.MAIN_MENU
 
+# Init the input devices
 buttons = Buttons()
 
 
@@ -128,18 +128,23 @@ def change_mode(current_mode: int, new_mode: int = Mode.MAIN_MENU) -> int:
         return current_mode
 
     if new_mode == Mode.MAIN_MENU:
-        main_screen.show_screen(screen)
+        screen.set_display(main_screen)
     elif new_mode == Mode.ABOUT:
-        about_screen.show_screen(screen)
+        screen.set_display(about_screen)
     elif new_mode in mems_handlers:
-        mems_handlers["screens"][new_mode].show_screen(screen)
+        screen.set_display(mems_handlers["screens"][new_mode])
     elif new_mode in adc_handlers:
-        adc_handlers["screens"][new_mode].show_screen(screen)
+        screen.set_display(adc_handlers["screens"][new_mode])
     else:
         new_mode = Mode.MAIN_MENU
-        main_screen.show_screen(screen)
+        screen.set_display(main_screen)
 
     return new_mode
+
+
+# trying to remove static when starting the device
+while not screen.display.is_awake:
+    continue
 
 
 # Main logic loop

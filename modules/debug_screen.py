@@ -3,24 +3,23 @@
 import displayio
 from adafruit_display_text import label
 
-from .display import Display
 from .mems_sensor import MemsSensor
 from .helper import DisplayColor, FONT
 
 
-class DebugScreen:
+class DebugScreen(displayio.Group):
     def __init__(self) -> None:
-        self.debug_group = displayio.Group()
+        super().__init__()
 
         self.text_accel = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=8)
         self.text_gyro = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=18)
         self.text_rpm = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=26)
         self.text_degree = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=34)
 
-        self.debug_group.append(self.text_accel)
-        self.debug_group.append(self.text_gyro)
-        self.debug_group.append(self.text_rpm)
-        self.debug_group.append(self.text_degree)
+        self.append(self.text_accel)
+        self.append(self.text_gyro)
+        self.append(self.text_rpm)
+        self.append(self.text_degree)
 
     def update(self, sensor: MemsSensor) -> None:
         """This will draw raw sensor values to the screen"""
@@ -33,7 +32,3 @@ class DebugScreen:
         self.text_gyro.text = f"X:{gyro_x:.2f},Y:{gyro_y:.2f},Z:{gyro_z:.2f} radians/s"
         self.text_rpm.text = f"RPM:{rpm:.2f}"
         self.text_degree.text = f"Degree:{degree:.2f}"
-
-    def show_screen(self, screen: Display) -> None:
-        """This will make the display show the debug info"""
-        screen.set_display(self.debug_group)

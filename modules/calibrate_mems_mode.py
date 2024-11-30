@@ -10,8 +10,8 @@ from .helper import (
 )
 from .moving_average import MovingAvgTuple
 
-_FILE_NAME = "calibration.txt"
-_TOTAL_TEST_LEN = CALIBRATION_TEST_LEN + CALIBRATION_TEST_START_UP_TIME
+_FILE_NAME: str = "calibration.txt"
+_TOTAL_TEST_LEN: float = CALIBRATION_TEST_LEN + CALIBRATION_TEST_START_UP_TIME
 
 
 def _write_to_file(

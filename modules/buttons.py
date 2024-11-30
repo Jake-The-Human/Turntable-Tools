@@ -10,6 +10,8 @@ _TIMEOUT = 5.0
 
 
 class Buttons:
+    """This class wraps the 3 button logic"""
+
     def __init__(self) -> None:
         pin_c = DigitalInOut(C_BUTTON_PIN)
         pin_c.switch_to_input(pull=Pull.UP)
@@ -22,7 +24,6 @@ class Buttons:
 
         self._buttons = [Button(pin_a), Button(pin_b), Button(pin_c)]
 
-
     def update(self) -> None:
         """Updates the state of the buttons to see if any new events have happened"""
         for button in self._buttons:
@@ -33,7 +34,7 @@ class Buttons:
         for b in self._buttons:
             result = (not b.current_duration <= _TIMEOUT) or result
             print(b.current_duration)
-        return result 
+        return result
 
     def a_pressed(self) -> bool:
         """See if the A button has been pressed"""

@@ -1,15 +1,15 @@
 """This file handles draw rpm data to the screen"""
+
 import displayio
 from adafruit_display_text import label
 
-from .display import Display
 from .rpm_mode import RPMMode
 from .helper import DisplayColor, STRINGS, FONT
 
 
-class RPMScreen:
+class RPMScreen(displayio.Group):
     def __init__(self) -> None:
-        self._rpm_group = displayio.Group()
+        super().__init__()
         self._text_rpm = label.Label(FONT, color=DisplayColor.WHITE, scale=3, y=16)
         text_rpm_unit = label.Label(
             FONT, text=STRINGS.RPM, color=DisplayColor.WHITE, scale=2, x=89, y=16
@@ -25,14 +25,10 @@ class RPMScreen:
         self._result_group.append(self._text_min_max)
         self._result_group.append(self._text_wow)
 
-        self._rpm_group.append(self._text_rpm)
-        self._rpm_group.append(text_rpm_unit)
-        self._rpm_group.append(self._text_progress)
-        self._rpm_group.append(self._result_group)
-
-    def show_screen(self, screen: Display) -> None:
-        """This will make the display show the RPM tool"""
-        screen.set_display(self._rpm_group)
+        self.append(self._text_rpm)
+        self.append(text_rpm_unit)
+        self.append(self._text_progress)
+        self.append(self._result_group)
 
     def update(self, rpm_mode: RPMMode) -> None:
         """Update the RPM number on screen"""

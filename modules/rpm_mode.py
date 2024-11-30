@@ -18,28 +18,26 @@ _TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
 def _wow(rpm_data: list[float], nominal_rpm: float) -> float:
     """This calculates the wow supposedly..."""
     # Calculate the difference between each measured RPM and the nominal RPM
-    deviations = [abs(rpm - nominal_rpm) for rpm in rpm_data]
+    deviations: float = [abs(rpm - nominal_rpm) for rpm in rpm_data]
 
     # Calculate the wow as the maximum deviation (slow speed variations)
-    wow = max(deviations) / nominal_rpm * 100
-    return wow
+    return max(deviations) / nominal_rpm * 100.0
 
 
 def _flutter(rpm_data: list[float], nominal_rpm: float) -> float:
     """NOTE flutter but not convinced i need this"""
     # Calculate short-term deviations between consecutive RPM values
-    flutter_deviations = [
+    flutter_deviations: float = [
         abs(rpm_data[i] - rpm_data[i - 1]) for i in range(1, len(rpm_data))
     ]
 
     # Calculate flutter as the maximum short-term deviation, in percentage terms
-    flutter = max(flutter_deviations) / nominal_rpm * 100  # Convert to percentage
-    return flutter
+    return max(flutter_deviations) / nominal_rpm * 100.0
 
 
 class RPMMode:
     def __init__(self, pixel: NeoPixel) -> None:
-        self._pixel = pixel
+        self._pixel: NeoPixel = pixel
         self._rpm_data: list[float] = []
         self._time: float = 0
 
@@ -68,7 +66,7 @@ class RPMMode:
             # remove any noise or low rpms from the list
             # self._rpm_data = [d for d in self._rpm_data if d > 29]
 
-            if self._rpm_data != []:
+            if self._rpm_data:
                 rpm_avg: float = sum(self._rpm_data) / len(self._rpm_data)
                 nominal_rpm: float = min(
                     [RPM_33, RPM_45, RPM_78], key=lambda x: abs(x - rpm_avg)

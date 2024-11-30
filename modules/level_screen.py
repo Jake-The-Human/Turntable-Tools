@@ -4,7 +4,6 @@ import displayio
 from vectorio import Polygon
 from adafruit_display_text import label
 
-from .display import Display
 from .level_mode import LevelMode
 from .helper import (
     DisplayColor,
@@ -23,14 +22,14 @@ _SOUTH = 2
 _WEST = 3
 
 
-class LevelScreen:
+class LevelScreen(displayio.Group):
     def __init__(self) -> None:
-        self._level_group = displayio.Group()
+        super().__init__()
 
         BORDER: int = 2
         # Box that show the status of the leveling
-        box_width = CIRCUITPY_DISPLAY_WIDTH
-        box_height = CIRCUITPY_DISPLAY_HEIGHT
+        box_width: int = CIRCUITPY_DISPLAY_WIDTH
+        box_height: int = CIRCUITPY_DISPLAY_HEIGHT
         color_bitmap = displayio.Bitmap(box_width, box_height, 1)
 
         bg_sprite = displayio.TileGrid(
@@ -44,13 +43,13 @@ class LevelScreen:
         )
 
         # Some triangles to help move you in the right direction
-        top_left = (0, 0)
-        top_right = (box_width, 0)
-        center_point = (int(box_width / 2), int(box_height / 2))
-        bottom_left = (0, box_height)
-        bottom_right = (box_width, box_height)
+        top_left: tuple[int, int] = (0, 0)
+        top_right: tuple[int, int] = (box_width, 0)
+        center_point: tuple[int, int] = (int(box_width / 2), int(box_height / 2))
+        bottom_left: tuple[int, int] = (0, box_height)
+        bottom_right: tuple[int, int] = (box_width, box_height)
 
-        triangle_points = [
+        triangle_points: list[list[tuple[int, int]]] = [
             [top_left, center_point, top_right],
             [top_right, center_point, bottom_right],
             [bottom_left, center_point, bottom_right],
@@ -79,29 +78,25 @@ class LevelScreen:
         text_leveled.x = int(box_width / 2) - text_leveled.width
         text_leveled.y = int(box_height / 2)
 
-        self._level_group.append(bg_sprite)
-        self._level_group.append(inner_sprite)
+        self.append(bg_sprite)
+        self.append(inner_sprite)
 
         for triangle in self._triangles:
             triangle.hidden = True
-            self._level_group.append(triangle)
+            self.append(triangle)
 
         if SHOW_X_Y:
-            self._level_group.append(self._text_level_x_y)
+            self.append(self._text_level_x_y)
 
-        self._level_group.append(text_leveled)
-
-    def show_screen(self, screen: Display) -> None:
-        """This will make the display show the leveling tool"""
-        screen.set_display(self._level_group)
+        self.append(text_leveled)
 
     def update(self, level_mode: LevelMode) -> None:
         """This update the x and y values on the display"""
         x, y = level_mode.current_position
         if SHOW_X_Y:
             self._text_level_x_y.text = f"X:{x:.2f} Y:{y:.2f}"
-        x_rounded = round(x, 2)
-        y_rounded = round(y, 2)
+        x_rounded: float = round(x, 2)
+        y_rounded: float = round(y, 2)
         self._triangles[_NORTH].hidden = y_rounded > 0
         self._triangles[_EAST].hidden = x_rounded < 0
         self._triangles[_SOUTH].hidden = y_rounded < 0

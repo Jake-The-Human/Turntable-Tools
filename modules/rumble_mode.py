@@ -40,11 +40,13 @@ class RumbleMode:
         avg_x, avg_y, avg_z = self._moving_avg.update(sensor.get_acceleration())
 
         x, y, z = sensor.get_acceleration()
-        intensity = ((x - avg_x) ** 2 + (y - avg_y) ** 2 + (z - avg_z) ** 2) ** 0.5
+        intensity: float = (
+            (x - avg_x) ** 2 + (y - avg_y) ** 2 + (z - avg_z) ** 2
+        ) ** 0.5
 
-        avg_rumble_intensity = self._avg_intensity.update(intensity)
+        avg_rumble_intensity: float = self._avg_intensity.update(intensity)
 
-        current_time = time.time() - self._time
+        current_time: float = time.time() - self._time
 
         if current_time > RUMBLE_TEST_START_UP_TIME and current_time <= _TOTAL_TEST_LEN:
             self._pixel.fill(PixelColor.GREEN)

@@ -3,14 +3,13 @@
 import displayio
 from adafruit_display_text import label
 
-from .display import Display
 from .calibrate_mems_mode import CalibrateMemsMode
 from .helper import DisplayColor, STRINGS, FONT
 
 
-class CalibrateMemsScreen:
+class CalibrateMemsScreen(displayio.Group):
     def __init__(self) -> None:
-        self._calibrate_group = displayio.Group()
+        super().__init__()
         self._text_progress = label.Label(
             FONT, text=STRINGS.START_TURNTABLE, color=DisplayColor.WHITE, scale=2, y=28
         )
@@ -37,12 +36,8 @@ class CalibrateMemsScreen:
         self._result_group.append(text_gyro_tag)
         self._result_group.append(self._text_gyro_offset)
 
-        self._calibrate_group.append(self._text_progress)
-        self._calibrate_group.append(self._result_group)
-
-    def show_screen(self, screen: Display) -> None:
-        """update display to calibration"""
-        screen.set_display(self._calibrate_group)
+        self.append(self._text_progress)
+        self.append(self._result_group)
 
     def update(self, calibrate_mode: CalibrateMemsMode) -> None:
         """Update the rumble number on screen"""
