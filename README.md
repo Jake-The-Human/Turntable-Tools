@@ -14,6 +14,10 @@ Right now I am using a AdaFruit Feather board and a mems device.
 - [Power Switch](https://www.adafruit.com/product/805) (Optional)
 - STEMMA QT 4pin cable (Number depends on how you build the circuit)
 - JST-PH 2-pin Jumper Cable (Depends which power status circuit you use)
+- 2 Resistors of the same value (10kohm)
+- 1 Capacitor (10uF)
+- 1 Diode (1N4148)
+- Some wire.
 
 ## Wiring
 
@@ -56,6 +60,12 @@ This mode will try and reduce noise from the sensor.
 - B: Starts calibration
 
 ### Azimuth Mode: (coming soon)
+
+This works by getting the output from a test record from your turntable pre-amp and running through the RP2040's ADC. The signal will need a DC offset for the ADC to work correctly, so I made this simple circuit below.
+
+This will give the input signal VCC/2 offset, this is done with the resistors in a voltage divider configuration. The capacitor is for DC decoupling the input, and the diode is used to clamp the signal above 0V.
+
+<img src="./img/input_bias.png" height="400" width="555">
 
 - A: Back to main menu
 
