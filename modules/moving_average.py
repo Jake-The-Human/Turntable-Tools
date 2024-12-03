@@ -12,7 +12,7 @@ class MovingAvg:
     def __init__(self, size: int = _MOVING_AVG_SIZE):
         self._index = 0
         self._size = size
-        self._buffer: list = [0 for _ in range(size)]
+        self._buffer: list[float] = [0.0] * size
 
     def update(self, data: float) -> float:
         """update moving average and return the current avg"""
@@ -28,7 +28,7 @@ class MovingAvgTuple:
     def __init__(self, size: int = _MOVING_AVG_SIZE):
         self._index = 0
         self._size = size
-        self._buffer: list[tuple] = [(0, 0, 0) for _ in range(size)]
+        self._buffer: list[tuple] = [(0, 0, 0)] * size
 
     def update(self, data: tuple[float, float, float]) -> list:
         """update moving average and return the current avg"""

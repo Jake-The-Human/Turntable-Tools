@@ -31,6 +31,7 @@ from modules.rumble_screen import RumbleScreen
 from modules.calibrate_mems_screen import CalibrateMemsScreen
 
 # ADC imports
+from modules.adc_sensor import AdcSensor
 from modules.azimuth_mode import AzimuthMode
 from modules.azimuth_screen import AzimuthScreen
 
@@ -71,17 +72,15 @@ def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
     return handler
 
 
-def setup_adc_circuit(neo_pixel: NeoPixel) -> dict:
+def setup_adc_circuit(_: I2C, neo_pixel: NeoPixel) -> dict:
     return {
         Mode.AZIMUTH: AzimuthMode(neo_pixel),
-        Mode.NOISE: None,
-        Mode.DISTORTION: None,
-        "menu": [Mode.AZIMUTH],
-        "sensor": None,
+        Mode.PHASE: None,
+        "menu": [Mode.AZIMUTH, Mode.PHASE],
+        "sensor": AdcSensor(),
         "screens": {
             Mode.AZIMUTH: AzimuthScreen(),
-            Mode.NOISE: None,
-            Mode.DISTORTION: None,
+            Mode.PHASE: None,
         },
     }
 
@@ -105,7 +104,7 @@ if HAS_SD_CARD:
 
 # Setup the different tools
 mems_handlers: dict = setup_mems_circuit(i2c, pixel) if HAS_MEMS_CIRCUIT else {}
-adc_handlers: dict = setup_adc_circuit(pixel) if HAS_ADC_CIRCUIT else {}
+adc_handlers: dict = setup_adc_circuit(i2c, pixel) if HAS_ADC_CIRCUIT else {}
 
 # Setup the display logic for the different tools
 battery_info = BatteryInfo(i2c)
@@ -179,14 +178,15 @@ while True:
         update_gui.callback = lambda: mems_mode_screen.update(mems_mode)
 
     elif device_mode in adc_handlers:
-        adc_sensor = mems_handlers["sensor"]
+        adc_sensor: AdcSensor = adc_handlers["sensor"]
         adc_mode = adc_handlers[device_mode]
         adc_mode_screen = adc_handlers["screens"][device_mode]
 
         if buttons.a_pressed():
             device_mode = change_mode(current_mode=device_mode)
 
-        adc_mode.update()
+        adc_sensor.update()
+        adc_mode.update(adc_sensor)
         update_gui.callback = lambda: adc_mode_screen.update(adc_mode)
 
     elif device_mode == Mode.ABOUT:
@@ -194,4 +194,4 @@ while True:
             device_mode = change_mode(current_mode=device_mode)
 
     update_gui.update()
-    sleep(0.015)
+    # sleep(0.015)

@@ -8,7 +8,7 @@ from displayio import Palette
 
 # Turn features on/off
 HAS_MEMS_CIRCUIT: bool = True
-HAS_ADC_CIRCUIT: bool = False
+HAS_ADC_CIRCUIT: bool = True
 HAS_BATTERY_STATUS_CIRCUIT: bool = True
 HAS_SD_CARD: bool = True
 
@@ -97,8 +97,7 @@ class STRINGS:
     LEVEL = "Level"
     RUMBLE = "Rumble"
     AZIMUTH = "Azimuth"
-    NOISE = "Noise Floor"
-    DISTORTION = "Distortion"
+    PHASE = "Phase"
     CALIBRATE_MEMS = "Calibrate MEMS"
     ABOUT = "About"
 
@@ -126,8 +125,7 @@ class Mode:
     LEVEL = 1
     RUMBLE = 2
     AZIMUTH = 3
-    NOISE = 4
-    DISTORTION = 5
+    PHASE = 4
     CALIBRATE_MEMS = 6
     ABOUT = 7
 
@@ -138,6 +136,7 @@ class Mode:
         LEVEL: STRINGS.LEVEL,
         RUMBLE: STRINGS.RUMBLE,
         AZIMUTH: STRINGS.AZIMUTH,
+        PHASE: STRINGS.PHASE,
         CALIBRATE_MEMS: STRINGS.CALIBRATE_MEMS,
         ABOUT: STRINGS.ABOUT,
     }

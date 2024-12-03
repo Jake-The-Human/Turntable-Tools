@@ -7,6 +7,8 @@ from .helper import FONT, DisplayColor
 
 
 class AboutScreen(displayio.Group):
+    """The about screen"""
+
     def __init__(self) -> None:
         super().__init__()
         _text_about = label.Label(
