@@ -59,7 +59,7 @@ This mode will try and reduce noise from the sensor.
 - A: Back to main menu
 - B: Starts calibration
 
-### Azimuth Mode: (coming soon)
+### Azimuth Mode:
 
 This works by getting the output from a test record from your turntable pre-amp and running through the RP2040's ADC. The signal will need a DC offset for the ADC to work correctly, so I made this simple circuit below.
 
@@ -68,6 +68,9 @@ This will give the input signal VCC/2 offset, this is done with the resistors in
 <img src="./img/input_bias.png" height="400" width="555">
 
 - A: Back to main menu
+- B: Freeze the measurements
+- C: Clears the crosstalk moving avg.
+
 
 ### About Page:
 
@@ -79,3 +82,4 @@ More to come soon.
 <img src="./img/rpm_mode.jpg" height="400" width="400">
 <img src="./img/level_mode.jpg" height="400" width="400">
 <img src="./img/rumble_mode.jpg" height="400" width="400">
+<img src="./img/azimuth_mode.jpg" height="400" width="400">
