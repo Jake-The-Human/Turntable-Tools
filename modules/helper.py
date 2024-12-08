@@ -14,9 +14,14 @@ HAS_SD_CARD: bool = True
 
 # Pins and address
 DISPLAY_ADDRESS = 0x3C
+
 A_BUTTON_PIN: Pin = board.D9
 B_BUTTON_PIN: Pin = board.D6
 C_BUTTON_PIN: Pin = board.D5
+
+LEFT_CH_PIN = board.A0
+RIGHT_CH_PIN = board.A1
+
 BATTERY_VOLTAGE_PIN: Pin = board.A3
 
 # SH1107 is vertically oriented 64x128
@@ -27,6 +32,7 @@ CIRCUITPY_DISPLAY_HEIGHT: int = 64
 REFERENCE_VOLTAGE: float = 3.3
 BATTERY_MIN_VOLTAGE: float = 3.0
 BATTERY_MAX_VOLTAGE: float = 4.2
+MAX_INT_16: int = 65535
 
 # Font...
 FONT = terminalio.FONT
@@ -52,6 +58,11 @@ BLACK_PALETTE = Palette(1)
 BLACK_PALETTE[0] = 0x000000
 WHITE_PALETTE = Palette(1)
 WHITE_PALETTE[0] = 0xFFFFFF
+
+TEST_RECORDS: dict = {
+    "Ortofon Test Record" : ["left", "right", "left", "right"],
+    "Analogue Productions Ultimate Analogue Test Record": ["left", "right"],
+}
 
 
 class UpdateGui:
@@ -129,7 +140,7 @@ class Mode:
     CALIBRATE_MEMS = 6
     ABOUT = 7
 
-    MODE_TO_STR = {
+    MODE_TO_STR: dict = {
         DEBUG: "Debug",
         MAIN_MENU: "Main Menu",
         RPM: STRINGS.RPM,

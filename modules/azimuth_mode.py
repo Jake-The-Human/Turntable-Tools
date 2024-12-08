@@ -1,53 +1,41 @@
-from math import sqrt, log
+from math import log
 from neopixel import NeoPixel
 from modules.adc_sensor import AdcSensor
+from.moving_average import MovingAvg
+from .buttons import Buttons
 
-SAMPLE_BUFFER_SIZE: int = 1500
 
-
-def _get_next_index(index: int, list_len: int) -> int:
-    """This is for the moving average index so it does not go out of bounds"""
-    return (index + 1) % list_len
+def _crosstalk_to_db(main_signal: float, secondary_signal: float) -> float:
+    """Converts the to signals that are in mV to a dB"""
+    return 20.0 * log(secondary_signal / main_signal, 10) if main_signal != 0.0 else 0.0
 
 
 class AzimuthMode:
     def __init__(self, pixel: NeoPixel) -> None:
-        self._pixel = pixel
-        self.rms_1: float = 0.0
-        self.rms_2: float = 0.0
+        self._pixel: NeoPixel = pixel
+        self.rms_L: float = 0.0
+        self.rms_R: float = 0.0
+        self.crosstalk_L: float = 0.0
+        self.crosstalk_R: float = 0.0
+        self.crosstalk_avg_L = MovingAvg()
+        self.crosstalk_avg_R = MovingAvg()
+        self._freeze_crosstalk: bool = False
+
+    def handle_buttons(self, buttons: Buttons) -> None:
+        """Any mode specific action that are triggered by a button"""
+        self._freeze_crosstalk = buttons.b_pressed()
+
+        if buttons.c_pressed() or buttons.a_pressed():
+            self.crosstalk_avg_L.clear()
+            self.crosstalk_avg_R.clear()
+            self.crosstalk_L = 0.0
+            self.crosstalk_R = 0.0
 
     def update(self, adc_sensor: AdcSensor) -> None:
-        """Update the buffer with new samples and maintain a running RMS."""
-        self.rms_1, self.rms_2 = adc_sensor.get_rms()
+        """Update the buffer with new samples and maintain a running RMS and crosstalk."""
+        self.rms_L, self.rms_R = adc_sensor.get_rms()
 
-    # def measure_azimuth():
-    #     print("Play the left-channel-only tone...")
-    #     # time.sleep(5)  # Wait for the test tone to stabilize
+        if not self._freeze_crosstalk:
+            self.crosstalk_L = self.crosstalk_avg_L.update(_crosstalk_to_db(self.rms_L, self.rms_R))
+            self.crosstalk_R = self.crosstalk_avg_R.update(_crosstalk_to_db(self.rms_R, self.rms_L))
 
-    #     # Measure left channel signal and right channel crosstalk
-    #     L_signal = rms_left.calculate_rms()
-    #     R_crosstalk = rms_right.calculate_rms()
-
-    #     print(f"Left Signal RMS: {L_signal:.4f} V")
-    #     print(f"Right Crosstalk RMS: {R_crosstalk:.4f} V")
-
-    #     # Calculate crosstalk in dB
-    #     crosstalk_left_db = 20 * log(R_crosstalk / L_signal, 10)
-    #     print(f"Crosstalk (left channel): {crosstalk_left_db:.2f} dB")
-
-    #     print("\nPlay the right-channel-only tone...")
-    #     time.sleep(5)  # Wait for the test tone to stabilize
-
-    #     # Measure right channel signal and left channel crosstalk
-    #     R_signal = rms_right.calculate_rms()
-    #     L_crosstalk = rms_left.calculate_rms()
-
-    #     print(f"Right Signal RMS: {R_signal:.4f} V")
-    #     print(f"Left Crosstalk RMS: {L_crosstalk:.4f} V")
-
-    #     # Calculate crosstalk in dB
-    #     crosstalk_right_db = 20 * log(L_crosstalk / R_signal, 10)
-    #     print(f"Crosstalk (right channel): {crosstalk_right_db:.2f} dB")
-
-    #     # Return crosstalk ratios
-    #     return crosstalk_left_db, crosstalk_right_db

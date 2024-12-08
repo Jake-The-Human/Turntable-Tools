@@ -27,6 +27,18 @@ class MemsSensor:
         self.gyro = self.avg_gyro.update(self._sensor.gyro)
         self._sensor_temp = self._sensor.temperature
 
+    def clear(self) -> None:
+        """Resets member data to help make new measurements better"""
+        self.acceleration = (0, 0, 0)
+        self.gyro = (0, 0, 0)
+        self._sensor_temp = 0.0
+
+        self.avg_accel.clear()
+        self.avg_gyro.clear()
+
+        self.acceleration_offset = (0, 0, 0)
+        self.gyro_offset = (0, 0, 0)
+
     def get_acceleration(self) -> tuple[float, float, float]:
         """Gets the acceleration data"""
         acc_x, acc_y, acc_z = self.acceleration

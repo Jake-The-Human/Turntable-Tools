@@ -91,4 +91,4 @@ class BatteryIcon(displayio.Group):
 
     # def _get_voltage(self) -> float:
     #     """Gets current battery voltage for voltage divider circuit"""
-    #     return self._vbat_voltage.value / 65535.0 * REFERENCE_VOLTAGE * 2.0
+    #     return self._vbat_voltage.value / MAX_INT_16 * REFERENCE_VOLTAGE * 2.0

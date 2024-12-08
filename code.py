@@ -36,7 +36,7 @@ from modules.azimuth_mode import AzimuthMode
 from modules.azimuth_screen import AzimuthScreen
 
 
-def setup_sd_card():
+def setup_sd_card() -> None:
     import storage
     from digitalio import DigitalInOut
     from adafruit_sdcard import SDCard
@@ -75,12 +75,10 @@ def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
 def setup_adc_circuit(_: I2C, neo_pixel: NeoPixel) -> dict:
     return {
         Mode.AZIMUTH: AzimuthMode(neo_pixel),
-        Mode.PHASE: None,
-        "menu": [Mode.AZIMUTH, Mode.PHASE],
+        "menu": [Mode.AZIMUTH],
         "sensor": AdcSensor(),
         "screens": {
             Mode.AZIMUTH: AzimuthScreen(),
-            Mode.PHASE: None,
         },
     }
 
@@ -108,7 +106,7 @@ adc_handlers: dict = setup_adc_circuit(i2c, pixel) if HAS_ADC_CIRCUIT else {}
 
 # Setup the display logic for the different tools
 battery_info = BatteryInfo(i2c)
-main_screen = MenuScreen(battery_info, build_menu_list([adc_handlers, mems_handlers]))
+main_screen = MenuScreen(battery_info, build_menu_list([mems_handlers, adc_handlers]))
 about_screen = AboutScreen()
 
 # Init start up state
@@ -170,6 +168,7 @@ while True:
 
         if buttons.a_pressed():
             device_mode = change_mode(current_mode=device_mode)
+            mems_sensor.clear()
 
         mems_mode.handle_buttons(buttons)
 
@@ -184,6 +183,9 @@ while True:
 
         if buttons.a_pressed():
             device_mode = change_mode(current_mode=device_mode)
+            adc_sensor.clear()
+
+        adc_mode.handle_buttons(buttons)
 
         adc_sensor.update()
         adc_mode.update(adc_sensor)

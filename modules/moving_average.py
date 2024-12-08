@@ -14,6 +14,11 @@ class MovingAvg:
         self._size = size
         self._buffer: list[float] = [0.0] * size
 
+    def clear(self) -> None:
+        """Resets avg"""
+        self._index = 0
+        self._buffer: list[float] = [0.0] * self._size
+
     def update(self, data: float) -> float:
         """update moving average and return the current avg"""
         # Replace the oldest data in the buffer
@@ -29,6 +34,11 @@ class MovingAvgTuple:
         self._index = 0
         self._size = size
         self._buffer: list[tuple] = [(0, 0, 0)] * size
+
+    def clear(self) -> None:
+        """Resets avg"""
+        self._index = 0
+        self._buffer: list[tuple] = [(0, 0, 0)] * self._size
 
     def update(self, data: tuple[float, float, float]) -> list:
         """update moving average and return the current avg"""

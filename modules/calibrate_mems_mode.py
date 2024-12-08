@@ -26,6 +26,7 @@ def _write_to_file(
 
 
 def _read_to_file() -> list[tuple[float, float, float]]:
+    """Reads offset data to file for future use"""
     acceleration_offset: tuple[float, float, float] = (0, 0, 0)
     gyro_offset: tuple[float, float, float] = (0, 0, 0)
     try:
