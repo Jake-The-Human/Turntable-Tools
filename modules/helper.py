@@ -108,7 +108,6 @@ class STRINGS:
     LEVEL = "Level"
     RUMBLE = "Rumble"
     AZIMUTH = "Azimuth"
-    PHASE = "Phase"
     CALIBRATE_MEMS = "Calibrate MEMS"
     ABOUT = "About"
 
@@ -121,6 +120,8 @@ class STRINGS:
     MAX = "Max"
     WOW_AND_FLUTTER = "W&F"
     INTENSITY = "Intensity"
+
+    ALIGNMENT = "Alignment"
 
     ACCEL_OFFSET = "Accel Offset"
     GYRO_OFFSET = "Gyro Offset"
@@ -136,7 +137,6 @@ class Mode:
     LEVEL = 1
     RUMBLE = 2
     AZIMUTH = 3
-    PHASE = 4
     CALIBRATE_MEMS = 6
     ABOUT = 7
 
@@ -147,7 +147,6 @@ class Mode:
         LEVEL: STRINGS.LEVEL,
         RUMBLE: STRINGS.RUMBLE,
         AZIMUTH: STRINGS.AZIMUTH,
-        PHASE: STRINGS.PHASE,
         CALIBRATE_MEMS: STRINGS.CALIBRATE_MEMS,
         ABOUT: STRINGS.ABOUT,
     }
