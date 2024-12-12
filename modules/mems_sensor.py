@@ -39,27 +39,30 @@ class MemsSensor:
         self.acceleration_offset = (0, 0, 0)
         self.gyro_offset = (0, 0, 0)
 
+    @property
     def get_acceleration(self) -> tuple[float, float, float]:
         """Gets the acceleration data"""
         acc_x, acc_y, acc_z = self.acceleration
         offset_x, offset_y, offset_z = self.acceleration_offset
         return (acc_x - offset_x, acc_y - offset_y, acc_z - offset_z)
 
+    @property
     def get_gyro(self) -> tuple[float, float, float]:
         """Gets the gyro data"""
         gyro_x, gyro_y, gyro_z = self.gyro
         offset_x, offset_y, offset_z = self.gyro_offset
         return (gyro_x - offset_x, gyro_y - offset_y, gyro_z - offset_z)
 
+    @property
     def get_rpm(self) -> float:
         """gets RPM from gyro"""
-        _, _, gyro_z = self.get_gyro()
-        print(gyro_z)
+        _, _, gyro_z = self.get_gyro
         return abs(gyro_z * 60.0 / (2.0 * pi))
 
+    @property
     def get_degrees(self) -> float:
         """gets degrees from gyro"""
-        _, _, gyro_z = self.get_gyro()
+        _, _, gyro_z = self.get_gyro
         return gyro_z * (180.0 / pi)
 
     def set_offsets(

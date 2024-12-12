@@ -3,7 +3,8 @@
 import displayio
 from adafruit_display_text import label
 
-from .helper import FONT, DisplayColor
+from . import colors as COLORS
+from .helper import FONT
 
 
 class AboutScreen(displayio.Group):
@@ -15,7 +16,7 @@ class AboutScreen(displayio.Group):
             FONT,
             text="Author: Jake Adamson\nMade in Boston MA B^)"
             "\nGitHub: Jake-The-\nHuman/Turntable-Tools",
-            color=DisplayColor.WHITE,
+            color=COLORS.DISPLAY_WHITE,
             x=2,
             y=8,
         )

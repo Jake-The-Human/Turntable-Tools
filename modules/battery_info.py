@@ -19,6 +19,7 @@ class BatteryInfo:
         """
         self._max17 = adafruit_max1704x.MAX17048(i2c)
 
+    @property
     def is_usb_connected(self) -> bool:
         """
         Checks if the device is connected to a USB power source.
@@ -28,9 +29,10 @@ class BatteryInfo:
 
         :return: True if a USB power source is detected; otherwise, False.
         """
-        return self.get_voltage() >= 4.0 and self.get_charge_rate() > 0.5
+        return self.voltage >= 4.0 and self.charge_rate > 0.5
 
-    def get_voltage(self) -> float:
+    @property
+    def voltage(self) -> float:
         """
         Retrieves the current cell voltage of the battery.
 
@@ -40,7 +42,8 @@ class BatteryInfo:
         """
         return self._max17.cell_voltage
 
-    def get_charge_rate(self) -> float:
+    @property
+    def charge_rate(self) -> float:
         """
         Retrieves the current charge rate of the battery.
 
@@ -52,7 +55,8 @@ class BatteryInfo:
         """
         return self._max17.charge_rate
 
-    def get_percent(self) -> float:
+    @property
+    def battery_percent(self) -> float:
         """
         Retrieves the current state of charge (SOC) percentage of the battery.
 

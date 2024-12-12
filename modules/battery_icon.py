@@ -2,8 +2,9 @@
 import displayio
 from adafruit_display_text import label
 
+from . import colors as COLORS
 from .battery_info import BatteryInfo
-from .helper import WHITE_PALETTE, BLACK_PALETTE, FONT
+from .helper import FONT
 
 # Not sure if i should show the battery percentage or icon
 _SHOW_BATTERY_ICON = True
@@ -32,13 +33,13 @@ class BatteryIcon(displayio.Group):
             self._battery_icon_group = displayio.Group()
             terminal_bitmap = displayio.Bitmap(2, 4, 1)
             battery_terminal = displayio.TileGrid(
-                terminal_bitmap, pixel_shader=WHITE_PALETTE, x=x - 2, y=y + 2
+                terminal_bitmap, pixel_shader=COLORS.PALETTE_WHITE, x=x - 2, y=y + 2
             )
 
             battery_body_width = 21
             battery_body_bitmap = displayio.Bitmap(battery_body_width, 8, 1)
             battery_body = displayio.TileGrid(
-                battery_body_bitmap, pixel_shader=WHITE_PALETTE, x=x, y=y
+                battery_body_bitmap, pixel_shader=COLORS.PALETTE_WHITE, x=x, y=y
             )
 
             self._battery_icon_group.append(battery_terminal)
@@ -53,7 +54,7 @@ class BatteryIcon(displayio.Group):
                 self._battery_blocks.append(
                     displayio.TileGrid(
                         battery_block_bitmap,
-                        pixel_shader=BLACK_PALETTE,
+                        pixel_shader=COLORS.PALETTE_BLACK,
                         x=(block_x + (segment_width * i)) + i,
                         y=y + 1,
                     )
@@ -71,15 +72,15 @@ class BatteryIcon(displayio.Group):
 
     def update(self) -> None:
         """Update the the battery icon"""
-        if self._battery_info.is_usb_connected():
+        if self._battery_info.is_usb_connected:
             self._battery_icon_group.hidden = True
             self._text_usb.hidden = False
-            # self._text_usb.text = f"{self._battery_info.get_charge_rate()}%"
+            # self._text_usb.text = f"{self._battery_info.charge_rate}%"
         else:
             self._battery_icon_group.hidden = False
             self._text_usb.hidden = True
-            battery_percent = self._battery_info.get_percent()
-            # battery_percent = _get_battery_percentage(self._get_voltage())
+            battery_percent = self._battery_info.battery_percent
+            # battery_percent = _get_battery_percentage(self.voltage)
 
             if _SHOW_BATTERY_ICON:
                 self._battery_blocks[0].hidden = battery_percent < 80.0

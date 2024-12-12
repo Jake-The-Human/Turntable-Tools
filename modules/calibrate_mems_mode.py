@@ -2,11 +2,11 @@ import time
 from neopixel import NeoPixel
 from .mems_sensor import MemsSensor
 from .buttons import Buttons
+from . import colors as COLORS
 from .helper import (
     HAS_SD_CARD,
     CALIBRATION_TEST_LEN,
     CALIBRATION_TEST_START_UP_TIME,
-    PixelColor,
 )
 from .moving_average import MovingAvgTuple
 
@@ -71,7 +71,7 @@ class CalibrateMemsMode:
             current_time > CALIBRATION_TEST_START_UP_TIME
             and current_time <= _TOTAL_TEST_LEN
         ):
-            self._pixel.fill(PixelColor.GREEN)
+            self._pixel.fill(COLORS.NEO_PIXEL_GREEN)
             self._record_data = True
             self._start_up = False
 
@@ -86,17 +86,19 @@ class CalibrateMemsMode:
             if HAS_SD_CARD:
                 _write_to_file(self.acceleration_offset, self.gyro_offset)
 
+    @property
     def is_recording_data(self) -> bool:
         """Is used to check if we are capturing after button has been released"""
         return self._record_data
 
+    @property
     def is_starting_data(self) -> bool:
         """Allows time for the button to be released"""
         return self._start_up
 
     def start(self) -> None:
         """Start recording data"""
-        self._pixel.fill(PixelColor.YELLOW)
+        self._pixel.fill(COLORS.NEO_PIXEL_YELLOW)
         self._start_up = True
         self._time = time.time()
         self.acceleration_offset = (0, 0, 0)
@@ -104,6 +106,6 @@ class CalibrateMemsMode:
 
     def stop(self) -> None:
         """Stop recording data"""
-        self._pixel.fill(PixelColor.RED)
+        self._pixel.fill(COLORS.NEO_PIXEL_RED)
         self._record_data = False
         self._time = 0

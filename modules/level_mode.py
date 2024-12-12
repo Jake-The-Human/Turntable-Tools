@@ -3,7 +3,7 @@
 from neopixel import NeoPixel
 from .mems_sensor import MemsSensor
 from .buttons import Buttons
-from .helper import PixelColor
+from . import colors as COLORS
 
 
 class LevelMode:
@@ -16,9 +16,9 @@ class LevelMode:
 
     def update(self, sensor: MemsSensor) -> None:
         """This returns normalized x and y values"""
-        x, y, _ = sensor.get_acceleration()
+        x, y, _ = sensor.get_acceleration
         self.current_position = (x, y)
         if (x, y) == (0, 0):
-            self._pixel.fill(PixelColor.GREEN)
+            self._pixel.fill(COLORS.NEO_PIXEL_GREEN)
         else:
-            self._pixel.fill(PixelColor.OFF)
+            self._pixel.fill(COLORS.NEO_PIXEL_OFF)

@@ -4,17 +4,18 @@ import displayio
 from adafruit_display_text import label
 
 from .mems_sensor import MemsSensor
-from .helper import DisplayColor, FONT
+from . import colors as COLORS
+from .helper import FONT
 
 
 class DebugScreen(displayio.Group):
     def __init__(self) -> None:
         super().__init__()
 
-        self.text_accel = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=8)
-        self.text_gyro = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=18)
-        self.text_rpm = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=26)
-        self.text_degree = label.Label(FONT, color=DisplayColor.WHITE, x=8, y=34)
+        self.text_accel = label.Label(FONT, color=COLORS.DISPLAY_WHITE, x=8, y=8)
+        self.text_gyro = label.Label(FONT, color=COLORS.DISPLAY_WHITE, x=8, y=18)
+        self.text_rpm = label.Label(FONT, color=COLORS.DISPLAY_WHITE, x=8, y=26)
+        self.text_degree = label.Label(FONT, color=COLORS.DISPLAY_WHITE, x=8, y=34)
 
         self.append(self.text_accel)
         self.append(self.text_gyro)

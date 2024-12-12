@@ -4,22 +4,26 @@ import displayio
 from adafruit_display_text import label
 
 from .rpm_mode import RPMMode
-from .helper import DisplayColor, STRINGS, FONT
+from . import colors as COLORS
+from . import strings as STRINGS
+from .helper import FONT
 
 
 class RPMScreen(displayio.Group):
     def __init__(self) -> None:
         super().__init__()
-        self._text_rpm = label.Label(FONT, color=DisplayColor.WHITE, scale=3, y=16)
+        self._text_rpm = label.Label(FONT, color=COLORS.DISPLAY_WHITE, scale=3, y=16)
         text_rpm_unit = label.Label(
-            FONT, text=STRINGS.RPM, color=DisplayColor.WHITE, scale=2, x=89, y=16
+            FONT, text=STRINGS.RPM, color=COLORS.DISPLAY_WHITE, scale=2, x=89, y=16
         )
-        self._text_progress = label.Label(FONT, color=DisplayColor.WHITE, scale=2, y=42)
+        self._text_progress = label.Label(
+            FONT, color=COLORS.DISPLAY_WHITE, scale=2, y=42
+        )
 
         self._result_group = displayio.Group()
-        self._text_avg = label.Label(FONT, color=DisplayColor.WHITE, y=36)
-        self._text_min_max = label.Label(FONT, color=DisplayColor.WHITE, y=46)
-        self._text_wow = label.Label(FONT, color=DisplayColor.WHITE, y=56)
+        self._text_avg = label.Label(FONT, color=COLORS.DISPLAY_WHITE, y=36)
+        self._text_min_max = label.Label(FONT, color=COLORS.DISPLAY_WHITE, y=46)
+        self._text_wow = label.Label(FONT, color=COLORS.DISPLAY_WHITE, y=56)
 
         self._result_group.append(self._text_avg)
         self._result_group.append(self._text_min_max)
@@ -32,15 +36,15 @@ class RPMScreen(displayio.Group):
 
     def update(self, rpm_mode: RPMMode) -> None:
         """Update the RPM number on screen"""
-        if rpm_mode.is_recording_data():
+        if rpm_mode.is_recording_data:
             self._text_progress.text = STRINGS.MEASURING
 
-        elif rpm_mode.is_starting_data():
+        elif rpm_mode.is_starting_data:
             self._text_progress.hidden = False
             self._result_group.hidden = True
             self._text_progress.text = STRINGS.START_TURNTABLE
 
-        elif not rpm_mode.is_recording_data():
+        elif not rpm_mode.is_recording_data:
             avg_rpm, min_rpm, max_rpm, wow, flutter = rpm_mode.result
             self._text_progress.hidden = True
             self._result_group.hidden = False

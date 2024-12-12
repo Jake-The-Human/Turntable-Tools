@@ -2,8 +2,8 @@
 
 from displayio import Group
 from adafruit_display_text import label
-
-from .helper import DisplayColor, FONT, CIRCUITPY_DISPLAY_WIDTH
+from . import colors as COLORS
+from .helper import FONT, CIRCUITPY_DISPLAY_WIDTH
 
 
 class Menu:
@@ -21,7 +21,7 @@ class Menu:
             new_item = label.Label(
                 FONT,
                 text=items[i][1],
-                color=DisplayColor.WHITE,
+                color=COLORS.DISPLAY_WHITE,
                 padding_left=2,
                 padding_right=CIRCUITPY_DISPLAY_WIDTH,
             )
@@ -29,8 +29,8 @@ class Menu:
             self._menu_items.append(new_item)
             self.group.append(new_item)
 
-        self._menu_items[self._menu_index].background_color = DisplayColor.WHITE
-        self._menu_items[self._menu_index].color = DisplayColor.BLACK
+        self._menu_items[self._menu_index].background_color = COLORS.DISPLAY_WHITE
+        self._menu_items[self._menu_index].color = COLORS.DISPLAY_BLACK
 
     def __len__(self):
         return len(self._menu_items)

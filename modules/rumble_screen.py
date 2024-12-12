@@ -5,13 +5,15 @@ import displayio
 from adafruit_display_text import label
 
 from .rumble_mode import RumbleMode
-from .helper import FONT, DisplayColor, STRINGS
+from . import colors as COLORS
+from . import strings as STRINGS
+from .helper import FONT
 
 
-_INTENSITY_INDEX = 0
-_AVG_X_INDEX = 1
-_AVG_Y_INDEX = 2
-_AVG_Z_INDEX = 3
+_INTENSITY_INDEX: int = 0
+_AVG_X_INDEX: int = 1
+_AVG_Y_INDEX: int = 2
+_AVG_Z_INDEX: int = 3
 
 
 def _acceleration_to_db(accel_value: float, a_ref: float = 9.81) -> float:
@@ -24,14 +26,16 @@ def _acceleration_to_db(accel_value: float, a_ref: float = 9.81) -> float:
 class RumbleScreen(displayio.Group):
     def __init__(self) -> None:
         super().__init__()
-        self._text_progress = label.Label(FONT, color=DisplayColor.WHITE, scale=2, y=28)
+        self._text_progress = label.Label(
+            FONT, color=COLORS.DISPLAY_WHITE, scale=2, y=28
+        )
 
         self._result_group = displayio.Group()
         self._rumble_data: list = []
-        number_of_data_points_to_display = 4
+        number_of_data_points_to_display: int = 4
         for i in range(number_of_data_points_to_display):
             self._rumble_data.append(
-                label.Label(FONT, text=" ", color=DisplayColor.WHITE, padding_left=1)
+                label.Label(FONT, text=" ", color=COLORS.DISPLAY_WHITE, padding_left=1)
             )
             self._rumble_data[i].x = 1
             self._rumble_data[i].y = 8 + (self._rumble_data[i].height * i)
@@ -42,15 +46,15 @@ class RumbleScreen(displayio.Group):
 
     def update(self, rumble_mode: RumbleMode) -> None:
         """Update the rumble number on screen"""
-        if rumble_mode.is_recording_data():
+        if rumble_mode.is_recording_data:
             self._text_progress.text = STRINGS.MEASURING
 
-        elif rumble_mode.is_starting_data():
+        elif rumble_mode.is_starting_data:
             self._text_progress.hidden = False
             self._result_group.hidden = True
             self._text_progress.text = STRINGS.START_TURNTABLE
 
-        elif not rumble_mode.is_recording_data():
+        elif not rumble_mode.is_recording_data:
             self._text_progress.hidden = True
             self._result_group.hidden = False
             avg_x, avg_y, avg_z, rumble_intensity = rumble_mode.result

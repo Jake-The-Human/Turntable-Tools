@@ -5,14 +5,12 @@ from vectorio import Polygon
 from adafruit_display_text import label
 
 from .level_mode import LevelMode
+from . import colors as COLORS
+from . import strings as STRINGS
 from .helper import (
-    DisplayColor,
-    STRINGS,
     FONT,
     CIRCUITPY_DISPLAY_WIDTH,
     CIRCUITPY_DISPLAY_HEIGHT,
-    WHITE_PALETTE,
-    BLACK_PALETTE,
     SHOW_X_Y,
 )
 
@@ -33,13 +31,13 @@ class LevelScreen(displayio.Group):
         color_bitmap = displayio.Bitmap(box_width, box_height, 1)
 
         bg_sprite = displayio.TileGrid(
-            color_bitmap, pixel_shader=WHITE_PALETTE, x=0, y=0
+            color_bitmap, pixel_shader=COLORS.PALETTE_WHITE, x=0, y=0
         )
 
         inner_bitmap = displayio.Bitmap(box_width - BORDER, box_height - BORDER, 1)
 
         inner_sprite = displayio.TileGrid(
-            inner_bitmap, pixel_shader=BLACK_PALETTE, x=1, y=1
+            inner_bitmap, pixel_shader=COLORS.PALETTE_BLACK, x=1, y=1
         )
 
         # Some triangles to help move you in the right direction
@@ -57,15 +55,15 @@ class LevelScreen(displayio.Group):
         ]
 
         self._triangles: list[Polygon] = [
-            Polygon(pixel_shader=WHITE_PALETTE, points=triangle, x=0, y=0)
+            Polygon(pixel_shader=COLORS.PALETTE_WHITE, points=triangle, x=0, y=0)
             for triangle in triangle_points
         ]
 
         # The raw x and y value from the sensor
         self._text_level_x_y = label.Label(
             FONT,
-            color=DisplayColor.WHITE,
-            background_color=DisplayColor.BLACK,
+            color=COLORS.DISPLAY_WHITE,
+            background_color=COLORS.DISPLAY_BLACK,
             padding_left=1,
             x=BORDER + 1,
             y=8 + 1,
@@ -73,7 +71,7 @@ class LevelScreen(displayio.Group):
 
         # if you can read this then you are good to go!
         text_leveled = label.Label(
-            FONT, text=STRINGS.LEVEL, color=DisplayColor.BLACK, scale=2
+            FONT, text=STRINGS.LEVEL, color=COLORS.DISPLAY_BLACK, scale=2
         )
         text_leveled.x = int(box_width / 2) - text_leveled.width
         text_leveled.y = int(box_height / 2)

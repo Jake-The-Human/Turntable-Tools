@@ -6,14 +6,13 @@ from adafruit_display_text import label
 from .display import Display
 from .battery_icon import BatteryIcon
 from .menu import Menu
+from . import colors as COLORS
+from . import strings as STRINGS
+from . import mode as MODE
 from .helper import (
-    DisplayColor,
-    STRINGS,
-    Mode,
     FONT,
     CIRCUITPY_DISPLAY_WIDTH,
     HAS_BATTERY_STATUS_CIRCUIT,
-    WHITE_PALETTE,
 )
 
 
@@ -22,16 +21,16 @@ class MenuScreen(displayio.Group):
         super().__init__()
 
         text_title = label.Label(
-            FONT, text=STRINGS.TITLE, color=DisplayColor.WHITE, y=8, padding_left=2
+            FONT, text=STRINGS.TITLE, color=COLORS.DISPLAY_WHITE, y=8, padding_left=2
         )
         separator_bitmap = displayio.Bitmap(CIRCUITPY_DISPLAY_WIDTH, 1, 1)
         separator = displayio.TileGrid(
-            separator_bitmap, pixel_shader=WHITE_PALETTE, y=14
+            separator_bitmap, pixel_shader=COLORS.PALETTE_WHITE, y=14
         )
 
         menu_items_data = []
         for mode in menu_items:
-            menu_items_data.append([mode, Mode.MODE_TO_STR[mode]])
+            menu_items_data.append([mode, MODE.MODE_TO_STR[mode]])
 
         self._menu = Menu(items=menu_items_data, visible_items=4, x=2, y=22)
 

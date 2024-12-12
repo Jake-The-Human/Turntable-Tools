@@ -2,6 +2,7 @@ import time
 from neopixel import NeoPixel
 from .mems_sensor import MemsSensor
 from .buttons import Buttons
+from . import colors as COLORS
 from .helper import (
     RPM_33,
     RPM_45,
@@ -9,7 +10,6 @@ from .helper import (
     RPM_TEST_START_UP_TIME,
     RPM_TEST_LEN,
     HAS_SD_CARD,
-    PixelColor,
 )
 
 _TOTAL_TEST_LEN = RPM_TEST_LEN + RPM_TEST_START_UP_TIME
@@ -53,11 +53,11 @@ class RPMMode:
 
     def update(self, sensor: MemsSensor) -> None:
         """This returns normalized rpm data"""
-        new_rpm: float = sensor.get_rpm()
+        new_rpm: float = sensor.get_rpm
 
         current_time = time.time() - self._time
-        if current_time > RPM_TEST_START_UP_TIME and current_time <= _TOTAL_TEST_LEN:
-            self._pixel.fill(PixelColor.GREEN)
+        if RPM_TEST_START_UP_TIME <= current_time <= _TOTAL_TEST_LEN:
+            self._pixel.fill(COLORS.NEO_PIXEL_GREEN)
             self._record_data = True
             self._start_up = False
             self._rpm_data.append(new_rpm)
@@ -85,23 +85,25 @@ class RPMMode:
 
         self.current_rpm = new_rpm
 
+    @property
     def is_recording_data(self) -> bool:
         """Is used to check if we are capturing rpm data"""
         return self._record_data
 
+    @property
     def is_starting_data(self) -> bool:
         """Is used to check if we are letting the turntable get upto speed"""
         return self._start_up
 
     def start(self) -> None:
         """Start recording data for the wow and flutter calc"""
-        self._pixel.fill(PixelColor.YELLOW)
+        self._pixel.fill(COLORS.NEO_PIXEL_YELLOW)
         self._start_up = True
         self._time = time.time()
 
     def stop(self) -> None:
         """Stop recording data for the wow and flutter calc"""
-        self._pixel.fill(PixelColor.RED)
+        self._pixel.fill(COLORS.NEO_PIXEL_RED)
         self._record_data = False
         self._time = 0
 

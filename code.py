@@ -5,14 +5,14 @@ import board
 from busio import I2C, SPI
 from neopixel import NeoPixel
 
+import modules.mode as MODE
+import modules.colors as COLORS
 from modules.helper import (
-    UpdateGui,
-    Mode,
-    PixelColor,
     HAS_SD_CARD,
     HAS_ADC_CIRCUIT,
     HAS_MEMS_CIRCUIT,
 )
+from modules.update_gui import UpdateGui
 from modules.display import Display
 from modules.buttons import Buttons
 from modules.menu_screen import MenuScreen
@@ -50,21 +50,21 @@ def setup_sd_card() -> None:
 
 def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
     handler = {
-        Mode.RPM: RPMMode(neo_pixel),
-        Mode.LEVEL: LevelMode(neo_pixel),
-        Mode.RUMBLE: RumbleMode(neo_pixel),
-        Mode.CALIBRATE_MEMS: CalibrateMemsMode(neo_pixel),
-        "menu": [Mode.RPM, Mode.LEVEL, Mode.RUMBLE, Mode.CALIBRATE_MEMS],
+        MODE.RPM: RPMMode(neo_pixel),
+        MODE.LEVEL: LevelMode(neo_pixel),
+        MODE.RUMBLE: RumbleMode(neo_pixel),
+        MODE.CALIBRATE_MEMS: CalibrateMemsMode(neo_pixel),
+        "menu": [MODE.RPM, MODE.LEVEL, MODE.RUMBLE, MODE.CALIBRATE_MEMS],
         "sensor": MemsSensor(i2c_bus),
         "screens": {
-            Mode.RPM: RPMScreen(),
-            Mode.LEVEL: LevelScreen(),
-            Mode.RUMBLE: RumbleScreen(),
-            Mode.CALIBRATE_MEMS: CalibrateMemsScreen(),
+            MODE.RPM: RPMScreen(),
+            MODE.LEVEL: LevelScreen(),
+            MODE.RUMBLE: RumbleScreen(),
+            MODE.CALIBRATE_MEMS: CalibrateMemsScreen(),
         },
     }
     # Offset are load from the sd card if saved and the sensor is updated
-    calibrate_mode = handler[Mode.CALIBRATE_MEMS]
+    calibrate_mode = handler[MODE.CALIBRATE_MEMS]
     handler["sensor"].set_offsets(
         calibrate_mode.acceleration_offset,
         calibrate_mode.gyro_offset,
@@ -74,21 +74,21 @@ def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
 
 def setup_adc_circuit(_: I2C, neo_pixel: NeoPixel) -> dict:
     return {
-        Mode.AZIMUTH: AzimuthMode(neo_pixel),
-        "menu": [Mode.AZIMUTH],
+        MODE.AZIMUTH: AzimuthMode(neo_pixel),
+        "menu": [MODE.AZIMUTH],
         "sensor": AdcSensor(),
         "screens": {
-            Mode.AZIMUTH: AzimuthScreen(),
+            MODE.AZIMUTH: AzimuthScreen(),
         },
     }
 
 
 def build_menu_list(handlers: list[dict]) -> list[int]:
     menu_list: list[int] = []
-    for h in handlers:
-        if h:
-            menu_list += h["menu"]
-    menu_list.append(Mode.ABOUT)
+    for handler in handlers:
+        if handler:
+            menu_list += handler["menu"]
+    menu_list.append(MODE.ABOUT)
     return menu_list
 
 
@@ -113,27 +113,27 @@ about_screen = AboutScreen()
 update_gui = UpdateGui()
 update_gui.callback = main_screen.update
 screen.set_display(main_screen)
-device_mode = Mode.MAIN_MENU
+device_mode = MODE.MAIN_MENU
 
 # Init the input devices
 buttons = Buttons()
 
 
-def change_mode(current_mode: int, new_mode: int = Mode.MAIN_MENU) -> int:
+def change_mode(current_mode: int, new_mode: int = MODE.MAIN_MENU) -> int:
     """This function handles update the gui's mode"""
     if new_mode == current_mode:
         return current_mode
 
-    if new_mode == Mode.MAIN_MENU:
+    if new_mode == MODE.MAIN_MENU:
         screen.set_display(main_screen)
-    elif new_mode == Mode.ABOUT:
+    elif new_mode == MODE.ABOUT:
         screen.set_display(about_screen)
     elif new_mode in mems_handlers:
         screen.set_display(mems_handlers["screens"][new_mode])
     elif new_mode in adc_handlers:
         screen.set_display(adc_handlers["screens"][new_mode])
     else:
-        new_mode = Mode.MAIN_MENU
+        new_mode = MODE.MAIN_MENU
         screen.set_display(main_screen)
 
     return new_mode
@@ -148,7 +148,7 @@ while not screen.display.is_awake:
 while True:
     buttons.update()
 
-    if device_mode == Mode.MAIN_MENU:
+    if device_mode == MODE.MAIN_MENU:
         if buttons.a_pressed():
             main_screen.up()
         elif buttons.b_pressed():
@@ -159,7 +159,7 @@ while True:
             main_screen.down()
 
         update_gui.callback = main_screen.update
-        pixel.fill(PixelColor.OFF)
+        pixel.fill(COLORS.NEO_PIXEL_OFF)
 
     elif device_mode in mems_handlers:
         mems_sensor: MemsSensor = mems_handlers["sensor"]
@@ -191,7 +191,7 @@ while True:
         adc_mode.update(adc_sensor)
         update_gui.callback = lambda: adc_mode_screen.update(adc_mode)
 
-    elif device_mode == Mode.ABOUT:
+    elif device_mode == MODE.ABOUT:
         if buttons.a_pressed():
             device_mode = change_mode(current_mode=device_mode)
 

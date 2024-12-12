@@ -38,4 +38,3 @@ class AzimuthMode:
         if not self._freeze_crosstalk:
             self.crosstalk_L = self.crosstalk_avg_L.update(_crosstalk_to_db(self.rms_L, self.rms_R))
             self.crosstalk_R = self.crosstalk_avg_R.update(_crosstalk_to_db(self.rms_R, self.rms_L))
-

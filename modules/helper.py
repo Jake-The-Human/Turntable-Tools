@@ -1,10 +1,8 @@
 """Constants and other data used through out the program"""
 
-from time import time
 import board
 import terminalio
 from microcontroller import Pin
-from displayio import Palette
 
 # Turn features on/off
 HAS_MEMS_CIRCUIT: bool = True
@@ -53,100 +51,7 @@ RUMBLE_TEST_LEN: float = 30
 CALIBRATION_TEST_START_UP_TIME: float = 5
 CALIBRATION_TEST_LEN: float = 5
 
-# Black and white color palettes
-BLACK_PALETTE = Palette(1)
-BLACK_PALETTE[0] = 0x000000
-WHITE_PALETTE = Palette(1)
-WHITE_PALETTE[0] = 0xFFFFFF
-
 TEST_RECORDS: dict = {
-    "Ortofon Test Record" : ["left", "right", "left", "right"],
+    "Ortofon Test Record": ["left", "right", "left", "right"],
     "Analogue Productions Ultimate Analogue Test Record": ["left", "right"],
 }
-
-
-class UpdateGui:
-    """The purpose of this class is to separate the data collection from the screen updating"""
-
-    def __init__(self) -> None:
-        self.gui_update_time: float = 0.03
-        self.timer: float = time()
-        self.callback = UpdateGui._stub
-
-    def update(self) -> None:
-        """Check if enough time has pass before updating the gui"""
-        # if time() - self.timer >= self.gui_update_time:
-        self.callback()
-        # self.timer = time()
-
-    @staticmethod
-    def _stub() -> None:
-        pass
-
-
-class DisplayColor:
-    """Colors for the display"""
-
-    WHITE: int = 0xFFFFFF
-    BLACK: int = 0x000000
-
-
-class PixelColor:
-    """Colors for NeoPixel"""
-
-    OFF: tuple = (0, 0, 0)
-    GREEN: tuple = (0, 255, 0)
-    YELLOW: tuple = (255, 255, 0)
-    RED: tuple = (255, 0, 0)
-
-
-class STRINGS:
-    """String used through out device"""
-
-    TITLE = "Turntable Tool"
-    RPM = "RPM"
-    LEVEL = "Level"
-    RUMBLE = "Rumble"
-    AZIMUTH = "Azimuth"
-    CALIBRATE_MEMS = "Calibrate MEMS"
-    ABOUT = "About"
-
-    START_TURNTABLE = "Starting"
-    MEASURING = "Measuring"
-    CALIBRATING = "Calibrating"
-
-    AVG = "Avg"
-    MIN = "Min"
-    MAX = "Max"
-    WOW_AND_FLUTTER = "W&F"
-    INTENSITY = "Intensity"
-
-    ALIGNMENT = "Alignment"
-
-    ACCEL_OFFSET = "Accel Offset"
-    GYRO_OFFSET = "Gyro Offset"
-    NO_CIRCUIT = "Circuit is not\npresent."
-
-
-class Mode:
-    """These constants are used to describe what Mode the device is in"""
-
-    DEBUG = -2
-    MAIN_MENU = -1
-    RPM = 0
-    LEVEL = 1
-    RUMBLE = 2
-    AZIMUTH = 3
-    CALIBRATE_MEMS = 6
-    ABOUT = 7
-
-    MODE_TO_STR: dict = {
-        DEBUG: "Debug",
-        MAIN_MENU: "Main Menu",
-        RPM: STRINGS.RPM,
-        LEVEL: STRINGS.LEVEL,
-        RUMBLE: STRINGS.RUMBLE,
-        AZIMUTH: STRINGS.AZIMUTH,
-        CALIBRATE_MEMS: STRINGS.CALIBRATE_MEMS,
-        ABOUT: STRINGS.ABOUT,
-    }

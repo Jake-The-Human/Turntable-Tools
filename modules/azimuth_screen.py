@@ -1,7 +1,9 @@
 import displayio
 from adafruit_display_text import label
 from .azimuth_mode import AzimuthMode
-from .helper import FONT, DisplayColor, STRINGS
+from . import colors as COLORS
+from . import strings as STRINGS
+from .helper import FONT
 
 
 class AzimuthScreen(displayio.Group):
@@ -10,8 +12,8 @@ class AzimuthScreen(displayio.Group):
 
         self._crosstalk_text = label.Label(
             FONT,
-            color=DisplayColor.WHITE,
-            background_color=DisplayColor.BLACK,
+            color=COLORS.DISPLAY_WHITE,
+            background_color=COLORS.DISPLAY_BLACK,
             padding_left=1,
             x=0,
             y=8,
@@ -19,8 +21,8 @@ class AzimuthScreen(displayio.Group):
 
         self._crosstalk_value_text = label.Label(
             FONT,
-            color=DisplayColor.WHITE,
-            background_color=DisplayColor.BLACK,
+            color=COLORS.DISPLAY_WHITE,
+            background_color=COLORS.DISPLAY_BLACK,
             padding_left=1,
             x=0,
             y=20,
@@ -42,19 +44,19 @@ class AzimuthScreen(displayio.Group):
             crosstalk: float = azimuth_mode.crosstalk_R
 
         self._crosstalk_text.text = (
-            f"{STRINGS.ALIGNMENT} is {AzimuthScreen._alignment(crosstalk)}."
+            f"{STRINGS.ALIGNMENT}: {AzimuthScreen._alignment(crosstalk)}."
         )
 
         self._crosstalk_value_text.text = f"{channel}: {rms:.2f}mV, {crosstalk:.2f}dB"
 
     @staticmethod
     def _alignment(crosstalk_db: float) -> str:
-        quality: str = "poor"
+        quality: str = STRINGS.POOR
         if crosstalk_db < -30.0:
-            quality = "excellent"
+            quality = STRINGS.EXCELLENT
         elif crosstalk_db < -25.0:
-            quality = "great"
+            quality = STRINGS.GREAT
         elif crosstalk_db < -20.0:
-            quality = "good"
+            quality = STRINGS.GOOD
 
         return quality
