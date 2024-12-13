@@ -7,12 +7,15 @@ from . import colors as COLORS
 
 
 class LevelMode:
+    """This class is the logic to help level you turntable"""
+
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel = pixel
         self.current_position: tuple = (0, 0)
 
     def handle_buttons(self, _: Buttons) -> None:
-        pass
+        """Not used"""
+        return
 
     def update(self, sensor: MemsSensor) -> None:
         """This returns normalized x and y values"""

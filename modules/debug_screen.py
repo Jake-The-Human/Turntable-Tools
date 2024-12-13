@@ -9,6 +9,7 @@ from .helper import FONT
 
 
 class DebugScreen(displayio.Group):
+    """This class can be used to debug the mems sensor"""
     def __init__(self) -> None:
         super().__init__()
 

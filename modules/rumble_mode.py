@@ -26,7 +26,7 @@ class RumbleMode:
 
     def handle_buttons(self, buttons: Buttons) -> None:
         """Any mode specific action that are triggered by a button"""
-        if buttons.b_pressed():
+        if buttons.b_pressed:
             self.start()
 
     def update(self, sensor: MemsSensor) -> None:

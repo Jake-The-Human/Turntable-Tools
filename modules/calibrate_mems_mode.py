@@ -38,13 +38,15 @@ def _read_to_file() -> list[tuple[float, float, float]]:
             )
             gyro_offset = tuple(float(data) for data in calibration_str[1].split(" "))
 
-    except Exception:
+    except OSError:
         print("Calibration file not found.")
 
     return [acceleration_offset, gyro_offset]
 
 
 class CalibrateMemsMode:
+    """This is the class that handles calibration of the mems sensor"""
+
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel = pixel
         self.acceleration_offset: tuple[float, float, float] = (0, 0, 0)
@@ -61,7 +63,7 @@ class CalibrateMemsMode:
 
     def handle_buttons(self, buttons: Buttons) -> None:
         """Any mode specific action that are triggered by a button"""
-        if buttons.b_pressed():
+        if buttons.b_pressed:
             self.start()
 
     def update(self, sensor: MemsSensor) -> None:

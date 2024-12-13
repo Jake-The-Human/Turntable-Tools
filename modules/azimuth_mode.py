@@ -23,9 +23,9 @@ class AzimuthMode:
 
     def handle_buttons(self, buttons: Buttons) -> None:
         """Any mode specific action that are triggered by a button"""
-        self._freeze_crosstalk = buttons.b_pressed()
+        self._freeze_crosstalk = buttons.b_pressed
 
-        if buttons.c_pressed() or buttons.a_pressed():
+        if buttons.c_pressed or buttons.a_pressed:
             self.crosstalk_avg_L.clear()
             self.crosstalk_avg_R.clear()
             self.crosstalk_L = 0.0

@@ -7,6 +7,7 @@ from .helper import LEFT_CH_PIN, RIGHT_CH_PIN, MAX_INT_16
 
 _SAMPLE_BUFFER_SIZE: int = 128
 
+
 def _value_to_voltage(value: int, voltage_ref: float) -> float:
     """Change raw value to voltage and subtract the DC offset"""
     return ((value / MAX_INT_16) * voltage_ref) - (voltage_ref / 2.0)

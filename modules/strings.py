@@ -1,6 +1,8 @@
 """String used through out device"""
 
 TITLE: str = "Turntable Tool"
+DEBUG: str = "Debug"
+MAIN_MENU: str = "Main Menu"
 RPM: str = "RPM"
 LEVEL: str = "Level"
 RUMBLE: str = "Rumble"

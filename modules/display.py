@@ -12,6 +12,8 @@ from .helper import DISPLAY_ADDRESS, CIRCUITPY_DISPLAY_WIDTH, CIRCUITPY_DISPLAY_
 
 
 class Display:
+    """This class is used to set up the hw display"""
+
     def __init__(self, i2c) -> None:
         release_displays()
         self.display = SH1107(

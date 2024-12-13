@@ -37,6 +37,7 @@ from modules.azimuth_screen import AzimuthScreen
 
 
 def setup_sd_card() -> None:
+    """Does what the box says sets up the sd card"""
     import storage
     from digitalio import DigitalInOut
     from adafruit_sdcard import SDCard
@@ -49,6 +50,7 @@ def setup_sd_card() -> None:
 
 
 def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
+    """Sets up dynamic handling of mems related operations"""
     handler = {
         MODE.RPM: RPMMode(neo_pixel),
         MODE.LEVEL: LevelMode(neo_pixel),
@@ -73,6 +75,7 @@ def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
 
 
 def setup_adc_circuit(_: I2C, neo_pixel: NeoPixel) -> dict:
+    """Sets up dynamic handling of adc related operations"""
     return {
         MODE.AZIMUTH: AzimuthMode(neo_pixel),
         "menu": [MODE.AZIMUTH],
@@ -84,6 +87,7 @@ def setup_adc_circuit(_: I2C, neo_pixel: NeoPixel) -> dict:
 
 
 def build_menu_list(handlers: list[dict]) -> list[int]:
+    """Builds menu from the handlers that are active"""
     menu_list: list[int] = []
     for handler in handlers:
         if handler:
@@ -149,24 +153,25 @@ while True:
     buttons.update()
 
     if device_mode == MODE.MAIN_MENU:
-        if buttons.a_pressed():
+        if buttons.a_pressed:
             main_screen.up()
-        elif buttons.b_pressed():
+        elif buttons.b_pressed:
             device_mode = change_mode(
                 current_mode=device_mode, new_mode=main_screen.select()
             )
-        elif buttons.c_pressed():
+        elif buttons.c_pressed:
             main_screen.down()
 
         update_gui.callback = main_screen.update
         pixel.fill(COLORS.NEO_PIXEL_OFF)
+        sleep(0.03)
 
     elif device_mode in mems_handlers:
         mems_sensor: MemsSensor = mems_handlers["sensor"]
         mems_mode = mems_handlers[device_mode]
         mems_mode_screen = mems_handlers["screens"][device_mode]
 
-        if buttons.a_pressed():
+        if buttons.a_pressed:
             device_mode = change_mode(current_mode=device_mode)
             mems_sensor.clear()
 
@@ -175,13 +180,14 @@ while True:
         mems_sensor.update()
         mems_mode.update(mems_sensor)
         update_gui.callback = lambda: mems_mode_screen.update(mems_mode)
+        sleep(0.015)
 
     elif device_mode in adc_handlers:
         adc_sensor: AdcSensor = adc_handlers["sensor"]
         adc_mode = adc_handlers[device_mode]
         adc_mode_screen = adc_handlers["screens"][device_mode]
 
-        if buttons.a_pressed():
+        if buttons.a_pressed:
             device_mode = change_mode(current_mode=device_mode)
             adc_sensor.clear()
 
@@ -192,8 +198,7 @@ while True:
         update_gui.callback = lambda: adc_mode_screen.update(adc_mode)
 
     elif device_mode == MODE.ABOUT:
-        if buttons.a_pressed():
+        if buttons.a_pressed:
             device_mode = change_mode(current_mode=device_mode)
 
     update_gui.update()
-    # sleep(0.015)

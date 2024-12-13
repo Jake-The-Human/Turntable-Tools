@@ -10,6 +10,8 @@ from .helper import FONT
 
 
 class CalibrateMemsScreen(displayio.Group):
+    """This is the screen for calibrating the mems sensor"""
+
     def __init__(self) -> None:
         super().__init__()
         self._text_progress = label.Label(
