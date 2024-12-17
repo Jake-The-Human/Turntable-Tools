@@ -1,8 +1,9 @@
 from math import log
 from neopixel import NeoPixel
-from modules.adc_sensor import AdcSensor
-from.moving_average import MovingAvg
-from .buttons import Buttons
+
+from turntable_tools.sensors.adc_sensor import AdcSensor
+from turntable_tools.moving_average import MovingAvg
+from turntable_tools.buttons import Buttons
 
 
 def _crosstalk_to_db(main_signal: float, secondary_signal: float) -> float:
@@ -36,5 +37,9 @@ class AzimuthMode:
         self.rms_L, self.rms_R = adc_sensor.get_rms()
 
         if not self._freeze_crosstalk:
-            self.crosstalk_L = self.crosstalk_avg_L.update(_crosstalk_to_db(self.rms_L, self.rms_R))
-            self.crosstalk_R = self.crosstalk_avg_R.update(_crosstalk_to_db(self.rms_R, self.rms_L))
+            self.crosstalk_L = self.crosstalk_avg_L.update(
+                _crosstalk_to_db(self.rms_L, self.rms_R)
+            )
+            self.crosstalk_R = self.crosstalk_avg_R.update(
+                _crosstalk_to_db(self.rms_R, self.rms_L)
+            )

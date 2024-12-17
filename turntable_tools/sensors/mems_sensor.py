@@ -4,7 +4,7 @@ from math import pi
 from busio import I2C
 from adafruit_lsm6ds.lsm6ds3 import LSM6DS3
 
-from .moving_average import MovingAvgTuple
+from turntable_tools.moving_average import MovingAvgTuple
 
 
 class MemsSensor:

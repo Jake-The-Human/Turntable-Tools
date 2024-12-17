@@ -1,6 +1,6 @@
 """These constants are used to describe what Mode the device is in"""
 
-from . import strings as STRINGS
+from turntable_tools import strings as STRINGS
 
 DEBUG: int = -2
 MAIN_MENU: int = -1

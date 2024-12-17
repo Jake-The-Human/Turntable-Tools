@@ -3,10 +3,10 @@
 import displayio
 from adafruit_display_text import label
 
-from .calibrate_mems_mode import CalibrateMemsMode
-from . import colors as COLORS
-from . import strings as STRINGS
-from .helper import FONT
+from turntable_tools.modes.calibrate_mems_mode import CalibrateMemsMode
+from turntable_tools import colors as COLORS
+from turntable_tools import strings as STRINGS
+from turntable_tools.helper import FONT
 
 
 class CalibrateMemsScreen(displayio.Group):

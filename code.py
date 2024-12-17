@@ -5,35 +5,35 @@ import board
 from busio import I2C, SPI
 from neopixel import NeoPixel
 
-import modules.mode as MODE
-import modules.colors as COLORS
-from modules.helper import (
+import turntable_tools.mode_types as MODE
+import turntable_tools.colors as COLORS
+from turntable_tools.helper import (
     HAS_SD_CARD,
     HAS_ADC_CIRCUIT,
     HAS_MEMS_CIRCUIT,
 )
-from modules.update_gui import UpdateGui
-from modules.display import Display
-from modules.buttons import Buttons
-from modules.menu_screen import MenuScreen
-from modules.about_screen import AboutScreen
-from modules.battery_info import BatteryInfo
+from turntable_tools.update_gui import UpdateGui
+from turntable_tools.display import Display
+from turntable_tools.buttons import Buttons
+from turntable_tools.screens.menu_screen import MenuScreen
+from turntable_tools.screens.about_screen import AboutScreen
+from turntable_tools.sensors.battery_info import BatteryInfo
 
 # MEMS imports
-from modules.mems_sensor import MemsSensor
-from modules.calibrate_mems_mode import CalibrateMemsMode
-from modules.rpm_mode import RPMMode
-from modules.level_mode import LevelMode
-from modules.rumble_mode import RumbleMode
-from modules.rpm_screen import RPMScreen
-from modules.level_screen import LevelScreen
-from modules.rumble_screen import RumbleScreen
-from modules.calibrate_mems_screen import CalibrateMemsScreen
+from turntable_tools.sensors.mems_sensor import MemsSensor
+from turntable_tools.modes.calibrate_mems_mode import CalibrateMemsMode
+from turntable_tools.modes.rpm_mode import RPMMode
+from turntable_tools.modes.level_mode import LevelMode
+from turntable_tools.modes.rumble_mode import RumbleMode
+from turntable_tools.screens.rpm_screen import RPMScreen
+from turntable_tools.screens.level_screen import LevelScreen
+from turntable_tools.screens.rumble_screen import RumbleScreen
+from turntable_tools.screens.calibrate_mems_screen import CalibrateMemsScreen
 
 # ADC imports
-from modules.adc_sensor import AdcSensor
-from modules.azimuth_mode import AzimuthMode
-from modules.azimuth_screen import AzimuthScreen
+from turntable_tools.sensors.adc_sensor import AdcSensor
+from turntable_tools.modes.azimuth_mode import AzimuthMode
+from turntable_tools.screens.azimuth_screen import AzimuthScreen
 
 
 def setup_sd_card() -> None:

@@ -2,8 +2,8 @@
 
 from displayio import Group
 from adafruit_display_text import label
-from . import colors as COLORS
-from .helper import FONT, CIRCUITPY_DISPLAY_WIDTH
+from turntable_tools import colors as COLORS
+from turntable_tools.helper import FONT, CIRCUITPY_DISPLAY_WIDTH
 
 
 class Menu:

@@ -1,9 +1,10 @@
 import time
 from neopixel import NeoPixel
-from .mems_sensor import MemsSensor
-from .buttons import Buttons
-from . import colors as COLORS
-from .helper import (
+
+from turntable_tools.sensors.mems_sensor import MemsSensor
+from turntable_tools.buttons import Buttons
+from turntable_tools import colors as COLORS
+from turntable_tools.helper import (
     RPM_33,
     RPM_45,
     RPM_78,

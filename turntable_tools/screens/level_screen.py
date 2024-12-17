@@ -4,10 +4,10 @@ import displayio
 from vectorio import Polygon
 from adafruit_display_text import label
 
-from .level_mode import LevelMode
-from . import colors as COLORS
-from . import strings as STRINGS
-from .helper import (
+from turntable_tools.modes.level_mode import LevelMode
+from turntable_tools import colors as COLORS
+from turntable_tools import strings as STRINGS
+from turntable_tools.helper import (
     FONT,
     CIRCUITPY_DISPLAY_WIDTH,
     CIRCUITPY_DISPLAY_HEIGHT,

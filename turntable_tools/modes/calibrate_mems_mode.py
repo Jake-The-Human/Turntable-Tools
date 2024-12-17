@@ -1,14 +1,15 @@
 import time
 from neopixel import NeoPixel
-from .mems_sensor import MemsSensor
-from .buttons import Buttons
-from . import colors as COLORS
-from .helper import (
+
+from turntable_tools.sensors.mems_sensor import MemsSensor
+from turntable_tools.buttons import Buttons
+from turntable_tools import colors as COLORS
+from turntable_tools.moving_average import MovingAvgTuple
+from turntable_tools.helper import (
     HAS_SD_CARD,
     CALIBRATION_TEST_LEN,
     CALIBRATION_TEST_START_UP_TIME,
 )
-from .moving_average import MovingAvgTuple
 
 _FILE_NAME: str = "calibration.txt"
 _TOTAL_TEST_LEN: float = CALIBRATION_TEST_LEN + CALIBRATION_TEST_START_UP_TIME

@@ -1,10 +1,13 @@
-"""This file is about the about page on the device"""
+"""This file is about the about page on the device
+
+Source Code: https://github.com/Jake-The-Human/Turntable-Tools
+"""
 
 import displayio
 from adafruit_display_text import label
 
-from . import colors as COLORS
-from .helper import FONT
+from turntable_tools import colors as COLORS
+from turntable_tools.helper import FONT
 
 
 class AboutScreen(displayio.Group):

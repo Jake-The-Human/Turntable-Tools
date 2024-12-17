@@ -3,13 +3,13 @@
 import displayio
 from adafruit_display_text import label
 
-from .display import Display
-from .battery_icon import BatteryIcon
-from .menu import Menu
-from . import colors as COLORS
-from . import strings as STRINGS
-from . import mode as MODE
-from .helper import (
+from turntable_tools.display import Display
+from turntable_tools.battery_icon import BatteryIcon
+from turntable_tools.menu import Menu
+from turntable_tools import colors as COLORS
+from turntable_tools import strings as STRINGS
+from turntable_tools import mode_types as MODE
+from turntable_tools.helper import (
     FONT,
     CIRCUITPY_DISPLAY_WIDTH,
     HAS_BATTERY_STATUS_CIRCUIT,

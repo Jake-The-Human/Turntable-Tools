@@ -3,9 +3,9 @@
 import displayio
 from adafruit_display_text import label
 
-from .mems_sensor import MemsSensor
-from . import colors as COLORS
-from .helper import FONT
+from turntable_tools.sensors.mems_sensor import MemsSensor
+from turntable_tools import colors as COLORS
+from turntable_tools.helper import FONT
 
 
 class DebugScreen(displayio.Group):

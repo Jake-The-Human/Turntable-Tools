@@ -1,9 +1,10 @@
 """Describes Leveling logic"""
 
 from neopixel import NeoPixel
-from .mems_sensor import MemsSensor
-from .buttons import Buttons
-from . import colors as COLORS
+
+from turntable_tools.sensors.mems_sensor import MemsSensor
+from turntable_tools.buttons import Buttons
+from turntable_tools import colors as COLORS
 
 
 class LevelMode:

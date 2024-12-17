@@ -2,7 +2,8 @@
 
 from math import sqrt
 from analogio import AnalogIn
-from .helper import LEFT_CH_PIN, RIGHT_CH_PIN, MAX_INT_16
+
+from turntable_tools.helper import LEFT_CH_PIN, RIGHT_CH_PIN, MAX_INT_16
 
 
 _SAMPLE_BUFFER_SIZE: int = 128

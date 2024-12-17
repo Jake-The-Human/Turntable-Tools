@@ -4,10 +4,10 @@ from math import log
 import displayio
 from adafruit_display_text import label
 
-from .rumble_mode import RumbleMode
-from . import colors as COLORS
-from . import strings as STRINGS
-from .helper import FONT
+from turntable_tools.modes.rumble_mode import RumbleMode
+from turntable_tools import colors as COLORS
+from turntable_tools import strings as STRINGS
+from turntable_tools.helper import FONT
 
 
 _INTENSITY_INDEX: int = 0

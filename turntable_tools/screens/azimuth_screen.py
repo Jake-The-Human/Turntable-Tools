@@ -1,9 +1,10 @@
 import displayio
+
 from adafruit_display_text import label
-from .azimuth_mode import AzimuthMode
-from . import colors as COLORS
-from . import strings as STRINGS
-from .helper import FONT
+from turntable_tools.modes.azimuth_mode import AzimuthMode
+from turntable_tools import colors as COLORS
+from turntable_tools import strings as STRINGS
+from turntable_tools.helper import FONT
 
 
 class AzimuthScreen(displayio.Group):

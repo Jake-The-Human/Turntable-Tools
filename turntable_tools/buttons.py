@@ -1,6 +1,7 @@
 from digitalio import DigitalInOut, Pull
 from adafruit_debouncer import Button
-from .helper import A_BUTTON_PIN, B_BUTTON_PIN, C_BUTTON_PIN
+
+from turntable_tools.helper import A_BUTTON_PIN, B_BUTTON_PIN, C_BUTTON_PIN
 
 _A_BUTTON_INDEX: int = 0
 _B_BUTTON_INDEX: int = 1

@@ -1,11 +1,11 @@
 import time
 from neopixel import NeoPixel
 
-from .mems_sensor import MemsSensor
-from .buttons import Buttons
-from .moving_average import MovingAvgTuple, MovingAvg
-from . import colors as COLORS
-from .helper import (
+from turntable_tools.sensors.mems_sensor import MemsSensor
+from turntable_tools.buttons import Buttons
+from turntable_tools.moving_average import MovingAvgTuple, MovingAvg
+from turntable_tools import colors as COLORS
+from turntable_tools.helper import (
     RUMBLE_TEST_START_UP_TIME,
     RUMBLE_TEST_LEN,
 )
