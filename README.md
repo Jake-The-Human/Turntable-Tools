@@ -2,7 +2,7 @@
 
 The goal of this project is to make an device that measure RPM, Wow, Flutter, Rumble and help Level a turntable.
 
-Right now I am using a AdaFruit Feather board and a mems device.
+Right now I am using a AdaFruit Feather board's build in adc and a mems device.
 
 ## Hardware:
 
@@ -14,10 +14,12 @@ Right now I am using a AdaFruit Feather board and a mems device.
 - [Power Switch](https://www.adafruit.com/product/805) (Optional)
 - STEMMA QT 4pin cable (Number depends on how you build the circuit)
 - JST-PH 2-pin Jumper Cable (Depends which power status circuit you use)
-- 2 Resistors of the same value (10kohm)
-- 1 Capacitor (10uF)
-- 1 Diode (1N4148)
-- Some wire.
+- DC Offset Circut for ADC
+  - 2 RCA connectors
+  - 2 Resistors of the same value (10kohm)
+  - 1 Capacitor (10uF)
+  - 1 Diode (1N4148)
+  - Some wire
 
 ## Wiring
 
