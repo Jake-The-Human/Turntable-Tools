@@ -41,7 +41,7 @@ RPM_45: float = 45.0
 RPM_78: float = 78.0
 
 # Leveling debug
-SHOW_X_Y: bool = True
+SHOW_X_Y: bool = False
 
 # These are for when capturing data
 RPM_TEST_START_UP_TIME: float = 10
