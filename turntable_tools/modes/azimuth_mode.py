@@ -14,12 +14,12 @@ def _crosstalk_to_db(main_signal: float, secondary_signal: float) -> float:
 class AzimuthMode:
     def __init__(self, pixel: NeoPixel) -> None:
         self._pixel: NeoPixel = pixel
-        self.rms_L: float = 0.0
-        self.rms_R: float = 0.0
-        self.crosstalk_L: float = 0.0
-        self.crosstalk_R: float = 0.0
-        self.crosstalk_avg_L = MovingAvg()
-        self.crosstalk_avg_R = MovingAvg()
+        self.rms_left: float = 0.0
+        self.rms_right: float = 0.0
+        self.crosstalk_left: float = 0.0
+        self.crosstalk_right: float = 0.0
+        self.crosstalk_avg_left = MovingAvg()
+        self.crosstalk_avg_right = MovingAvg()
         self._freeze_crosstalk: bool = False
 
     def handle_buttons(self, buttons: Buttons) -> None:
@@ -27,19 +27,19 @@ class AzimuthMode:
         self._freeze_crosstalk = buttons.b_pressed
 
         if buttons.c_pressed or buttons.a_pressed:
-            self.crosstalk_avg_L.clear()
-            self.crosstalk_avg_R.clear()
-            self.crosstalk_L = 0.0
-            self.crosstalk_R = 0.0
+            self.crosstalk_avg_left.clear()
+            self.crosstalk_avg_right.clear()
+            self.crosstalk_left = 0.0
+            self.crosstalk_right = 0.0
 
     def update(self, adc_sensor: AdcSensor) -> None:
         """Update the buffer with new samples and maintain a running RMS and crosstalk."""
-        self.rms_L, self.rms_R = adc_sensor.get_rms()
+        self.rms_left, self.rms_right = adc_sensor.get_rms()
 
         if not self._freeze_crosstalk:
-            self.crosstalk_L = self.crosstalk_avg_L.update(
-                _crosstalk_to_db(self.rms_L, self.rms_R)
+            self.crosstalk_left = self.crosstalk_avg_left.update(
+                _crosstalk_to_db(self.rms_left, self.rms_right)
             )
-            self.crosstalk_R = self.crosstalk_avg_R.update(
-                _crosstalk_to_db(self.rms_R, self.rms_L)
+            self.crosstalk_right = self.crosstalk_avg_right.update(
+                _crosstalk_to_db(self.rms_right, self.rms_left)
             )

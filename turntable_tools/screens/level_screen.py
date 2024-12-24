@@ -26,26 +26,26 @@ class LevelScreen(displayio.Group):
 
         BORDER: int = 2
         # Box that show the status of the leveling
-        box_width: int = CIRCUITPY_DISPLAY_WIDTH
-        box_height: int = CIRCUITPY_DISPLAY_HEIGHT
+        box_width: int = int(CIRCUITPY_DISPLAY_WIDTH / 2)
+        box_height: int = int(CIRCUITPY_DISPLAY_HEIGHT / 2)
         color_bitmap = displayio.Bitmap(box_width, box_height, 1)
 
         bg_sprite = displayio.TileGrid(
-            color_bitmap, pixel_shader=COLORS.PALETTE_WHITE, x=0, y=0
+            color_bitmap, pixel_shader=COLORS.PALETTE_WHITE, x=box_width - int(box_width / 2), y=box_height - int(box_height / 2)
         )
 
         inner_bitmap = displayio.Bitmap(box_width - BORDER, box_height - BORDER, 1)
 
         inner_sprite = displayio.TileGrid(
-            inner_bitmap, pixel_shader=COLORS.PALETTE_BLACK, x=1, y=1
+            inner_bitmap, pixel_shader=COLORS.PALETTE_BLACK, x=bg_sprite.x + 1, y=bg_sprite.y + 1
         )
 
         # Some triangles to help move you in the right direction
-        top_left: tuple[int, int] = (0, 0)
-        top_right: tuple[int, int] = (box_width, 0)
-        center_point: tuple[int, int] = (int(box_width / 2), int(box_height / 2))
-        bottom_left: tuple[int, int] = (0, box_height)
-        bottom_right: tuple[int, int] = (box_width, box_height)
+        top_left: tuple[int, int] = (inner_sprite.x, inner_sprite.y)
+        top_right: tuple[int, int] = (inner_sprite.x + box_width, inner_sprite.y)
+        center_point: tuple[int, int] = (inner_sprite.x + int(box_width / 2), inner_sprite.y + int(box_height / 2))
+        bottom_left: tuple[int, int] = (inner_sprite.x, inner_sprite.y + box_height)
+        bottom_right: tuple[int, int] = (inner_sprite.x + box_width, inner_sprite.y + box_height)
 
         triangle_points: list[list[tuple[int, int]]] = [
             [top_left, center_point, top_right],
@@ -73,8 +73,8 @@ class LevelScreen(displayio.Group):
         text_leveled = label.Label(
             FONT, text=STRINGS.LEVEL, color=COLORS.DISPLAY_BLACK, scale=2
         )
-        text_leveled.x = int(box_width / 2) - text_leveled.width
-        text_leveled.y = int(box_height / 2)
+        text_leveled.x = inner_sprite.x + (int(box_width / 2) - text_leveled.width) + BORDER
+        text_leveled.y = inner_sprite.y + int(box_height / 2)
 
         self.append(bg_sprite)
         self.append(inner_sprite)
@@ -93,8 +93,8 @@ class LevelScreen(displayio.Group):
         x, y = level_mode.current_position
         if SHOW_X_Y:
             self._text_level_x_y.text = f"X:{x:.2f} Y:{y:.2f}"
-        x_rounded: float = round(x, 2)
-        y_rounded: float = round(y, 2)
+        x_rounded: float = round(x, 1)
+        y_rounded: float = round(y, 1)
         self._triangles[_NORTH].hidden = y_rounded > 0
         self._triangles[_EAST].hidden = x_rounded < 0
         self._triangles[_SOUTH].hidden = y_rounded < 0

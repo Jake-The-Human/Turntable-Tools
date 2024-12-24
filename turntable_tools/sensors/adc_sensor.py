@@ -16,38 +16,38 @@ def _value_to_voltage(value: int, voltage_ref: float) -> float:
 
 class AdcSensor:
     def __init__(self) -> None:
-        self.chan_L = AnalogIn(LEFT_CH_PIN)
-        self.chan_R = AnalogIn(RIGHT_CH_PIN)
+        self.chan_left = AnalogIn(LEFT_CH_PIN)
+        self.chan_right = AnalogIn(RIGHT_CH_PIN)
 
         # RMS
         self._channel_index: int = 0
-        self._channel_L_samples: list[float] = [0.0] * _SAMPLE_BUFFER_SIZE
-        self._channel_R_samples: list[float] = [0.0] * _SAMPLE_BUFFER_SIZE
-        self._sum_of_squares_L: float = 0.0
-        self._sum_of_squares_R: float = 0.0
+        self._channel_left_samples: list[float] = [0.0] * _SAMPLE_BUFFER_SIZE
+        self._channel_right_samples: list[float] = [0.0] * _SAMPLE_BUFFER_SIZE
+        self._sum_of_squares_left: float = 0.0
+        self._sum_of_squares_right: float = 0.0
         self._samples_collected: int = 0
 
     def update(self) -> None:
         """Update the buffer with new samples and maintain a running RMS."""
-        new_sample_L: float = _value_to_voltage(
-            self.chan_L.value, self.chan_L.reference_voltage
+        new_sample_left: float = _value_to_voltage(
+            self.chan_left.value, self.chan_left.reference_voltage
         )
-        new_sample_R: float = _value_to_voltage(
-            self.chan_R.value, self.chan_R.reference_voltage
+        new_sample_right: float = _value_to_voltage(
+            self.chan_right.value, self.chan_right.reference_voltage
         )
 
         # Get the index of the sample to be replaced
         oldest_sample_index: int = self._channel_index
-        old_sample_L = self._channel_L_samples[oldest_sample_index]
-        old_sample_R = self._channel_R_samples[oldest_sample_index]
+        old_sample_left: float = self._channel_left_samples[oldest_sample_index]
+        old_sample_right: float = self._channel_right_samples[oldest_sample_index]
 
         # Update the sum of squares by removing the old sample contribution
-        self._sum_of_squares_L += new_sample_L**2 - old_sample_L**2
-        self._sum_of_squares_R += new_sample_R**2 - old_sample_R**2
+        self._sum_of_squares_left += new_sample_left**2 - old_sample_left**2
+        self._sum_of_squares_right += new_sample_right**2 - old_sample_right**2
 
         # Replace the old sample with the new one in the buffer
-        self._channel_L_samples[oldest_sample_index] = new_sample_L
-        self._channel_R_samples[oldest_sample_index] = new_sample_R
+        self._channel_left_samples[oldest_sample_index] = new_sample_left
+        self._channel_right_samples[oldest_sample_index] = new_sample_right
 
         # Update the index
         self._channel_index = (self._channel_index + 1) % _SAMPLE_BUFFER_SIZE
@@ -59,10 +59,10 @@ class AdcSensor:
     def clear(self) -> None:
         """Resets member data to help make new measurements better"""
         self._channel_index = 0
-        self._channel_L_samples = [0.0] * _SAMPLE_BUFFER_SIZE
-        self._channel_R_samples = [0.0] * _SAMPLE_BUFFER_SIZE
-        self._sum_of_squares_L = 0.0
-        self._sum_of_squares_R = 0.0
+        self._channel_left_samples = [0.0] * _SAMPLE_BUFFER_SIZE
+        self._channel_right_samples = [0.0] * _SAMPLE_BUFFER_SIZE
+        self._sum_of_squares_left = 0.0
+        self._sum_of_squares_right = 0.0
         self._samples_collected = 0
 
     def get_rms(self) -> list[float]:
@@ -71,11 +71,13 @@ class AdcSensor:
 
         :returns: A list of two RMS values [RMS_channel_1, RMS_channel_2].
         """
-        if self._samples_collected == 0:
+        sample_count: int = self._samples_collected
+
+        if sample_count == 0:
             return [0.0, 0.0]
 
         # Calculate RMS using the valid number of samples
-        rms_value_L: float = sqrt(self._sum_of_squares_L / self._samples_collected)
-        rms_value_R: float = sqrt(self._sum_of_squares_R / self._samples_collected)
+        rms_left: float = sqrt(self._sum_of_squares_left / sample_count)
+        rms_right: float = sqrt(self._sum_of_squares_right / sample_count)
 
-        return [rms_value_L, rms_value_R]
+        return [rms_left, rms_right]

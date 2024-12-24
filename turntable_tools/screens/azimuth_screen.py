@@ -35,14 +35,14 @@ class AzimuthScreen(displayio.Group):
     def update(self, azimuth_mode: AzimuthMode) -> None:
         """Update the rms voltage and crosstalk"""
 
-        if azimuth_mode.crosstalk_L < 0.0:
+        if azimuth_mode.crosstalk_left < 0.0:
             channel: str = "L"
-            rms: float = azimuth_mode.rms_L
-            crosstalk: float = azimuth_mode.crosstalk_L
+            rms: float = azimuth_mode.rms_left
+            crosstalk: float = azimuth_mode.crosstalk_left
         else:
             channel: str = "R"
-            rms: float = azimuth_mode.rms_R
-            crosstalk: float = azimuth_mode.crosstalk_R
+            rms: float = azimuth_mode.rms_right
+            crosstalk: float = azimuth_mode.crosstalk_right
 
         self._crosstalk_text.text = (
             f"{STRINGS.ALIGNMENT}: {AzimuthScreen._alignment(crosstalk)}."
