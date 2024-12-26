@@ -10,7 +10,7 @@ Right now I am using a AdaFruit Feather board's build in adc and a mems device.
 - [Adafruit FeatherWing OLED - 128x64 OLED](https://www.adafruit.com/product/4650)
 - [Adafruit LSM6DS3TR-C 6-DoF Accel + Gyro IMU](https://www.adafruit.com/product/4503) (for RPM, leveling, and rumble)
 - [Battery](https://www.adafruit.com/product/4236) (Size of batter is up to you this is the one I used)
-- [Adafruit MAX17048 ](https://www.adafruit.com/product/5580) (Optional)
+- [Adafruit MAX17048](https://www.adafruit.com/product/5580) (Optional used for monitoring battery status)
 - [Power Switch](https://www.adafruit.com/product/805) (Optional)
 - STEMMA QT 4pin cable (Number depends on how you build the circuit)
 - JST-PH 2-pin Jumper Cable (Depends which power status circuit you use)
