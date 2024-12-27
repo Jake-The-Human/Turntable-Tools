@@ -1,4 +1,29 @@
-"""This is were we draw the level info to the screen"""
+"""
+Turntable Tools - Easy to use tools for turntable measurement and control.
+
+Filename: level_screen.py
+Description: This is were we draw the level info to the screen.
+
+Author: Jake-The-Human
+Repository: https://github.com/Jake-The-Human/Turntable-Tools
+License: GPL-3.0-or-later (see LICENSE file for details)
+Date Created: 2024-12-17
+
+This file is part of Turntable Tools.
+
+Turntable Tools is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+Turntable Tools is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Turntable Tools. If not, see <https://www.gnu.org/licenses/>.
+"""
 
 import displayio
 from vectorio import Polygon
@@ -26,26 +51,38 @@ class LevelScreen(displayio.Group):
 
         BORDER: int = 2
         # Box that show the status of the leveling
-        box_width: int = int(CIRCUITPY_DISPLAY_WIDTH / 2)
-        box_height: int = int(CIRCUITPY_DISPLAY_HEIGHT / 2)
+        box_width: int = CIRCUITPY_DISPLAY_WIDTH // 2
+        box_height: int = CIRCUITPY_DISPLAY_HEIGHT // 2
         color_bitmap = displayio.Bitmap(box_width, box_height, 1)
 
         bg_sprite = displayio.TileGrid(
-            color_bitmap, pixel_shader=COLORS.PALETTE_WHITE, x=box_width - int(box_width / 2), y=box_height - int(box_height / 2)
+            color_bitmap,
+            pixel_shader=COLORS.PALETTE_WHITE,
+            x=box_width - (box_width // 2),
+            y=box_height - (box_height // 2),
         )
 
         inner_bitmap = displayio.Bitmap(box_width - BORDER, box_height - BORDER, 1)
 
         inner_sprite = displayio.TileGrid(
-            inner_bitmap, pixel_shader=COLORS.PALETTE_BLACK, x=bg_sprite.x + 1, y=bg_sprite.y + 1
+            inner_bitmap,
+            pixel_shader=COLORS.PALETTE_BLACK,
+            x=bg_sprite.x + 1,
+            y=bg_sprite.y + 1,
         )
 
         # Some triangles to help move you in the right direction
         top_left: tuple[int, int] = (inner_sprite.x, inner_sprite.y)
         top_right: tuple[int, int] = (inner_sprite.x + box_width, inner_sprite.y)
-        center_point: tuple[int, int] = (inner_sprite.x + int(box_width / 2), inner_sprite.y + int(box_height / 2))
+        center_point: tuple[int, int] = (
+            inner_sprite.x + (box_width // 2),
+            inner_sprite.y + (box_height // 2),
+        )
         bottom_left: tuple[int, int] = (inner_sprite.x, inner_sprite.y + box_height)
-        bottom_right: tuple[int, int] = (inner_sprite.x + box_width, inner_sprite.y + box_height)
+        bottom_right: tuple[int, int] = (
+            inner_sprite.x + box_width,
+            inner_sprite.y + box_height,
+        )
 
         triangle_points: list[list[tuple[int, int]]] = [
             [top_left, center_point, top_right],
@@ -73,8 +110,10 @@ class LevelScreen(displayio.Group):
         text_leveled = label.Label(
             FONT, text=STRINGS.LEVEL, color=COLORS.DISPLAY_BLACK, scale=2
         )
-        text_leveled.x = inner_sprite.x + (int(box_width / 2) - text_leveled.width) + BORDER
-        text_leveled.y = inner_sprite.y + int(box_height / 2)
+        text_leveled.x = (
+            inner_sprite.x + ((box_width // 2) - text_leveled.width) + BORDER
+        )
+        text_leveled.y = inner_sprite.y + (box_height // 2)
 
         self.append(bg_sprite)
         self.append(inner_sprite)

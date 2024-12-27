@@ -1,3 +1,30 @@
+"""
+Turntable Tools - Easy to use tools for turntable measurement and control.
+
+Filename: battery_icon.py
+Description: This is the code for drawing the battery icon.
+
+Author: Jake-The-Human
+Repository: https://github.com/Jake-The-Human/Turntable-Tools
+License: GPL-3.0-or-later (see LICENSE file for details)
+Date Created: 2024-12-17
+
+This file is part of Turntable Tools.
+
+Turntable Tools is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+Turntable Tools is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Turntable Tools. If not, see <https://www.gnu.org/licenses/>.
+"""
+
 # import analogio
 import displayio
 from adafruit_display_text import label
@@ -46,7 +73,7 @@ class BatteryIcon(displayio.Group):
             self._battery_icon_group.append(battery_body)
 
             num_of_segments = 4
-            segment_width = int(battery_body_width / num_of_segments) - 1
+            segment_width = (battery_body_width // num_of_segments) - 1
             battery_block_bitmap = displayio.Bitmap(segment_width, 6, 1)
             block_x = x + 1
             self._battery_blocks = []
