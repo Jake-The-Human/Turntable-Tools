@@ -5,9 +5,12 @@ enable_testing()
 
 add_executable(TurntableTools_test
     source/TurntableTools_test.cpp
-    source/frequency_response.cpp
+    source/frequency_response_test.cpp
     source/tracking_ability_test.cpp
-)
+    source/phase_test.cpp
+    source/thd_test.cpp
+    source/azimuth_test.cpp
+    )
 
 # Link Catch2 to the test executable
 target_link_libraries(TurntableTools_test PRIVATE Catch2::Catch2WithMain TurntableTools_lib)

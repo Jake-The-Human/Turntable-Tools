@@ -16,7 +16,7 @@ void frequency_response::update(std::span<const float> signal,
   auto complex_signal = dsp::fft(signal, true);
 
   // Calculate the magnitude (in dB) for each frequency bin
-  for (size_t i = 1; i < num_samples / 2; ++i)
+  for (size_t i = 0; i < num_samples / 2; ++i)
   {  // Only need the positive frequencies
     const float magnitude = std::abs(complex_signal[i]);
 
