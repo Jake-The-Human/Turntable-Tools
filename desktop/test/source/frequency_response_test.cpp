@@ -4,11 +4,9 @@
 #include <numeric>
 #include <vector>
 
-#include "frequency_response.hpp"
+#include "tools/frequency_response.hpp"
 
 #include <catch2/catch_test_macros.hpp>
-
-#include "fft.hpp"
 
 TEST_CASE("Frequency Response Functionality", "[frequency_response]")
 {

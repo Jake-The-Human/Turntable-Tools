@@ -27,7 +27,7 @@ struct frequency_response
    */
   void display_response(const std::string& label) const;
 
-  auto findMaxFrequency() const -> std::pair<float, float>;
+  auto find_max_frequency() const -> std::pair<float, float>;
 
   /**
    * @brief clears the internal frequency response data so you can do another
@@ -38,5 +38,4 @@ struct frequency_response
   std::map<float, float>
       frequency_response_map; /**< Stores frequencies and their corresponding
                                    magnitudes in dB. */
-  std::vector<float> harmonic_peaks;
 };

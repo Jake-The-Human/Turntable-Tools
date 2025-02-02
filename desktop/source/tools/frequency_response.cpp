@@ -42,7 +42,7 @@ void frequency_response::display_response(const std::string& label) const
   }
 }
 
-auto frequency_response::findMaxFrequency() const -> std::pair<float, float>
+auto frequency_response::find_max_frequency() const -> std::pair<float, float>
 {
   float max_freq = 0.0F;
   float max_magnitude = 0.0F;
