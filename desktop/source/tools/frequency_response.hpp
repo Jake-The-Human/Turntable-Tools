@@ -5,7 +5,9 @@
 #include <span>
 #include <string>
 
-struct frequency_response
+using FrequencyResponseResults = std::map<float, std ::pair<float, float>>;
+
+struct FrequencyResponse
 {
   /**
    * @brief Calculates the frequency response of the input signal using FFT.
@@ -34,8 +36,5 @@ struct frequency_response
    * measurement.
    */
   void clear() { frequency_response_map.clear(); }
-
-  std::map<float, float>
-      frequency_response_map; /**< Stores frequencies and their corresponding
-                                   magnitudes in dB. */
+  FrequencyResponseResults frequency_response_map;
 };

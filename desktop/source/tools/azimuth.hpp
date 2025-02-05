@@ -41,7 +41,7 @@
 
 namespace azimuth
 {
-struct results
+struct Results
 {
   float crosstalk_signal_1 = 0; /**< The crosstalk for signal 1 in dB. */
   float crosstalk_signal_2 = 0; /**< The crosstalk for signal 2 in dB. */
@@ -60,8 +60,8 @@ struct results
  * @param frequency The frequency of the signals.
  * @param sampling_rate The sampling rate of the signals.
  */
- auto update(std::span<const float> signal_1,
+auto update(std::span<const float> signal_1,
             std::span<const float> signal_2,
             uint32_t frequency,
-            uint32_t sampling_rate) -> results;
+            uint32_t sampling_rate) -> Results;
 };  // namespace azimuth

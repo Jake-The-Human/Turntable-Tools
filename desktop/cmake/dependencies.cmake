@@ -22,13 +22,13 @@ FetchContent_Declare(
 )
 
 
-FetchContent_Declare(
-  miniaudio
-  GIT_REPOSITORY https://github.com/mackron/miniaudio.git
-  GIT_TAG 0.11.21
-  GIT_SHALLOW TRUE
-  EXCLUDE_FROM_ALL
-)
+# FetchContent_Declare(
+#   miniaudio
+#   GIT_REPOSITORY https://github.com/mackron/miniaudio.git
+#   GIT_TAG 0.11.21
+#   GIT_SHALLOW TRUE
+#   EXCLUDE_FROM_ALL
+# )
 
 FetchContent_Declare(
   PocketFFT
@@ -61,7 +61,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(
   implot
   imgui
-  miniaudio
   PocketFFT
   Catch2
 )

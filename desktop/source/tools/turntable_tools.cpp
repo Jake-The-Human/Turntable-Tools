@@ -2,18 +2,18 @@
 
 #include "turntable_tools.hpp"
 
-#include "tools/azimuth.hpp"
-#include "tools/moving_avg.hpp"
-#include "tools/thd.hpp"
-#include "tools/tracking_ability.hpp"
+#include "azimuth.hpp"
+#include "moving_avg.hpp"
+#include "thd.hpp"
+#include "tracking_ability.hpp"
 
-turntable_tools::turntable_tools()
+TurntableTools::TurntableTools()
 {
-  m_azimuth_avg.avg_function =
-      [](const std::array<azimuth::results, MOVING_AVG_SIZE>& input)
-      -> azimuth::results
+  azimuth_avg.avg_function =
+      [](const std::array<azimuth::Results, MOVING_AVG_SIZE>& input)
+      -> azimuth::Results
   {
-    azimuth::results sum = {
+    azimuth::Results sum = {
         .crosstalk_signal_1 = 0, .crosstalk_signal_2 = 0, .phase_diff = 0};
     for (const auto& data : input) {
       sum.crosstalk_signal_1 += data.crosstalk_signal_1;
@@ -26,7 +26,7 @@ turntable_tools::turntable_tools()
             .phase_diff = sum.phase_diff / MOVING_AVG_SIZE};
   };
 
-  m_thd_avg.avg_function =
+  thd_avg.avg_function =
       [](const std::array<std::pair<float, float>, MOVING_AVG_SIZE>& input)
       -> std::pair<float, float>
   {
@@ -39,22 +39,22 @@ turntable_tools::turntable_tools()
   };
 }
 
-void turntable_tools::add_audio(std::span<float> left,
-                                std::span<float> right,
-                                uint32_t sample_rate)
+void TurntableTools::add_audio(std::span<float> left,
+                               std::span<float> right,
+                               uint32_t sample_rate)
 {
   if (tests & static_cast<uint8_t>(tests::azimuth)) {
-    m_azimuth_avg.update(
+    azimuth_avg.update(
         azimuth::update(left, right, test_frequency, sample_rate));
   }
 
   if (tests & static_cast<uint8_t>(tests::frequency_response)) {
-    m_freq_response.update(left, sample_rate);
-    m_freq_response.update(right, sample_rate);
+    freq_response.update(left, sample_rate);
+    freq_response.update(right, sample_rate);
   }
 
   if (tests & static_cast<uint8_t>(tests::thd)) {
-    m_thd_avg.update({thd::calculate(left), thd::calculate(right)});
+    thd_avg.update({thd::calculate(left), thd::calculate(right)});
   }
 
   if (tests & static_cast<uint8_t>(tests::tracking_ability)) {
@@ -62,5 +62,3 @@ void turntable_tools::add_audio(std::span<float> left,
     tracking_ability::clipped(right, 1.0F);
   }
 }
-void turntable_tools::print_results() const {}
-void turntable_tools::write_results_to_file(const std::string& path) const {}

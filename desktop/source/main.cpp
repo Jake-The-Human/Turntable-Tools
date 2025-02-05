@@ -148,6 +148,7 @@ int main(int, char**)
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    turntable_tools.updateState();
     if (turntable_tools.renderUI(io)) {
       glfwSetWindowShouldClose(window, GLFW_TRUE);
     }

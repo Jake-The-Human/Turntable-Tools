@@ -3,30 +3,38 @@
 #include <string>
 #include <vector>
 
+#include <imgui.h>
+
+#include "app_state.hpp"
 #include "audio_window.hpp"
-#include "imgui.h"
+#include "azimuth_window.hpp"
+#include "frequency_response_window.hpp"
+#include "thd_window.hpp"
+
+constexpr auto NUMBER_OF_TESTS = 3;
 
 struct MyApp
 {
   ~MyApp() = default;
   MyApp(std::vector<std::string>* dragged_and_dropped_files)
-      : audio_window(dragged_and_dropped_files)
+      : dragged_and_dropped_files_ptr(dragged_and_dropped_files)
   {
   }
-  MyApp(const MyApp&) = default;
+  MyApp(const MyApp&) = delete;
   MyApp(MyApp&&) = default;
 
-  MyApp& operator=(const MyApp&) = default;
+  MyApp& operator=(const MyApp&) = delete;
   MyApp& operator=(MyApp&&) = default;
 
   bool renderUI(const ImGuiIO& io);
+  void updateState();
 
-  struct GuiState
-  {
-    bool azimuth_window = false;
-    bool thd_window = false;
-    bool freq_response = false;
-  } gui_state;
-
+  std::vector<std::string>* dragged_and_dropped_files_ptr;
   AudioWindow audio_window;
+  AzimuthWindow azimuth_window;
+  ThdWindow thd_window;
+  FrequencyResponseWindow freq_window;
+
+  GuiState gui_state;
+  AppData app_data;
 };

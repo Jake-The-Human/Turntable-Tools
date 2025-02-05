@@ -7,7 +7,7 @@
 constexpr auto MOVING_AVG_SIZE = 10;
 
 template<typename T, size_t N>
-struct moving_average
+struct MovingAverage
 {
   auto update(const T& input_data) -> T
   {

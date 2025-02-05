@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <complex>
+#include <cstdint>
 #include <numbers>
+#include <thread>
 #include <vector>
 
 #include "fft.hpp"
@@ -54,6 +56,10 @@ auto dsp::fft(std::span<const float> data, bool enable_windowing)
   pocketfft::stride_t stride_out = {sizeof(std::complex<float>)};
   pocketfft::shape_t axes = {0};
 
+  static const uint32_t min_threads = 1;
+  static const auto num_cores =
+      std::max(std::thread::hardware_concurrency(), min_threads);
+
   // Perform FFT
   pocketfft::r2c(shape,
                  stride_in,
@@ -62,7 +68,8 @@ auto dsp::fft(std::span<const float> data, bool enable_windowing)
                  true,
                  windowed_signal.data(),
                  complex_data.data(),
-                 1.0F);
+                 1.0F,
+                 num_cores);
 
   return complex_data;
 }
