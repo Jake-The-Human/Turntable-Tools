@@ -30,18 +30,22 @@ set(turntable_tools_SOURCE
   source/tools/phase.cpp
 )
 
-# ---- Declare executable ----
+set(third_party_SOURCE
+  source/third_party/dr_wav.c
+  source/third_party/dr_wav.h
+  source/third_party/toml.hpp
+)
 
 add_executable(TurntableTools_exe
   source/main.cpp
-  source/dr_wav.c
+  source/app_state.cpp
   source/audio_data.cpp
   source/application.cpp
   source/audio_window.cpp
   source/azimuth_window.cpp
   source/thd_window.cpp
   source/frequency_response_window.cpp
-  source/dr_wav.h
+  source/app_state.hpp
   source/audio_data.hpp
   source/application.hpp
   source/audio_window.hpp
@@ -50,6 +54,7 @@ add_executable(TurntableTools_exe
   source/frequency_response_window.hpp
   ${turntable_tools_SOURCE}
   ${imgui_SOURCE}
+  ${third_party_SOURCE}
 )
 
 add_executable(TurntableTools::exe ALIAS TurntableTools_exe)

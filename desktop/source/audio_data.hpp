@@ -4,7 +4,7 @@
 #include <span>
 #include <vector>
 
-#include "dr_wav.h"
+#include "third_party/dr_wav.h"
 
 struct AudioData
 {

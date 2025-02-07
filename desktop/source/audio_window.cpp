@@ -7,8 +7,13 @@
 #include <imgui.h>
 #include <implot.h>
 
-auto AudioWindow::renderUI(AppData& app_data, AudioData& audio_data) -> void
+#include "app_state.hpp"
+
+auto AudioWindow::renderUI() -> void
 {
+  auto& app_state = AppStateSingleton::getInstance();
+  auto& audio_data = app_state.current_audio;
+
   ImGui::Begin("Audio Information");
   ImGui::Text("Drag and drop WAV files here!");
 
@@ -30,8 +35,8 @@ auto AudioWindow::renderUI(AppData& app_data, AudioData& audio_data) -> void
             fprintf(
                 stderr, "File failed to load: %s\n", current_tab.first.c_str());
           } else {
-            app_data.time_selection.start = 0;
-            app_data.time_selection.end = audio_data.lenInSeconds();
+            app_state.time_selection.start = 0;
+            app_state.time_selection.end = audio_data.lenInSeconds();
           }
         }
 
@@ -62,16 +67,16 @@ auto AudioWindow::renderUI(AppData& app_data, AudioData& audio_data) -> void
           ImGui::SameLine();
 
           if (ImGui::Button("Refresh Measurements")) {
-            app_data.update_data = true;
+            app_state.update_data = true;
             ImGui::OpenPopup("Analyzing Audio");
           } else {
-            app_data.update_data = false;
+            app_state.update_data = false;
           }
           ImGui::SameLine();
           ImGui::Text(
               "Selection: %.2fs",
-              app_data.time_selection.end - app_data.time_selection.start);
-          renderGraphs(item_graph_idx, app_data, audio_data);
+              app_state.time_selection.end - app_state.time_selection.start);
+          renderGraphs(item_graph_idx, audio_data, app_state.time_selection);
 
           if (ImGui::BeginPopupModal("Analyzing Audio")) {
             ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(),
@@ -80,16 +85,16 @@ auto AudioWindow::renderUI(AppData& app_data, AudioData& audio_data) -> void
 
             ImGui::SameLine();
             if (ImGui::Button("Cancel")) {
-              app_data.cancel_analysis = true;
+              app_state.cancel_analysis = true;
               ImGui::CloseCurrentPopup();
             }
 
-            if (app_data.finished_azimuth && app_data.finished_thd
-                && app_data.finished_freq_response)
+            if (app_state.finished_azimuth && app_state.finished_thd
+                && app_state.finished_freq_response)
             {
-              app_data.finished_azimuth = false;
-              app_data.finished_thd = false;
-              app_data.finished_freq_response = false;
+              app_state.finished_azimuth = false;
+              app_state.finished_thd = false;
+              app_state.finished_freq_response = false;
               ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -119,8 +124,8 @@ auto AudioWindow::renderUI(AppData& app_data, AudioData& audio_data) -> void
 }
 
 auto AudioWindow::renderGraphs(int item_graph_idx,
-                               AppData& app_data,
-                               AudioData& audio_data) -> void
+                               AudioData& audio_data,
+                               TimeSelection& selection) -> void
 {
   static const auto blue = ImVec4(0.25, 0.25, 0.9, 1);
   static const auto red = ImVec4(0.9, 0.25, 0.25, 1);
@@ -142,8 +147,8 @@ auto AudioWindow::renderGraphs(int item_graph_idx,
   static bool start_line_dragging = false;
   static bool end_line_dragging = false;
 
-  double start_graph_marker = app_data.time_selection.start;
-  double end_graph_marker = app_data.time_selection.end;
+  double start_graph_marker = selection.start;
+  double end_graph_marker = selection.end;
 
   if (item_graph_idx == 0) {
     if (ImPlot::BeginPlot("Stereo Audio Waveform")) {
@@ -198,6 +203,6 @@ auto AudioWindow::renderGraphs(int item_graph_idx,
   bool bad_selection = start_graph_marker >= end_graph_marker
       || end_graph_marker <= start_graph_marker;
   if (!bad_selection) {
-    app_data.time_selection = {start_graph_marker, end_graph_marker};
+    selection = {start_graph_marker, end_graph_marker};
   }
 }

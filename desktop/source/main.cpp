@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 
+#include "app_state.hpp"
 #include "application.hpp"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -115,7 +116,10 @@ int main(int, char**)
   glfwSetDropCallback(window, drop_callback);
 
   // Init my app struct
-  MyApp turntable_tools(&Global::dragged_and_dropped_files);
+  AppStateSingleton::newInstance();
+  AppStateSingleton::getInstance().dragged_and_dropped_files_ptr =
+      &Global::dragged_and_dropped_files;
+  MyApp turntable_tools;
 
   // Main loop
 #ifdef __EMSCRIPTEN__
@@ -168,6 +172,7 @@ int main(int, char**)
 #endif
 
   // Cleanup
+  AppStateSingleton::deleteInstance();
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImPlot::DestroyContext();

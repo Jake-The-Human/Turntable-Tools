@@ -10,10 +10,10 @@
 
 struct AudioWindow
 {
-  auto renderUI(AppData& app_data, AudioData& audio_data) -> void;
+  auto renderUI() -> void;
   auto renderGraphs(int item_graph_idx,
-                    AppData& app_data,
-                    AudioData& audio_data) -> void;
+                    AudioData& audio_data,
+                    TimeSelection& selection) -> void;
 
   std::map<std::filesystem::path, bool> open_tabs;
   std::filesystem::path active_file;
