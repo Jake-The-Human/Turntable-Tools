@@ -1,5 +1,6 @@
+#include <algorithm>
 #include <bit>
-#include <cstddef>
+#include <cstdint>
 
 #include "audio_data.hpp"
 
@@ -64,10 +65,11 @@ auto AudioData::getSectionOfData(Channel channel,
     return {};
   }
 
-  auto start_index =
-      static_cast<size_t>(start_time * static_cast<float>(sample_rate));
-  auto end_index =
-      static_cast<size_t>(end_time * static_cast<float>(sample_rate));
+  auto len = left_channel.size();
+  size_t start_index = std::max<int64_t>(
+      static_cast<int64_t>(start_time * static_cast<float>(sample_rate)), 0);
+  size_t end_index = std::min<int64_t>(
+      static_cast<int64_t>(end_time * static_cast<float>(sample_rate)), len);
 
   if (channel == Channel::LEFT) {
     return {left_channel.cbegin() + start_index,

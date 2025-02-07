@@ -5,7 +5,7 @@
 #include <span>
 #include <string>
 
-using FrequencyResponseResults = std::map<float, std ::pair<float, float>>;
+using FrequencyResponseResults = std::map<int32_t, std ::pair<float, float>>;
 
 struct FrequencyResponse
 {

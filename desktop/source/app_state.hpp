@@ -27,4 +27,8 @@ struct AppData
       freq_response_results;
   std::future<azimuth::Results> azimuth_results;
   std::future<std::pair<float, float>> thd_results;
+  std::atomic_bool cancel_analysis = false;
+  std::atomic_bool finished_azimuth = false;
+  std::atomic_bool finished_thd = false;
+  std::atomic_bool finished_freq_response = false;
 };

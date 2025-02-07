@@ -4,7 +4,7 @@
 #include <numeric>
 #include <vector>
 
-#include "tools/frequency_response.hpp"
+#include "frequency_response.hpp"
 
 #include <catch2/catch_test_macros.hpp>
 

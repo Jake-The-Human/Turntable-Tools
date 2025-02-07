@@ -8,6 +8,7 @@
 
 void FrequencyResponseWindow::renderUI(
     bool& window_state,
+    // FrequencyResponseResults<frequency , <magnitude, phase>>
     std::future<std::pair<FrequencyResponseResults, FrequencyResponseResults>>&
         fr_results,
     bool file_loaded)
@@ -59,7 +60,11 @@ void FrequencyResponseWindow::renderUI(
     }
 
     if (ImPlot::BeginSubplots(
-            "Bode Plot", 2, 1, ImVec2(-1, -1), ImPlotSubplotFlags_LinkAllX))
+            "",
+            2,
+            1,
+            ImVec2(-1, -1),
+            ImPlotSubplotFlags_LinkAllX | ImPlotSubplotFlags_ShareItems))
     {
       if (ImPlot::BeginPlot("Frequency vs Magnitude")) {
         ImPlot::SetupAxes("Frequency (Hz)", "Magnitude (dB)", 0, 0);

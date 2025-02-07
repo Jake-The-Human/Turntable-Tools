@@ -21,10 +21,10 @@ struct MyApp
   {
   }
   MyApp(const MyApp&) = delete;
-  MyApp(MyApp&&) = default;
+  MyApp(MyApp&&) = delete;
 
   MyApp& operator=(const MyApp&) = delete;
-  MyApp& operator=(MyApp&&) = default;
+  MyApp& operator=(MyApp&&) = delete;
 
   bool renderUI(const ImGuiIO& io);
   void updateState();
@@ -37,4 +37,5 @@ struct MyApp
 
   GuiState gui_state;
   AppData app_data;
+  bool analyzing_modal = false;
 };

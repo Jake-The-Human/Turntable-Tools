@@ -48,10 +48,13 @@ void AzimuthWindow::renderUI(bool& window_state,
     ImGui::Separator();
 
     if (item_selected_idx == 0) {
-      ImGui::Text("Left crosstalk: %fdB", results.crosstalk_signal_1);
+      ImGui::Text("Left crosstalk: %.3fdB", results.crosstalk_signal_1);
     } else {
-      ImGui::Text("Right crosstalk:  %fdB", results.crosstalk_signal_2);
+      ImGui::Text("Right crosstalk:  %.3fdB", results.crosstalk_signal_2);
     }
+
+    ImGui::Text("Phase difference:  %.3f degrees", results.phase_diff);
+
   } else {
     ImGui::Text("No File loaded.");
   }

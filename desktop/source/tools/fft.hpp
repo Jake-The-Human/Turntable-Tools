@@ -20,4 +20,7 @@ auto fft(std::span<const float> data, bool enable_windowing)
     -> std::vector<std::complex<float>>;
 
 auto ifft(const std::vector<std::complex<float>>& data) -> std::vector<float>;
+
+constexpr auto hamming_gain_correction = 1.852F;
+constexpr auto hamming_gain_correction_db = 5.35F;
 }  // namespace dsp

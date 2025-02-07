@@ -51,13 +51,14 @@ auto azimuth::update(std::span<const float> signal_1,
   const float rms_signal_1 = rms(signal_1);
   const float rms_signal_2 = rms(signal_2);
 
-  return {.crosstalk_signal_1 = crosstalk_in_db(rms_signal_1, rms_signal_2),
-          .crosstalk_signal_2 = crosstalk_in_db(rms_signal_2, rms_signal_1),
-      .phase_diff = 0
-      // phase::calculate_difference(signal_1,
-      //                             signal_2,
-      //                             frequency,
-      //                             sampling_rate)  // !NOTE: if signal is not
+  return {
+      .crosstalk_signal_1 = crosstalk_in_db(rms_signal_1, rms_signal_2),
+      .crosstalk_signal_2 = crosstalk_in_db(rms_signal_2, rms_signal_1),
+      .phase_diff =
+          phase::calculate_difference(signal_1,
+                                      signal_2,
+                                      frequency,
+                                      sampling_rate)  // !NOTE: if signal is not
       // a power of 2 fix that
   };
 }
