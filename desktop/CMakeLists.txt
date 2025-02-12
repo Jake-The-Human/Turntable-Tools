@@ -38,6 +38,7 @@ set(third_party_SOURCE
 
 add_executable(TurntableTools_exe
   source/main.cpp
+  source/message_catalog.cpp
   source/app_state.cpp
   source/audio_data.cpp
   source/application.cpp
@@ -45,6 +46,7 @@ add_executable(TurntableTools_exe
   source/azimuth_window.cpp
   source/thd_window.cpp
   source/frequency_response_window.cpp
+  source/message_catalog.hpp
   source/app_state.hpp
   source/audio_data.hpp
   source/application.hpp
@@ -74,7 +76,6 @@ target_link_libraries(TurntableTools_exe
 
 target_include_directories(TurntableTools_exe SYSTEM PRIVATE ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} ${pocketfft_SOURCE_DIR})
 
-target_compile_definitions(TurntableTools_exe PRIVATE MA_NO_MP3)
+target_compile_definitions(TurntableTools_exe PRIVATE MA_NO_MP3 LANGUAGE_DIR="${CMAKE_SOURCE_DIR}/languages")
 
 # add_subdirectory("${PROJECT_SOURCE_DIR}/test")
-

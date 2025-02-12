@@ -3,6 +3,8 @@
 #include <future>
 #include <utility>
 
+#include "imgui.h"
+
 #include "audio_data.hpp"
 #include "tools/azimuth.hpp"
 #include "tools/frequency_response.hpp"
@@ -36,6 +38,9 @@ public:
 
   std::vector<std::string>* dragged_and_dropped_files_ptr;
 
+  // Style
+  float global_scale = 1.0f;
+
   // GuiState
   bool azimuth_window = false;
   bool thd_window = false;
@@ -56,6 +61,9 @@ public:
 
 private:
   static AppStateSingleton* instance;
+
+  void loadStyle() { ImGuiStyle& my_style = ImGui::GetStyle(); }
+  void saveStyle() { ImGuiStyle& my_style = ImGui::GetStyle(); }
 
   AppStateSingleton() = default;
 

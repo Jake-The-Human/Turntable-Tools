@@ -4,6 +4,8 @@
 
 #include "audio_data.hpp"
 
+#include "message_catalog.hpp"
+
 constexpr auto upper_power_of_two(drwav_uint64 v)
 {
   return std::bit_ceil(v);
@@ -19,7 +21,9 @@ auto AudioData::update(const std::filesystem::path& wav_path) -> bool
                                               &total_PCM_frame_count,
                                               nullptr);
   if (pSampleData == nullptr) {
-    fprintf(stderr, "File failed to load: %s\n", file_path.c_str());
+    fprintf(stderr,
+            MessageCatalog::getInstance().get_message("FILE_FAILED_TO_LOAD"),
+            file_path.c_str());
     channels = 0;
     sample_rate = 0;
     time.clear();

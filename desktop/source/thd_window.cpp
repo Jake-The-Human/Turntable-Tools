@@ -12,8 +12,8 @@ void ThdWindow::renderUI(bool& window_state,
 
   ImGui::Begin("THD", &window_state);
   if (file_loaded) {
-    ImGui::Text("Left Channel: %f%%", results.first);
-    ImGui::Text("Right Channel: %f%%", results.second);
+    ImGui::Text("Left Channel: %.2f%%", results.first);
+    ImGui::Text("Right Channel: %.2f%%", results.second);
   } else {
     ImGui::Text("No File loaded.");
   }

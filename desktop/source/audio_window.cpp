@@ -4,107 +4,110 @@
 
 #include "audio_window.hpp"
 
-#include <imgui.h>
-#include <implot.h>
-
 #include "app_state.hpp"
+#include "imgui.h"
+#include "implot.h"
+#include "message_catalog.hpp"
 
-auto AudioWindow::renderUI() -> void
+void AudioWindow::renderUI()
 {
   auto& app_state = AppStateSingleton::getInstance();
   auto& audio_data = app_state.current_audio;
+  const auto& messages = MessageCatalog::getInstance();
 
   ImGui::Begin("Audio Information");
   ImGui::Text("Drag and drop WAV files here!");
+  ImGui::Spacing();
+  ImGui::BeginChild("AUDIO_OVERVIEW", {-1, -1});
+  {
+    // Create tabs
+    static const ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None
+        | ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_AutoSelectNewTabs;
+    if (ImGui::BeginTabBar("AudioFilesTabBar", tab_bar_flags)) {
+      for (auto& current_tab : open_tabs) {
+        const auto& current_file = current_tab.first.filename();
+        if (ImGui::BeginTabItem(current_file.c_str(),
+                                &current_tab.second,
+                                ImGuiTabItemFlags_None))
+        {
+          if (active_file != current_tab.first) {
+            active_file = current_tab.first;
 
-  // Create tabs
-  static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None
-      | ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_AutoSelectNewTabs;
-  if (ImGui::BeginTabBar("AudioFilesTabBar", tab_bar_flags)) {
-    for (auto& current_tab : open_tabs) {
-      const auto& current_file = current_tab.first.filename();
-      if (ImGui::BeginTabItem(current_file.c_str(),
-                              &current_tab.second,
-                              ImGuiTabItemFlags_None))
-      {
-        if (active_file != current_tab.first) {
-          active_file = current_tab.first;
-
-          if (!audio_data.update(current_tab.first)) {
-            ImGui::Text("File failed to load: %s", current_tab.first.c_str());
-            fprintf(
-                stderr, "File failed to load: %s\n", current_tab.first.c_str());
-          } else {
-            app_state.time_selection.start = 0;
-            app_state.time_selection.end = audio_data.lenInSeconds();
-          }
-        }
-
-        if (audio_data.fileLoaded()) {
-          ImGui::Text("File: %s", audio_data.file_path.c_str());
-          ImGui::Text("Channels: %d", audio_data.channels);
-          ImGui::Text("Sample Rate: %uHz", audio_data.sample_rate);
-          ImGui::Text("Length: %llus", audio_data.lenInSeconds());
-          ImGui::Separator();
-
-          static int item_graph_idx = 0;
-          static const std::array<const char*, 2> graphs = {"Stereo",
-                                                            "Split Channels"};
-          if (ImGui::BeginCombo("Graph", graphs[item_graph_idx])) {
-            for (int n = 0; n < graphs.size(); n++) {
-              const bool is_selected = (item_graph_idx == n);
-              if (ImGui::Selectable(graphs[n], is_selected))
-                item_graph_idx = n;
-
-              // Set the initial focus when opening the combo (scrolling +
-              // keyboard navigation focus)
-              if (is_selected)
-                ImGui::SetItemDefaultFocus();
+            if (!audio_data.update(current_tab.first)) {
+              ImGui::Text("File failed to load: %s", current_tab.first.c_str());
+            } else {
+              app_state.time_selection.start = 0;
+              app_state.time_selection.end = audio_data.lenInSeconds();
             }
-            ImGui::EndCombo();
           }
 
-          ImGui::SameLine();
+          if (audio_data.fileLoaded()) {
+            ImGui::Text("File: %s", audio_data.file_path.c_str());
+            ImGui::Text("Channels: %d", audio_data.channels);
+            ImGui::Text("Sample Rate: %uHz", audio_data.sample_rate);
+            // ImGui::Text("Length: %llus", audio_data.lenInSeconds());
+            ImGui::Separator();
 
-          if (ImGui::Button("Refresh Measurements")) {
-            app_state.update_data = true;
-            ImGui::OpenPopup("Analyzing Audio");
-          } else {
-            app_state.update_data = false;
-          }
-          ImGui::SameLine();
-          ImGui::Text(
-              "Selection: %.2fs",
-              app_state.time_selection.end - app_state.time_selection.start);
-          renderGraphs(item_graph_idx, audio_data, app_state.time_selection);
+            static int item_graph_idx = 0;
+            static const std::array<const char*, 2> graphs = {"Stereo",
+                                                              "Split Channels"};
+            if (ImGui::BeginCombo("Graph", graphs[item_graph_idx])) {
+              for (int n = 0; n < graphs.size(); n++) {
+                const bool is_selected = (item_graph_idx == n);
+                if (ImGui::Selectable(graphs[n], is_selected))
+                  item_graph_idx = n;
 
-          if (ImGui::BeginPopupModal("Analyzing Audio")) {
-            ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(),
-                               ImVec2(0.0f, 0.0f),
-                               "Analyzing...");
+                // Set the initial focus when opening the combo (scrolling +
+                // keyboard navigation focus)
+                if (is_selected)
+                  ImGui::SetItemDefaultFocus();
+              }
+              ImGui::EndCombo();
+            }
 
             ImGui::SameLine();
-            if (ImGui::Button("Cancel")) {
-              app_state.cancel_analysis = true;
-              ImGui::CloseCurrentPopup();
-            }
 
-            if (app_state.finished_azimuth && app_state.finished_thd
-                && app_state.finished_freq_response)
-            {
-              app_state.finished_azimuth = false;
-              app_state.finished_thd = false;
-              app_state.finished_freq_response = false;
-              ImGui::CloseCurrentPopup();
+            if (ImGui::Button("Refresh Measurements")) {
+              app_state.update_data = true;
+              ImGui::OpenPopup("Analyzing Audio");
+            } else {
+              app_state.update_data = false;
             }
-            ImGui::EndPopup();
+            ImGui::SameLine();
+            ImGui::Text(
+                "Selection: %.2fs",
+                app_state.time_selection.end - app_state.time_selection.start);
+            renderGraphs(item_graph_idx, audio_data, app_state.time_selection);
+
+            if (ImGui::BeginPopupModal("Analyzing Audio")) {
+              ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(),
+                                 ImVec2(0.0f, 0.0f),
+                                 "Analyzing...");
+
+              ImGui::SameLine();
+              if (ImGui::Button("Cancel")) {
+                app_state.cancel_analysis = true;
+                ImGui::CloseCurrentPopup();
+              }
+
+              if (app_state.finished_azimuth && app_state.finished_thd
+                  && app_state.finished_freq_response)
+              {
+                app_state.finished_azimuth = false;
+                app_state.finished_thd = false;
+                app_state.finished_freq_response = false;
+                ImGui::CloseCurrentPopup();
+              }
+              ImGui::EndPopup();
+            }
           }
-        }
 
-        ImGui::EndTabItem();
+          ImGui::EndTabItem();
+        }
       }
+      ImGui::EndTabBar();
     }
-    ImGui::EndTabBar();
+    ImGui::EndChild();
 
     // Delete any closed tabs
     std::vector<std::map<std::filesystem::path, bool>::iterator> to_remove;
@@ -123,10 +126,12 @@ auto AudioWindow::renderUI() -> void
   ImGui::End();
 }
 
-auto AudioWindow::renderGraphs(int item_graph_idx,
+void AudioWindow::renderGraphs(int item_graph_idx,
                                AudioData& audio_data,
-                               TimeSelection& selection) -> void
+                               TimeSelection& selection)
 {
+  const auto& messages = MessageCatalog::getInstance();
+
   static const auto blue = ImVec4(0.25, 0.25, 0.9, 1);
   static const auto red = ImVec4(0.9, 0.25, 0.25, 1);
 

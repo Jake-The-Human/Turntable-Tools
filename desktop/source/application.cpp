@@ -4,18 +4,49 @@
 
 #include "application.hpp"
 
-#include <imgui.h>
-#include <implot.h>
-
 #include "audio_data.hpp"
+#include "imgui.h"
+#include "message_catalog.hpp"
 #include "tools/azimuth.hpp"
 #include "tools/frequency_response.hpp"
 #include "tools/moving_avg.hpp"
 #include "tools/thd.hpp"
 
-bool MyApp::renderUI(const ImGuiIO& io)
+static void handleScalingGui(AppStateSingleton& app_state)
+{
+  ImGuiIO& io = ImGui::GetIO();
+  if (io.KeyCtrl) {
+    if (ImGui::IsKeyPressed(ImGuiKey_Equal))
+    {  // Ctrl + '=' (which is often 'Ctrl + +')
+      io.FontGlobalScale = std::min(io.FontGlobalScale + 0.1f, 2.0f);
+    }
+    if (ImGui::IsKeyPressed(ImGuiKey_Minus)) {  // Ctrl + '-'
+      io.FontGlobalScale = std::max(io.FontGlobalScale - 0.1f, 0.3f);
+    }
+    if (ImGui::IsKeyPressed(ImGuiKey_0)) {  // Ctrl + '0'
+      io.FontGlobalScale = 1.0f;
+    }
+  }
+
+  if (io.KeyAlt) {
+    if (ImGui::IsKeyPressed(ImGuiKey_A)) {
+      app_state.azimuth_window = true;
+      app_state.thd_window = true;
+      app_state.freq_response = true;
+    }
+    if (ImGui::IsKeyPressed(ImGuiKey_C)) {
+      app_state.azimuth_window = false;
+      app_state.thd_window = false;
+      app_state.freq_response = false;
+    }
+  }
+}
+
+bool MyApp::renderUI()
 {
   auto& app_state = AppStateSingleton::getInstance();
+  handleScalingGui(app_state);
+
   // Handle drag and drop and an update the audio window tabs.
   auto& open_tabs = audio_window.open_tabs;
   if (!app_state.dragged_and_dropped_files_ptr->empty()) {
@@ -48,10 +79,9 @@ bool MyApp::renderUI(const ImGuiIO& io)
         app_state.freq_response, app_state.freq_response_results, file_loaded);
   }
 
-  ImPlot::ShowDemoWindow();
-  ImGui::ShowDemoWindow();
+  // ImPlot::ShowDemoWindow();
+  // ImGui::ShowDemoWindow();
   return MainMenuBar();
-  ;
 }
 
 void MyApp::updateState()
@@ -178,91 +208,70 @@ void MyApp::updateState()
 bool MyApp::MainMenuBar()
 {
   auto& app_state = AppStateSingleton::getInstance();
+  auto& catalog = MessageCatalog::getInstance();
   static bool show_settings = false;
   bool exit_app = false;
   if (ImGui::BeginMainMenuBar()) {
-    if (ImGui::BeginMenu("File")) {
-      if (ImGui::MenuItem("Save Results", "Ctrl+S")) {
-      }
-
-      if (ImGui::MenuItem("Settings", "Ctrl+.")) {
-        show_settings = true;
-      }
-
-      ImGui::Separator();
-      if (ImGui::MenuItem("Quit", "Alt+F4")) {
+    if (ImGui::BeginMenu(catalog.get_message("FILE"))) {
+      // Want to add multi lang support but not sure how to do it.
+      // if (ImGui::BeginMenu(catalog.get_message("LANGUAGE"))) {
+      //   for (const auto& lang : catalog.get_available_languages()) {
+      //     if (ImGui::MenuItem(lang.first.c_str())) {
+      //       catalog.set_lang(lang.first);
+      //     }
+      //   }
+      //   ImGui::EndMenu();
+      // }
+      // ImGui::Separator();
+      if (ImGui::MenuItem(catalog.get_message("QUIT"), "Alt+F4")) {
         exit_app = true;
       }
-
       ImGui::EndMenu();
     }
-    if (ImGui::BeginMenu("Tools")) {
-      if (ImGui::MenuItem("Azimuth")) {
+
+    if (ImGui::BeginMenu(catalog.get_message("VIEW"))) {
+      if (ImGui::MenuItem(catalog.get_message("AZIMUTH"))) {
         app_state.azimuth_window = true;
       }
 
-      if (ImGui::MenuItem("THD")) {
+      if (ImGui::MenuItem(catalog.get_message("THD"))) {
         app_state.thd_window = true;
       }
 
-      if (ImGui::MenuItem("Frequency Response")) {
+      if (ImGui::MenuItem(catalog.get_message("FREQUENCY_RESPONSE"))) {
+        app_state.freq_response = true;
+      }
+      ImGui::Separator();
+      if (ImGui::MenuItem("Open All", "Alt+A")) {
+        app_state.azimuth_window = true;
+        app_state.thd_window = true;
         app_state.freq_response = true;
       }
 
-      ImGui::EndMenu();
-    }
+      if (ImGui::MenuItem("Close All", "Alt+C")) {
+        app_state.azimuth_window = false;
+        app_state.thd_window = false;
+        app_state.freq_response = false;
+      }
+      ImGui::Separator();
+      if (ImGui::MenuItem("Scale Up", "Ctrl++")) {
+        ImGui::GetIO().FontGlobalScale =
+            std::min(ImGui::GetIO().FontGlobalScale + 0.1f, 2.0f);
+      }
+      if (ImGui::MenuItem("Scale Down", "Ctrl+-")) {
+        ImGui::GetIO().FontGlobalScale =
+            std::max(ImGui::GetIO().FontGlobalScale - 0.1f, 0.3f);
+      }
+      if (ImGui::MenuItem("Scale Reset", "Ctrl+0")) {
+        ImGui::GetIO().FontGlobalScale = 1.0f;
+      }
 
-    if (ImGui::BeginMenu("Run")) {
-      if (ImGui::MenuItem("Azimuth")) {
-      }
-      if (ImGui::MenuItem("THD")) {
-      }
-      if (ImGui::MenuItem("Frequency Response")) {
-      }
-      if (ImGui::MenuItem("All")) {
-      }
       ImGui::EndMenu();
     }
 
     ImGui::EndMainMenuBar();
   }
 
-  if (show_settings) {
-    ImGui::Begin("Dear ImGui Style Editor", &show_settings);
-    // You can pass in a reference ImGuiStyle structure to compare to, revert to
-    // and save to
-    // (without a reference style pointer, we will use one compared locally as a
-    // reference)
-    ImGuiStyle& style = ImGui::GetStyle();
-
-    static int style_idx = 0;
-    if (ImGui::Combo("Theme", &style_idx, "Dark\0Light\0Classic\0")) {
-      switch (style_idx) {
-        case 0:
-          ImGui::StyleColorsDark(&style);
-          break;
-        case 1:
-          ImGui::StyleColorsLight(&style);
-          break;
-        case 2:
-          ImGui::StyleColorsClassic(&style);
-          break;
-      }
-    }
-    if (ImGui::SliderFloat(
-            "FrameRounding", &style.FrameRounding, 0.0f, 12.0f, "%.0f"))
-    {
-      style.GrabRounding = style.FrameRounding;
-    }
-
-    ImGui::Separator();
-    if (ImGui::Button("Save Style")) {
-      ImGuiIO& io = ImGui::GetIO();
-      ImGui::SaveIniSettingsToDisk(io.IniFilename);
-      fprintf(stderr, ">>%s", ImGui::SaveIniSettingsToMemory());
-    }
-
-    ImGui::End();
-  }
+  ImGui::ShowDemoWindow();
   return exit_app;
 }

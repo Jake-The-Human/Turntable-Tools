@@ -6,6 +6,8 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "imgui.h"
+#include "implot.h"
+#include "message_catalog.hpp"
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #  include <GLES2/gl2.h>
@@ -103,7 +105,9 @@ int main(int, char**)
 
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
-  // ImGui::StyleColorsLight();
+  auto& style = ImGui::GetStyle();
+  style.FrameBorderSize = 1.0f;
+  style.FrameRounding = 2.0f;
 
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -116,6 +120,7 @@ int main(int, char**)
   glfwSetDropCallback(window, drop_callback);
 
   // Init my app struct
+  MessageCatalog::newInstance();
   AppStateSingleton::newInstance();
   AppStateSingleton::getInstance().dragged_and_dropped_files_ptr =
       &Global::dragged_and_dropped_files;
@@ -153,7 +158,7 @@ int main(int, char**)
     ImGui::NewFrame();
 
     turntable_tools.updateState();
-    if (turntable_tools.renderUI(io)) {
+    if (turntable_tools.renderUI()) {
       glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 
@@ -172,6 +177,7 @@ int main(int, char**)
 #endif
 
   // Cleanup
+  MessageCatalog::deleteInstance();
   AppStateSingleton::deleteInstance();
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();

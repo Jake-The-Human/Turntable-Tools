@@ -4,7 +4,6 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 # find_package(glad CONFIG REQUIRED)
 
-
 FetchContent_Declare(
   implot
   GIT_REPOSITORY https://github.com/epezent/implot.git
@@ -20,15 +19,6 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE
   EXCLUDE_FROM_ALL
 )
-
-
-# FetchContent_Declare(
-#   miniaudio
-#   GIT_REPOSITORY https://github.com/mackron/miniaudio.git
-#   GIT_TAG 0.11.21
-#   GIT_SHALLOW TRUE
-#   EXCLUDE_FROM_ALL
-# )
 
 FetchContent_Declare(
   PocketFFT
@@ -54,7 +44,7 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL
 )
 
-# # Disable tests after fetching
+# Disable tests after fetching
 # set(ARGPARSE_BUILD_TESTS OFF CACHE BOOL "Disable building tests for argparse" FORCE)
 # set(ARGPARSE_BUILD_SAMPLES OFF CACHE BOOL "Disable building samples for argparse" FORCE)
 

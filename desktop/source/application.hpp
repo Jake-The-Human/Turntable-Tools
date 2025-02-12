@@ -1,11 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
-#include <imgui.h>
-
-#include "app_state.hpp"
 #include "audio_window.hpp"
 #include "azimuth_window.hpp"
 #include "frequency_response_window.hpp"
@@ -15,7 +9,7 @@ constexpr auto NUMBER_OF_TESTS = 3;
 
 struct MyApp
 {
-  bool renderUI(const ImGuiIO& io);
+  bool renderUI();
   void updateState();
   bool MainMenuBar();
 
