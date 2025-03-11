@@ -9,6 +9,35 @@
 #include "implot.h"
 #include "message_catalog.hpp"
 
+struct DownSampler
+{
+  int start;
+  int end;
+  int size;
+  int stride;
+};
+
+static DownSampler downsampler(int data_size,
+                               int sampling_rate,
+                               int t_min,
+                               int t_max)
+{
+  static const int downsample_factor = data_size / 2;
+  int downsample = static_cast<int>(
+      (ImPlot::GetPlotLimits().X.Size() * sampling_rate) / downsample_factor
+      + 1);
+  int start =
+      static_cast<int>(ImPlot::GetPlotLimits().X.Min - t_min) * sampling_rate;
+  start = start < 0 ? 0 : start > data_size - 1 ? data_size - 1 : start;
+  int end =
+      (static_cast<int>(ImPlot::GetPlotLimits().X.Max - t_min) * sampling_rate)
+      + downsample_factor;
+  end = end < 0 ? 0 : end > data_size - 1 ? data_size - 1 : end;
+  int size = (end - start) / downsample;
+
+  return {.start = start, .end = end, .size = size, .stride = downsample};
+}
+
 void AudioWindow::renderUI()
 {
   auto& app_state = AppStateSingleton::getInstance();
@@ -135,18 +164,9 @@ void AudioWindow::renderGraphs(int item_graph_idx,
   static const auto blue = ImVec4(0.25, 0.25, 0.9, 1);
   static const auto red = ImVec4(0.9, 0.25, 0.25, 1);
 
-  static const int decimationFactor = 512;
-  int reducedSize = audio_data.total_PCM_frame_count / decimationFactor;
-
-  std::vector<float> reducedTime(reducedSize);
-  std::vector<float> reducedLeft(reducedSize);
-  std::vector<float> reducedRight(reducedSize);
-
-  for (int i = 0; i < reducedSize; i++) {
-    int idx = i * decimationFactor;
-    reducedTime[i] = static_cast<float>(idx) / audio_data.sample_rate;
-    reducedLeft[i] = audio_data.left_channel[idx];
-    reducedRight[i] = audio_data.right_channel[idx];
+  std::vector<float> time_axis(audio_data.total_PCM_frame_count);
+  for (int i = 0; i < time_axis.size(); i++) {
+    time_axis[i] = static_cast<float>(i) / audio_data.sample_rate;
   }
 
   static bool start_line_dragging = false;
@@ -158,12 +178,27 @@ void AudioWindow::renderGraphs(int item_graph_idx,
   if (item_graph_idx == 0) {
     if (ImPlot::BeginPlot("Stereo Audio Waveform")) {
       ImPlot::SetupAxes("Time (s)", "Amplitude");
-      ImPlot::SetNextLineStyle(blue, 1.5f);
-      ImPlot::PlotLine(
-          "Left", reducedTime.data(), reducedLeft.data(), reducedSize);
-      ImPlot::SetNextLineStyle(red, 1.5f);
-      ImPlot::PlotLine(
-          "Right", reducedTime.data(), reducedRight.data(), reducedSize);
+      ImPlot::SetupAxesLimits(0.0, audio_data.lenInSeconds(), -1.f, 1.f);
+      ImPlot::SetNextLineStyle(blue);
+      auto downsample_data = downsampler(audio_data.total_PCM_frame_count,
+                                         audio_data.sample_rate,
+                                         0,
+                                         audio_data.lenInSeconds());
+      ImPlot::PlotLine("Left",
+                       &time_axis[downsample_data.start],
+                       &audio_data.left_channel[downsample_data.start],
+                       downsample_data.size,
+                       0,
+                       0,
+                       sizeof(float) * downsample_data.stride);
+      ImPlot::SetNextLineStyle(red);
+      ImPlot::PlotLine("Right",
+                       &time_axis[downsample_data.start],
+                       &audio_data.right_channel[downsample_data.start],
+                       downsample_data.size,
+                       0,
+                       0,
+                       sizeof(float) * downsample_data.stride);
       ImPlot::DragLineX(0, &start_graph_marker, ImVec4(1, 1, 1, 1), 1);
       ImPlot::DragLineX(1, &end_graph_marker, ImVec4(1, 1, 1, 1), 1);
       ImPlot::EndPlot();
@@ -175,25 +210,39 @@ void AudioWindow::renderGraphs(int item_graph_idx,
             "##AxisLinking", 2, 1, ImVec2(-1, -1), subplot_flag))
     {
       if (ImPlot::BeginPlot("Left Channel")) {
-        ImPlot::SetupAxesLimits(0, audio_data.lenInSeconds(), -1.f, 1.f);
         ImPlot::SetupAxes("Time (s)", "Amplitude");
-        ImPlot::SetNextLineStyle(blue, 1.5f);
+        ImPlot::SetupAxesLimits(0, audio_data.lenInSeconds(), -1.f, 1.f);
+        auto downsample_data = downsampler(audio_data.total_PCM_frame_count,
+                                           audio_data.sample_rate,
+                                           0,
+                                           audio_data.lenInSeconds());
+        ImPlot::SetNextLineStyle(blue);
         ImPlot::PlotLine("Left Channel",
-                         reducedTime.data(),
-                         reducedLeft.data(),
-                         reducedSize);
+                         &time_axis[downsample_data.start],
+                         &audio_data.left_channel[downsample_data.start],
+                         downsample_data.size,
+                         0,
+                         0,
+                         sizeof(float) * downsample_data.stride);
         ImPlot::DragLineX(0, &start_graph_marker, ImVec4(1, 1, 1, 1), 1);
         ImPlot::DragLineX(1, &end_graph_marker, ImVec4(1, 1, 1, 1), 1);
         ImPlot::EndPlot();
       }
       if (ImPlot::BeginPlot("Right Channel")) {
-        ImPlot::SetupAxesLimits(0, audio_data.lenInSeconds(), -1.f, 1.f);
         ImPlot::SetupAxes("Time (s)", "Amplitude");
-        ImPlot::SetNextLineStyle(red, 1.5f);
+        ImPlot::SetupAxesLimits(0, audio_data.lenInSeconds(), -1.f, 1.f);
+        auto downsample_data = downsampler(audio_data.total_PCM_frame_count,
+                                           audio_data.sample_rate,
+                                           0,
+                                           audio_data.lenInSeconds());
+        ImPlot::SetNextLineStyle(red);
         ImPlot::PlotLine("Right Channel",
-                         reducedTime.data(),
-                         reducedRight.data(),
-                         reducedSize);
+                         &time_axis[downsample_data.start],
+                         &audio_data.right_channel[downsample_data.start],
+                         downsample_data.size,
+                         0,
+                         0,
+                         sizeof(float) * downsample_data.stride);
         ImPlot::DragLineX(0, &start_graph_marker, ImVec4(1, 1, 1, 1), 1);
         ImPlot::DragLineX(1, &end_graph_marker, ImVec4(1, 1, 1, 1), 1);
         ImPlot::EndPlot();
