@@ -7,7 +7,7 @@ find_package(glfw3 CONFIG REQUIRED)
 FetchContent_Declare(
   implot
   GIT_REPOSITORY https://github.com/epezent/implot.git
-  GIT_TAG v0.16
+  GIT_TAG master
   GIT_SHALLOW TRUE
   EXCLUDE_FROM_ALL
 )
@@ -15,7 +15,7 @@ FetchContent_Declare(
 FetchContent_Declare(
   imgui
   GIT_REPOSITORY https://github.com/ocornut/imgui.git
-  GIT_TAG v1.91.7
+  GIT_TAG v1.91.8
   GIT_SHALLOW TRUE
   EXCLUDE_FROM_ALL
 )
