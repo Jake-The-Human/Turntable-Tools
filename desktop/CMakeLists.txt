@@ -74,7 +74,7 @@ target_link_libraries(TurntableTools_exe
   PRIVATE
   # OpenGL::OpenGL
   ${OPENGL_LIBRARIES}
-  ${glfw3}
+  glfw
 )
 
 target_include_directories(TurntableTools_exe SYSTEM PRIVATE ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} ${pocketfft_SOURCE_DIR})
