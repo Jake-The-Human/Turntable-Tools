@@ -70,12 +70,19 @@ set_property(TARGET TurntableTools_exe PROPERTY OUTPUT_NAME TurntableTools)
 
 target_compile_features(TurntableTools_exe PRIVATE cxx_std_20)
 
-target_link_libraries(TurntableTools_exe
-  PRIVATE
-  # OpenGL::OpenGL
-  ${OPENGL_LIBRARIES}
-  glfw
-)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  target_link_libraries(TurntableTools_exe
+    PRIVATE
+    ${OPENGL_LIBRARIES}
+    ${glfw3}
+  )
+else()
+  target_link_libraries(TurntableTools_exe
+    PRIVATE
+    ${OPENGL_LIBRARIES}
+    glfw
+  )
+endif()
 
 target_include_directories(TurntableTools_exe SYSTEM PRIVATE ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} ${pocketfft_SOURCE_DIR})
 
