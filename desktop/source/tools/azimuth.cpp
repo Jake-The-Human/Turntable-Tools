@@ -16,7 +16,7 @@ namespace
  * @param secondary_signal The secondary signal amplitude.
  * @return The crosstalk in decibels.
  */
-constexpr auto crosstalk_in_db(float main_signal, float secondary_signal)
+inline auto crosstalk_in_db(float main_signal, float secondary_signal)
     -> float
 {
   constexpr float epsilon = 1e-12F;  // Small value to prevent division by zero
@@ -32,7 +32,7 @@ constexpr auto crosstalk_in_db(float main_signal, float secondary_signal)
  * @param data A span of floating-point data representing the signal.
  * @return The RMS value of the signal.
  */
-constexpr auto rms(const std::span<const float> data) -> float
+inline auto rms(const std::span<const float> data) -> float
 {
   float sum = 0.0F;
   for (size_t i = 0; i < data.size(); i += 1) {

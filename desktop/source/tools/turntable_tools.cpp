@@ -30,7 +30,7 @@ TurntableTools::TurntableTools()
       [](const std::array<std::pair<float, float>, MOVING_AVG_SIZE>& input)
       -> std::pair<float, float>
   {
-    std::pair<float, float> sum = {0, 0};
+    auto sum = std::make_pair<float, float>(0.0f, 0.0f);
     for (const auto data : input) {
       sum.first += data.first;
       sum.second += data.second;

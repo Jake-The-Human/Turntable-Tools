@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 
 #include "azimuth_window.hpp"
 

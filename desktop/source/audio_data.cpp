@@ -15,7 +15,7 @@ auto AudioData::update(const std::filesystem::path& wav_path) -> bool
 {
   file_path = wav_path;
   float* pSampleData =
-      drwav_open_file_and_read_pcm_frames_f32(file_path.c_str(),
+      drwav_open_file_and_read_pcm_frames_f32(file_path.string().c_str(),
                                               &channels,
                                               &sample_rate,
                                               &total_PCM_frame_count,

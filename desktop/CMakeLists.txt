@@ -8,6 +8,8 @@ project(
   LANGUAGES CXX C
 )
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include("cmake/dependencies.cmake")
@@ -70,8 +72,9 @@ target_compile_features(TurntableTools_exe PRIVATE cxx_std_20)
 
 target_link_libraries(TurntableTools_exe
   PRIVATE
-  OpenGL::OpenGL
-  glfw
+  # OpenGL::OpenGL
+  ${OPENGL_LIBRARIES}
+  ${glfw3}
 )
 
 target_include_directories(TurntableTools_exe SYSTEM PRIVATE ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} ${pocketfft_SOURCE_DIR})
