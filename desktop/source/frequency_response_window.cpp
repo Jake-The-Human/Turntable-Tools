@@ -1,4 +1,5 @@
 #include <cmath>
+#include <array>
 #include <vector>
 
 #include "frequency_response_window.hpp"

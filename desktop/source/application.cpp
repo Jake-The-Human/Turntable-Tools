@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstdio>
 #include <utility>
+#include <span>
 
 #include "application.hpp"
 
@@ -147,7 +148,7 @@ void MyApp::updateState()
               [](const std::array<std::pair<float, float>, MOVING_AVG_SIZE>&
                      input) -> std::pair<float, float>
           {
-            std::pair<float, float> sum = {0, 0};
+            auto sum = std::make_pair<float, float>(0, 0);
             for (const auto data : input) {
               sum.first += data.first;
               sum.second += data.second;

@@ -1,8 +1,14 @@
 include(FetchContent)
 
 find_package(OpenGL REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  find_library(glfw3 NAMES glfw3 PATHS "$ENV{GLFW_ROOT}\\lib-vc2022" REQUIRED)
+  include_directories(SYSTEM "$ENV{GLFW_ROOT}\\include")
+else()
+  find_package(glfw3 CONFIG REQUIRED)
 # find_package(glad CONFIG REQUIRED)
+endif()
 
 FetchContent_Declare(
   implot

@@ -54,7 +54,7 @@ void AudioWindow::renderUI()
         | ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_AutoSelectNewTabs;
     if (ImGui::BeginTabBar("AudioFilesTabBar", tab_bar_flags)) {
       for (auto& current_tab : open_tabs) {
-        const auto& current_file = current_tab.first.filename();
+        const auto& current_file = current_tab.first.filename().string();
         if (ImGui::BeginTabItem(current_file.c_str(),
                                 &current_tab.second,
                                 ImGuiTabItemFlags_None))

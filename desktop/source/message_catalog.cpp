@@ -10,7 +10,7 @@ MessageCatalog::MessageCatalog()
   // Find available languages
   for (const auto& file : std::filesystem::directory_iterator {LANGUAGE_DIR}) {
     const auto& file_path = file.path();
-    available_languages.insert({file_path.stem().c_str(), file_path});
+    available_languages.insert({file_path.stem().string().c_str(), file_path});
   }
 }
 
