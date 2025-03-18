@@ -18,7 +18,7 @@ void ThdWindow::renderUI(bool& window_state,
     ImGui::Text("Right Channel: %.2f%%", results.second);
     ImGui::EndGroup();
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_Stationary)) {
-      ImGui::SetTooltip("This is the amount of tolal harmonic distorsion there is. (lower is better)");
+      ImGui::SetTooltip("This is the amount of total harmonic distortion there is. (lower is better)");
     }
     ImGui::EndGroup();
   } else {
