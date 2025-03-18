@@ -12,8 +12,15 @@ void ThdWindow::renderUI(bool& window_state,
 
   ImGui::Begin("THD", &window_state);
   if (file_loaded) {
+    ImGui::BeginGroup();
+    ImGui::BeginGroup();
     ImGui::Text("Left Channel: %.2f%%", results.first);
     ImGui::Text("Right Channel: %.2f%%", results.second);
+    ImGui::EndGroup();
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_Stationary)) {
+      ImGui::SetTooltip("This is the amount of tolal harmonic distorsion there is. (lower is better)");
+    }
+    ImGui::EndGroup();
   } else {
     ImGui::Text("No File loaded.");
   }
