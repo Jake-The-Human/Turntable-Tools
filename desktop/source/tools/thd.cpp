@@ -1,5 +1,7 @@
 #include <algorithm>
+#include <cmath>
 #include <complex>
+#include <stdexcept>
 #include <vector>
 
 #include "thd.hpp"
@@ -8,12 +10,6 @@
 
 namespace
 {
-#include <algorithm>
-#include <cmath>
-#include <complex>
-#include <stdexcept>
-#include <vector>
-
 /**
  * @brief Finds the harmonic peaks in a frequency spectrum.
  *
