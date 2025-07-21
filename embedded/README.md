@@ -80,6 +80,7 @@ This will give the input signal VCC/2 offset, this is done with the resistors in
 
 More to come soon.
 
+<img src="./img/enclosure.jpg" height="400" width="400">
 <img src="./img/main_menu.jpg" height="400" width="400">
 <img src="./img/rpm_mode.jpg" height="400" width="400">
 <img src="./img/level_mode.jpg" height="400" width="400">

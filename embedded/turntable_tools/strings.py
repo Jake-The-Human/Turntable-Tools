@@ -32,7 +32,7 @@ RPM: str = "RPM"
 LEVEL: str = "Level"
 RUMBLE: str = "Rumble"
 AZIMUTH: str = "Azimuth"
-CALIBRATE_MEMS: str = "Calibrate MEMS"
+CALIBRATE_MEMS: str = "Calibrate"
 ABOUT: str = "About"
 
 START_TURNTABLE: str = "Starting"

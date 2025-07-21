@@ -68,6 +68,9 @@ def _read_to_file() -> list[tuple[float, float, float]]:
 
     except OSError:
         print("Calibration file not found.")
+        with open(f"/sd/{_FILE_NAME}", mode="w", encoding="ascii") as _:
+            # create file if it does not exist
+            pass
 
     return [acceleration_offset, gyro_offset]
 
