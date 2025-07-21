@@ -31,7 +31,7 @@ from microcontroller import Pin
 
 # Turn features on/off
 HAS_MEMS_CIRCUIT: bool = True
-HAS_ADC_CIRCUIT: bool = True
+HAS_ADC_CIRCUIT: bool = False
 HAS_BATTERY_STATUS_CIRCUIT: bool = True
 HAS_SD_CARD: bool = True
 # Leveling debug

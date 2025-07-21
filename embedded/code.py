@@ -27,7 +27,7 @@ along with Turntable Tools. If not, see <https://www.gnu.org/licenses/>.
 
 from time import sleep
 import board
-from busio import I2C, SPI
+from busio import I2C
 from neopixel import NeoPixel
 
 import turntable_tools.mode_types as MODE
@@ -60,18 +60,8 @@ from turntable_tools.sensors.adc_sensor import AdcSensor
 from turntable_tools.modes.azimuth_mode import AzimuthMode
 from turntable_tools.screens.azimuth_screen import AzimuthScreen
 
-
-def setup_sd_card() -> None:
-    """Does what the box says sets up the sd card"""
-    import storage
-    from digitalio import DigitalInOut
-    from adafruit_sdcard import SDCard
-
-    cs = DigitalInOut(board.SD_CS)
-    sd_spi = SPI(board.SD_CLK, board.SD_MOSI, board.SD_MISO)
-    sd_card = SDCard(sd_spi, cs)
-    vfs = storage.VfsFat(sd_card)
-    storage.mount(vfs, "/sd")
+# SD card imports
+from turntable_tools.sd_card import setup_sd_card
 
 
 def setup_mems_circuit(i2c_bus: I2C, neo_pixel: NeoPixel) -> dict:
